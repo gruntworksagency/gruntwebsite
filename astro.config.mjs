@@ -9,13 +9,13 @@ import mdx from "@astrojs/mdx";
 // https://astro.build/config
 export default defineConfig({
   // https://docs.astro.build/en/guides/images/#authorizing-remote-images
-  site: "https://screwfast.uk",
+  site: "https://gruntworksagency.com",
   image: {
     domains: ["images.unsplash.com"],
   },
   prefetch: true,
   integrations: [sitemap({}), starlight({
-    title: "ScrewFast Docs",
+    title: "Gruntworks Docs",
     sidebar: [
       {
         label: "Quick Start Guides",
@@ -38,7 +38,7 @@ export default defineConfig({
       },
     ],
     social: [
-      { icon: "github", label: "GitHub", href: "https://github.com/mearashadowfax/ScrewFast" },
+      { icon: "github", label: "GitHub", href: "https://github.com/mearashadowfax/Gruntworks" },
     ],
     disable404Route: true,
     customCss: ["./src/assets/styles/starlight.css"],
@@ -54,14 +54,14 @@ export default defineConfig({
         tag: "meta",
         attrs: {
           property: "og:image",
-          content: "https://screwfast.uk" + "/social.webp",
+          content: "https://gruntworksagency.com" + "/social.webp",
         },
       },
       {
         tag: "meta",
         attrs: {
           property: "twitter:image",
-          content: "https://screwfast.uk" + "/social.webp",
+          content: "https://gruntworksagency.com" + "/social.webp",
         },
       },
     ],
