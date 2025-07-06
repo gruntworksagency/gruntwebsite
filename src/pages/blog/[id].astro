@@ -14,13 +14,10 @@ import { SITE } from "@data/constants";
 
 // Update getStaticPaths for English posts
 export async function getStaticPaths() {
-  const blogPosts = await getCollection("blog", ({ id }) =>
-    id.startsWith("en/")
-  );
+  const blogPosts = await getCollection("blog");
   return blogPosts.map((post) => {
-    const idWithoutLang = post.id.replace(/^en\//, ""); // Remove the "en/" prefix
     return {
-      params: { id: idWithoutLang },
+      params: { id: post.slug },
       props: { post },
     };
   });
@@ -29,10 +26,7 @@ export async function getStaticPaths() {
 // Get the current post's data
 const { post } = Astro.props;
 
-const blogPosts: CollectionEntry<"blog">[] = await getCollection(
-  "blog",
-  ({ id }) => id.startsWith("en/")
-);
+const blogPosts: CollectionEntry<"blog">[] = await getCollection("blog");
 
 // Filter out the current post to get related posts
 // Note: This is a very basic way of choosing related posts, just for the purpose of the example.
@@ -73,7 +67,7 @@ const ogTitle = `${post.data.title} | Blog | ${SITE.title}`;
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://gruntworksagency.com/blog/${post.id.replace(/^en\//, "")}`,
+      "@id": `https://gruntworksagency.com/blog/${post.slug}`,
     },
   }}
 >

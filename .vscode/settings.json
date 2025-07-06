@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "ampproject",
+    "astrojs",
     "bunx",
     "capsizecss",
     "devlop",
@@ -9,6 +10,7 @@
     "emnapi",
     "fontkit",
     "gruntwebsite",
+    "gruntworks",
     "gsap",
     "jridgewell",
     "klona",
@@ -16,6 +18,7 @@
     "libvips",
     "linuxmusl",
     "loong",
+    "lucide",
     "mdast",
     "minipass",
     "nodelib",
@@ -24,7 +27,7 @@
     "recma",
     "riscv",
     "scandir",
-    "gruntworks",
+    "screwfast",
     "shiki",
     "smol",
     "twoslash",
