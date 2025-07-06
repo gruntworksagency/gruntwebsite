@@ -1,0 +1,52 @@
+import type { HTMLAttributes } from "astro/types";
+import { SITE } from "@config/constants";
+import { Icon } from "astro-icon";
+import Authentication from "../misc/Authentication.astro";
+import ThemeIcon from "@components/ThemeIcon.astro";
+import NavLink from "@components/ui/links/NavLink.astro";
+
+const homeUrl = "/";
+const navBarLinks = [
+  { name: "Home", url: "/" },
+  { name: "Insights", url: "/insights/" },
+  { name: "Blog", url: "/blog/" },
+  { name: "Products", url: "/products/" },
+  { name: "Contact Us", url: "/contact/" },
+];
+---
+
+<header class="relative z-50 h-[var(--navbar-height)]">
+  <div
+    class="fixed inset-x-0 top-0 z-50 flex h-[var(--navbar-height)] items-center justify-between border-b border-zinc-200 bg-white px-2 py-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:px-6"
+  >
+    <div class="flex flex-1 items-center justify-start gap-4">
+      <a href={homeUrl} aria-label="Brand">
+        <img
+          class="h-auto w-24"
+          src="/assets/screwfast_logo.webp"
+          alt="ScrewFast Logo"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+    </div>
+    <nav class="hidden md:block">
+      <ul class="flex items-center gap-x-2">
+        {navBarLinks.map((link) => (
+          <li>
+            <a
+              href={link.url}
+              class="group inline-flex items-center gap-x-2 rounded-full px-4 py-2 text-sm font-medium text-zinc-600 outline-offset-2 transition hover:text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:active:text-zinc-400"
+            >
+              {link.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="flex items-center gap-x-4">
+      <Authentication />
+      <ThemeIcon />
+    </div>
+  </div>
+</header>
