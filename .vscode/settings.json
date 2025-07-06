@@ -48,4 +48,3 @@
     "/src/content/**/*": "/src/images/content/${documentBaseName}/"
   }
 }
-
