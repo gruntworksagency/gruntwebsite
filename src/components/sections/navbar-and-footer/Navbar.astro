@@ -3,7 +3,6 @@ import Search from "@components/search/Search.astro";
 import { Icon } from "astro-icon";
 import ThemeIcon from "@components/ThemeIcon.astro";
 import Authentication from "../misc/Authentication.astro";
-import NavLink from "./NavLink.astro";
 
 const homeUrl = "/";
 
@@ -16,6 +15,10 @@ const navBarLinks = [
 ];
 
 ---
+
+<header>
+  <p>Navbar</p>
+</header>
 
 <header
   class="h-[var(--navbar-height)]"
