@@ -17,13 +17,10 @@ declare global {
 // This gets the static paths for all the unique products
 
 export async function getStaticPaths() {
-  const productEntries = await getCollection("products", ({ id }) =>
-    id.startsWith("en/")
-  );
+  const productEntries = await getCollection("products");
   return productEntries.map((product) => {
-    const idWithoutLang = product.id.replace(/^en\//, ""); // Remove the "en/" prefix
     return {
-      params: { id: idWithoutLang },
+      params: { id: product.slug },
       props: { product },
     };
   });
