@@ -1,0 +1,56 @@
+import BrandLogo from "@components/BrandLogo.astro";
+import Search from "@components/search/Search.astro";
+import { Icon } from "astro-icon";
+import ThemeIcon from "@components/ThemeIcon.astro";
+import Authentication from "../misc/Authentication.astro";
+import NavLink from "./NavLink.astro";
+
+const homeUrl = "/";
+
+const navBarLinks = [
+  { name: "Home", url: "/" },
+  { name: "Insights", url: "/insights/" },
+  { name: "Blog", url: "/blog/" },
+  { name: "Products", url: "/products/" },
+  { name: "Contact Us", url: "/contact/" },
+];
+
+---
+
+<header
+  class="h-[var(--navbar-height)]"
+>
+  <div
+    class="fixed inset-x-0 top-0 z-50 flex h-[var(--navbar-height)] items-center justify-between border-b border-zinc-200 bg-white px-2 py-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:px-6"
+  >
+    <div class="flex flex-1 items-center justify-start gap-4">
+      <BrandLogo homeUrl={homeUrl} />
+      <Search />
+    </div>
+    <nav class="hidden md:block">
+      <ul class="flex items-center gap-x-2">
+        {navBarLinks.map((link) => (
+          <li>
+            <a
+              href={link.url}
+              class="group inline-flex items-center gap-x-2 rounded-full px-4 py-2 text-sm font-medium text-zinc-600 outline-offset-2 transition hover:text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:active:text-zinc-400"
+            >
+              {link.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="flex items-center gap-x-4">
+      <Authentication />
+      <button
+        type="button"
+        class="group inline-flex items-center gap-x-2 rounded-full px-4 py-2 text-sm font-medium text-zinc-600 outline-offset-2 transition hover:text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:active:text-zinc-400 md:hidden"
+      >
+        <span>Menu</span>
+        <Icon name="lucide:menu" class="h-4 w-4" />
+      </button>
+      <ThemeIcon />
+    </div>
+  </div>
+</header> 

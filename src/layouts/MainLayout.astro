@@ -1,10 +1,12 @@
 ---
 // Importing necessary components
 import Meta from "@components/Meta.astro";
-import Navbar from "@components/sections/navbar&footer/Navbar.astro";
-import FooterSection from "@components/sections/navbar&footer/FooterSection.astro";
+import SiteMeta from "@components/seo/SiteMeta.astro";
+import Navbar from "@components/sections/navbar-and-footer/Navbar.astro";
+import FooterSection from "@components/sections/navbar-and-footer/FooterSection.astro";
 import { SITE } from "@data/constants";
 import "@styles/global.css";
+import "@fontsource-variable/inter";
 
 // Setting expected props
 const {
@@ -55,13 +57,17 @@ interface Props {
     </script>
   </head>
   <body
-    class="bg-neutral-200 selection:bg-yellow-400 selection:text-neutral-700 dark:bg-neutral-800 flex flex-col min-h-screen"
+    class="flex min-h-screen flex-col bg-neutral-200 selection:bg-yellow-400 selection:text-neutral-700 dark:bg-neutral-800"
   >
-    {/*
+    {
+      /*
     Setting up the main structure of the page.
     The Navbar is placed at the top, with a slot for the main content and FooterSection at the bottom.
-    */}
-    <div class="mx-auto max-w-(--breakpoint-2xl) px-4 sm:px-6 lg:px-8 flex-grow">
+    */
+    }
+    <div
+      class="mx-auto max-w-(--breakpoint-2xl) flex-grow px-4 sm:px-6 lg:px-8"
+    >
       <Navbar />
       <main>
         <slot />
