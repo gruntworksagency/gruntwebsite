@@ -1,0 +1,129 @@
+---
+alwaysApply: true
+---
+
+Ran tool
+Ran tool
+Here’s a summary of Astro as a framework, with a focus on how its features and patterns apply to your project:
+
+---
+
+## What is Astro?
+
+**Astro** is a modern web framework designed for building fast, content-focused websites. Its core philosophy is to ship as little JavaScript as possible to the browser, resulting in highly performant static and server-rendered sites. Astro supports using components from popular UI frameworks (React, Svelte, Vue, etc.) but only sends their JavaScript to the client when needed.
+
+---
+
+## Key Features Relevant to Your Project
+
+### 1. **Component Model & UI Framework Interoperability**
+
+- You can use `.astro` files for static, HTML-first components, and also import React, Svelte, Vue, or other framework components as needed.
+- Astro’s “islands architecture” means interactive components are hydrated only when necessary, using directives like `client:load`, `client:visible`, or `client:only="react"`.
+
+### 2. **Content Collections & Data Handling**
+
+- Astro provides a powerful content collections API for managing structured content (e.g., blog posts, docs, products).
+- You define collections and their schemas in `src/content.config.ts` using Zod for type safety.
+- Fetch content with `getCollection()` or `getLiveCollection()` for dynamic/live data.
+- Supports referencing other content entries (e.g., authors, related posts) directly in frontmatter.
+
+### 3. **Routing & Dynamic Pages**
+
+- File-based routing: Each `.astro` or framework component in `src/pages` becomes a route.
+- Supports dynamic routes (e.g., `[slug].astro`) and multiple dynamic parameters.
+- Redirects and custom error handling are configurable in `astro.config.mjs`.
+
+### 4. **API Endpoints & Middleware**
+
+- You can define API routes in `src/pages/api/` using standard JavaScript/TypeScript.
+- Middleware (`astro:middleware`) allows you to intercept requests for authentication, gating actions, or custom logic.
+- Example: Gate actions using session cookies, or handle form actions with `getActionContext()`.
+
+### 5. **Session & State Management**
+
+- Astro supports server-side sessions, accessible via `Astro.session` in components and API routes.
+- Example: Store and retrieve cart data, user sessions, etc.
+
+### 6. **Environment Variables**
+
+- Use `astro:env/client` for public variables and `astro:env/server` for secrets.
+- Type-safe environment variable schemas can be defined in `astro.config.mjs`.
+
+### 7. **Integrations & Extensibility**
+
+- Easily add integrations (React, Tailwind, Sitemap, etc.) via `astro add`.
+- Integrations update config and install dependencies automatically.
+
+### 8. **Styling**
+
+- Supports scoped and global CSS, preprocessors, and frameworks like Tailwind.
+- Styles can be colocated with components or imported globally.
+
+### 9. **Database & Backend**
+
+- Astro DB (experimental) allows you to define tables, relationships, and seed data.
+- Supports remote databases (e.g., Turso/libSQL) via environment variables.
+
+### 10. **Internationalization (i18n)**
+
+- Built-in i18n routing and configuration for multi-language sites.
+
+---
+
+## Typical Project Patterns
+
+- **Content-driven sites**: Use content collections for blogs, docs, or product catalogs.
+- **Hybrid interactivity**: Use static `.astro` components for most UI, hydrate React/Svelte/Vue components only where needed.
+- **API endpoints**: Implement custom backend logic (e.g., authentication, cart, user actions) in API routes.
+- **Session-aware UI**: Show personalized content (e.g., cart, user info) using server-side session data.
+- **Integrations**: Add features like Tailwind, image optimization, or analytics with minimal config.
+
+---
+
+## Example: Cart with Session
+
+```astro
+---
+export const prerender = false;
+const cart = await Astro.session?.get('cart');
+---
+<a href="/checkout">🛒 {cart?.length ?? 0} items</a>
+```
+
+## Example: Hydrating a React Component
+
+```astro
+---
+import InteractiveButton from '../components/InteractiveButton.jsx';
+---
+<InteractiveButton client:load />
+```
+
+## Example: Content Collection Schema
+
+```ts
+import { defineCollection, z } from "astro:content";
+
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/data/blog" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+  }),
+});
+export const collections = { blog };
+```
+
+---
+
+## In Summary
+
+Astro is ideal for your project if you want:
+
+- Fast, SEO-friendly, content-rich sites
+- Minimal client-side JavaScript
+- Flexibility to use React/Svelte/Vue where needed
+- Strong content/data modeling
+- Easy integration with modern tooling and backend APIs
