@@ -1,13 +1,16 @@
 {
-  "name": "screwfast-template",
+  "name": "gruntwebsite",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build && node process-html.mjs",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "bunx astro dev",
+    "start": "bunx astro dev",
+    "build": "bunx astro check && bunx astro build && bun process-html.mjs",
+    "preview": "bunx astro preview",
+    "astro": "bunx astro"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
