@@ -1,4 +1,4 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, passthroughImageService } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import compressor from "astro-compressor";
@@ -11,6 +11,7 @@ export default defineConfig({
   // https://docs.astro.build/en/guides/images/#authorizing-remote-images
   site: "https://gruntworksagency.com",
   image: {
+    service: passthroughImageService(),
     domains: ["images.unsplash.com"],
   },
   prefetch: true,
@@ -65,10 +66,14 @@ export default defineConfig({
         },
       },
     ],
-  }), compressor({
-    gzip: false,
-    brotli: true,
-  }), mdx()],
+  }),
+  // Only run astro-compressor in production
+  process.env.NODE_ENV === "production" &&
+    compressor({
+      gzip: false,
+      brotli: true,
+    }),
+  mdx()],
   experimental: {
     clientPrerender: true,
   },

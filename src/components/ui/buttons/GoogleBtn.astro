@@ -12,7 +12,13 @@ const bgColorClasses =
   "bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-900";
 const disableClasses = "disabled:pointer-events-none disabled:opacity-50";
 const ringClasses = "ring-zinc-500 dark:ring-zinc-200";
-const googleSVG = `<svg
+---
+
+<button
+  type="button"
+  class={`${baseClasses} ${borderClasses} ${bgColorClasses} ${disableClasses} ${ringClasses}`}
+>
+  <svg
     class="h-auto w-4"
     width="46"
     height="47"
@@ -31,15 +37,6 @@ const googleSVG = `<svg
     <path
       d="M23.4694 9.07688C27.8699 9.07688 30.8622 10.9863 32.5344 12.5725L39.1645 6.11C35.0867 2.32063 29.8061 0 23.4694 0C14.287 0 6.36607 5.2875 2.49362 12.9544L10.0918 18.8588C11.9987 13.1894 17.25 9.07688 23.4694 9.07688Z"
       fill="#EB4335"></path>
-  </svg>`;
----
-
-<button
-  type="button"
-  class={`${baseClasses} ${borderClasses} ${bgColorClasses} ${disableClasses} ${ringClasses}`}
->
-  <!-- About Fragment: https://docs.astro.build/en/basics/astro-syntax/#fragments -->
-
-  <Fragment set:html={googleSVG} />
+  </svg>
   {title}
 </button>

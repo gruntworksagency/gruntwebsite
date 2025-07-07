@@ -1,7 +1,7 @@
 ---
 // Importing necessary components
 import Meta from "@components/Meta.astro";
-import SiteMeta from "@components/seo/SiteMeta.astro";
+// import SiteMeta from "@components/seo/SiteMeta.astro";
 import Navbar from "@components/sections/navbar-and-footer/Navbar.astro";
 import FooterSection from "@components/sections/navbar-and-footer/FooterSection.astro";
 import { SITE } from "@data/constants";
@@ -65,9 +65,7 @@ interface Props {
     The Navbar is placed at the top, with a slot for the main content and FooterSection at the bottom.
     */
     }
-    <div
-      class="mx-auto max-w-(--breakpoint-2xl) flex-grow px-4 sm:px-6 lg:px-8"
-    >
+    <div class="mx-auto max-w-(--breakpoint-xl) flex-grow px-4 sm:px-6 lg:px-8">
       <Navbar />
       <main>
         <slot />

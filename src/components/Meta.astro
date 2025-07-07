@@ -31,10 +31,8 @@ const ogTitle = customOgTitle || OG.title;
 const ogDescription = customDescription || OG.description;
 
 // Define the metadata for your website and individual pages
-const URL = `${Astro.site}`; // Set the website URL in astro.config.mjs
 const author = SITE.author;
 const canonical = Astro.url.href;
-const basePath = Astro.url.pathname;
 const socialImageRes = await getImage({
   src: OG.image,
   width: 1200,
@@ -60,6 +58,7 @@ const appleTouchIcon = await getImage({
      https://developers.google.com/search/docs/advanced/structured-data/intro-structured-data */}{
   structuredData && (
     <script
+      is:inline
       type="application/ld+json"
       set:html={JSON.stringify(structuredData)}
     />
@@ -80,12 +79,12 @@ const appleTouchIcon = await getImage({
 <meta property="og:url" content={canonical} />
 <meta
   property="og:image"
-  content={new URL(socialImage, Astro.site)}
+  content={socialImage}
 />
 <meta property="og:image:alt" content="Gruntworks OG Image" />
 <meta
   property="og:site_name"
-  content={SITE.name}
+  content={SITE.title}
 />
 <meta property="og:type" content="website" />
 

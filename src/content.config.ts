@@ -2,11 +2,10 @@
 
 import { z, defineCollection } from 'astro:content';
 import { docsSchema } from '@astrojs/starlight/schema';
-import { glob } from 'astro/loaders';
 
 const productsCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/products" }),
-    schema: ({ image }) => z.object({
+  type: 'content',
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     main: z.object({
@@ -61,7 +60,7 @@ const productsCollection = defineCollection({
 });
 
 const blogCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/blog" }),
+  type: 'content',
   schema: ({ image }) => z.object ({
   title: z.string(),
   description: z.string(),
@@ -79,11 +78,10 @@ const blogCollection = defineCollection({
 });
 
 const insightsCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/insights" }),
+  type: 'content',
   schema: ({ image }) => z.object ({
   title: z.string(),
   description: z.string(),
-  // contents: z.array(z.string()),
   cardImage: image(),
   cardImageAlt: z.string(),
   }),
