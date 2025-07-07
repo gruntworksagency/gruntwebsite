@@ -2,17 +2,9 @@
 alwaysApply: true
 ---
 
-Ran tool
-Ran tool
-Here’s a summary of Astro as a framework, with a focus on how its features and patterns apply to your project:
-
----
-
 ## What is Astro?
 
 **Astro** is a modern web framework designed for building fast, content-focused websites. Its core philosophy is to ship as little JavaScript as possible to the browser, resulting in highly performant static and server-rendered sites. Astro supports using components from popular UI frameworks (React, Svelte, Vue, etc.) but only sends their JavaScript to the client when needed.
-
----
 
 ## Key Features Relevant to Your Project
 
@@ -69,8 +61,6 @@ Here’s a summary of Astro as a framework, with a focus on how its features and
 
 - Built-in i18n routing and configuration for multi-language sites.
 
----
-
 ## Typical Project Patterns
 
 - **Content-driven sites**: Use content collections for blogs, docs, or product catalogs.
@@ -78,8 +68,6 @@ Here’s a summary of Astro as a framework, with a focus on how its features and
 - **API endpoints**: Implement custom backend logic (e.g., authentication, cart, user actions) in API routes.
 - **Session-aware UI**: Show personalized content (e.g., cart, user info) using server-side session data.
 - **Integrations**: Add features like Tailwind, image optimization, or analytics with minimal config.
-
----
 
 ## Example: Cart with Session
 
@@ -115,8 +103,6 @@ const blog = defineCollection({
 });
 export const collections = { blog };
 ```
-
----
 
 ## In Summary
 
