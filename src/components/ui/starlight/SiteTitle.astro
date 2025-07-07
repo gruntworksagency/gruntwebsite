@@ -1,18 +1,15 @@
+---
 import { SITE } from "@data/constants";
-import mainLogo from "@images/starlight/screwfast_logo_dark.svg?raw";
-import docsLogo from "@images/starlight/docs_logo.svg?raw";
-import type { Props } from "@astrojs/starlight/props";
-import { Fragment } from "astro/jsx-runtime";
 
 const docs = "/welcome-to-docs/";
 ---
 
 <span class="site-title flex">
   <a class="main-logo" href={SITE.url} aria-label="Gruntworks">
-    <Fragment set:html={mainLogo} />
+    <span>Gruntworks</span>
   </a>
   <a class="docs-logo" href={docs} aria-label="Gruntworks Docs">
-    <Fragment set:html={docsLogo} />
+    <span>Docs</span>
   </a>
 </span>
 
@@ -23,26 +20,12 @@ const docs = "/welcome-to-docs/";
   }
   .site-title a {
     display: flex;
+    text-decoration: none;
+    color: inherit;
   }
   
   .flex {
     display: flex;
     align-items: center;
-  }
-  .site-title a:focus-visible {
-    outline: 0;
-  }
-  .site-title a:focus-visible > :global(*) {
-    transform: translateY(calc(.1rem * -1));
-    transition: transform 250ms cubic-bezier(0.33, 1, 0.68, 1);
-  }
-
-  .site-title :global(svg) {
-    width: auto;
-    height: auto;
-  }
-  .site-title a:hover :global(svg) {
-    transform: translateY(calc(.1rem * -1));
-    transition: transform 250ms cubic-bezier(0.33, 1, 0.68, 1);
   }
 </style>

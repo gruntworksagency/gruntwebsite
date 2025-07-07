@@ -1,6 +1,6 @@
+---
 import BrandLogo from "@components/BrandLogo.astro";
-import Search from "@components/search/Search.astro";
-import { Icon } from "astro-icon";
+import NavLink from "@components/ui/links/NavLink.astro";
 import ThemeIcon from "@components/ThemeIcon.astro";
 import Authentication from "../misc/Authentication.astro";
 
@@ -13,43 +13,79 @@ const navBarLinks = [
   { name: "Products", url: "/products/" },
   { name: "Contact Us", url: "/contact/" },
 ];
-
 ---
 
 <header
-  class="h-[var(--navbar-height)]"
+  class="sticky inset-x-0 top-4 z-50 flex w-full flex-wrap text-sm md:flex-nowrap md:justify-start"
 >
-  <div
-    class="fixed inset-x-0 top-0 z-50 flex h-[var(--navbar-height)] items-center justify-between border-b border-zinc-200 bg-white px-2 py-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:px-6"
+  <nav
+    class="relative mx-2 w-full rounded-[36px] border border-yellow-100/40 bg-yellow-50/60 px-4 py-3 backdrop-blur-md dark:border-neutral-700/40 dark:bg-neutral-800/80 dark:backdrop-blur-md md:flex md:items-center md:justify-between md:px-6 md:py-0 lg:px-8 xl:mx-auto"
+    aria-label="Global"
   >
-    <div class="flex flex-1 items-center justify-start gap-4">
-      <BrandLogo homeUrl={homeUrl} />
-      <Search />
-    </div>
-    <nav class="hidden md:block">
-      <ul class="flex items-center gap-x-2">
-        {navBarLinks.map((link) => (
-          <li>
-            <a
-              href={link.url}
-              class="group inline-flex items-center gap-x-2 rounded-full px-4 py-2 text-sm font-medium text-zinc-600 outline-offset-2 transition hover:text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:active:text-zinc-400"
-            >
-              {link.name}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-    <div class="flex items-center gap-x-4">
-      <Authentication />
-      <button
-        type="button"
-        class="group inline-flex items-center gap-x-2 rounded-full px-4 py-2 text-sm font-medium text-zinc-600 outline-offset-2 transition hover:text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:active:text-zinc-400 md:hidden"
+    <div class="flex items-center justify-between">
+      <a
+        class="flex-none rounded-lg text-xl font-bold outline-hidden ring-zinc-500 focus-visible:ring-3 dark:ring-zinc-200 dark:focus:outline-hidden"
+        href={homeUrl}
+        aria-label="Brand"
       >
-        <span>Menu</span>
-        <Icon name="lucide:menu" class="h-4 w-4" />
-      </button>
-      <ThemeIcon />
+        <BrandLogo />
+      </a>
+      <div class="ml-auto mr-5 md:hidden">
+        <button
+          type="button"
+          class="hs-collapse-toggle flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-neutral-600 transition duration-300 hover:bg-neutral-200 disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:focus:outline-hidden"
+          data-hs-collapse="#navbar-collapse-with-animation"
+          aria-controls="navbar-collapse-with-animation"
+          aria-label="Toggle navigation"
+        >
+          <svg
+            class="h-[1.25rem] w-[1.25rem] shrink-0 hs-collapse-open:hidden"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" x2="21" y1="6" y2="6"></line>
+            <line x1="3" x2="21" y1="12" y2="12"></line>
+            <line x1="3" x2="21" y1="18" y2="18"></line>
+          </svg>
+          <svg
+            class="hidden h-[1.25rem] w-[1.25rem] shrink-0 hs-collapse-open:block"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <span class="inline-block md:hidden">
+        <ThemeIcon />
+      </span>
     </div>
-  </div>
-</header> 
+    <div
+      id="navbar-collapse-with-animation"
+      class="hs-collapse hidden grow basis-full overflow-hidden transition-all duration-300 md:block"
+    >
+      <div
+        class="mt-5 flex flex-col gap-x-0 gap-y-4 md:mt-0 md:flex-row md:items-center md:justify-end md:gap-x-4 lg:gap-x-7 md:gap-y-0 md:ps-7"
+      >
+        {navBarLinks.map((link) => <NavLink url={link.url} name={link.name} />)}
+        <Authentication />
+        <span class="hidden md:inline-block">
+          <ThemeIcon />
+        </span>
+      </div>
+    </div>
+  </nav>
+</header>
