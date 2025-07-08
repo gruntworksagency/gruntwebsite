@@ -1,6 +1,7 @@
 ---
 import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
 import Container from "@components/ui/Container.astro";
+import { Image } from "astro:assets";
 ---
 
 <!-- 
@@ -15,6 +16,31 @@ import Container from "@components/ui/Container.astro";
 <section
   class="stormy-background relative flex min-h-screen flex-col justify-center overflow-hidden"
 >
+  <div
+    class="clouds-layer pointer-events-none absolute top-0 left-0 z-10 h-[180px] w-full md:h-[220px] lg:h-[260px]"
+  >
+    <Image
+      src="/heatworks/cloud-3-min.png"
+      alt=""
+      width={490}
+      height={316}
+      class="cloud-left absolute top-0 left-[-150px] h-[200px] w-auto lg:h-[300px]"
+    />
+    <Image
+      src="/heatworks/cloud-2-min.png"
+      alt=""
+      width={998}
+      height={239}
+      class="cloud-center absolute top-[-20px] left-1/2 h-[200px] w-auto -translate-x-1/2 lg:h-[300px]"
+    />
+    <Image
+      src="/heatworks/cloud-1-min.png"
+      alt=""
+      width={598}
+      height={338}
+      class="cloud-right absolute top-0 right-[-300px] h-[300px] w-auto lg:right-[-150px] lg:h-[400px]"
+    />
+  </div>
   <Container maxWidth="max-w-(--breakpoint-xl)">
     <!-- Main Content -->
     <div
@@ -22,11 +48,11 @@ import Container from "@components/ui/Container.astro";
     >
       <!-- Text Content Container -->
       <div
-        class="container mx-auto flex flex-col items-center px-4 pt-[12rem] text-center"
+        class="container mx-auto flex flex-col items-center px-4 pt-[10rem] text-center"
       >
         <!-- Pill Text -->
         <div
-          class="mb-6 inline-block rounded-full bg-white/50 px-4 py-2 text-sm font-bold text-[#2d2828] backdrop-blur-sm"
+          class="mb-6 inline-block rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-[#2d2828] backdrop-blur-sm"
         >
           The Ultimate Local SEO Audit
         </div>
@@ -35,7 +61,8 @@ import Container from "@components/ui/Container.astro";
         <h2
           class="mb-4 max-w-3xl text-5xl font-black text-balance text-[#2d2828] md:text-6xl"
         >
-          Invisible on Google Maps? <br />Stop Losing Jobs
+          Invisible on Google Maps? <br />
+          <span class="pt-1 text-4xl font-bold">Stop Losing Jobs</span>
         </h2>
 
         <span class="m-[-10px] text-xs text-[#2d2828]">with</span>
@@ -118,7 +145,7 @@ import Container from "@components/ui/Container.astro";
 
     <!-- Grass Transition Image -->
     <div
-      class="absolute bottom-[-8rem] left-0 z-[15] mb-0 w-full transform overflow-hidden sm:bottom-[-10rem] md:bottom-[-12rem] lg:bottom-[-16rem]"
+      class="absolute bottom-[-10rem] left-0 z-[15] mb-0 w-full transform overflow-hidden sm:bottom-[-10rem] md:bottom-[-8rem] lg:bottom-[-16rem]"
     >
       <img
         src="/heatworks/grass-transition.webp"
@@ -141,5 +168,20 @@ import Container from "@components/ui/Container.astro";
       ),
       radial-gradient(ellipse at center, #9fcdfe, #161326 70%),
       linear-gradient(to top, #afdcfa, #142c61);
+  }
+  .clouds-layer {
+    pointer-events: none;
+  }
+  @media (max-width: 767px) {
+    .stormy-background {
+      background:
+        radial-gradient(
+          ellipse 100% 65% at 50% 28%,
+          rgba(250, 235, 215, 0.55),
+          transparent 85%
+        ),
+        radial-gradient(ellipse at center, #9fcdfe, #161326 70%),
+        linear-gradient(to top, #afdcfa, #142c61);
+    }
   }
 </style>
