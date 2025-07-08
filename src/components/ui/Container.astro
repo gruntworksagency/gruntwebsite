@@ -1,0 +1,13 @@
+---
+interface Props {
+  maxWidth?: string;
+  class?: string;
+}
+
+const { maxWidth = "max-w-7xl", class: className } = Astro.props;
+---
+
+<!-- src/components/ui/Container.astro -->
+<div class:list={["mx-auto w-full", maxWidth, className]}>
+  <slot />
+</div>

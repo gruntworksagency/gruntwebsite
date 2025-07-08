@@ -1,5 +1,6 @@
 ---
 import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
+import Container from "@components/ui/Container.astro";
 ---
 
 <!-- 
@@ -12,124 +13,133 @@ import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
   - /heatworks/grass-transition.webp
 -->
 <section
-  class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-[#d4e3de]"
+  class="stormy-background relative flex min-h-screen flex-col justify-center overflow-hidden"
 >
-  <!-- Background Image -->
-  <img
-    src="/heatworks/hero-bg.webp"
-    alt="Hero background"
-    class="absolute inset-0 z-0 h-full w-full object-cover"
-    loading="eager"
-  />
-
-  <!-- Main Content -->
-  <div class="relative z-20 flex flex-col items-center pb-16 md:pb-24 lg:pb-32">
-    <!-- Text Content Container -->
+  <Container maxWidth="max-w-(--breakpoint-xl)">
+    <!-- Main Content -->
     <div
-      class="container mx-auto flex flex-col items-center px-4 pt-[12rem] text-center"
+      class="relative z-20 flex flex-col items-center pb-16 md:pb-24 lg:pb-32"
     >
-      <!-- Pill Text -->
+      <!-- Text Content Container -->
       <div
-        class="mb-6 inline-block rounded-full bg-white/50 px-4 py-2 text-sm font-bold text-[#2d2828] backdrop-blur-sm"
+        class="container mx-auto flex flex-col items-center px-4 pt-[12rem] text-center"
       >
-        The Ultimate Local SEO Audit
-      </div>
-
-      <!-- Main Headline -->
-      <h2
-        class="mb-4 max-w-3xl text-5xl font-black text-balance text-[#2d2828] md:text-6xl"
-      >
-        Invisible on Google Maps? <br />Stop Losing Jobs
-      </h2>
-
-      <span class="m-[-10px] text-xs text-[#2d2828]">with</span>
-
-      <!-- HEATWORKS Logo -->
-      <div class="my-4">
-        <img
-          src="/heatworks/HEATWORKS-logo.png"
-          alt="HEATWORKS Logo"
-          width="300"
-          height="120"
-          class="mx-auto h-auto w-[300px]"
-        />
-      </div>
-
-      <!-- Tagline -->
-      <p
-        class="text-md mt-4 mb-8 max-w-xl text-center text-balance text-[#2d2828]"
-      >
-        <span class="font-bold">HEATWORKS</span> is your <i>5-minute</i>
-        <span class="font-medium">Google Local Home Services Audit</span>
-        built for landscapers who hate guessing. See your
-        <i>actual rankings</i>
-        across your
-        <span class="font-medium">entire metro</span>
-        area.
-      </p>
-
-      <!-- CTA Row -->
-      <div
-        class="z-10 mt-8 mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
-      >
-        <!-- Price Badge -->
+        <!-- Pill Text -->
         <div
-          class="flex flex-col items-center rounded-lg border-2 border-red-900 bg-white px-6 py-2 text-center shadow-md"
+          class="mb-6 inline-block rounded-full bg-white/50 px-4 py-2 text-sm font-bold text-[#2d2828] backdrop-blur-sm"
         >
-          <span class="mb-[-5px] text-[9px] font-bold text-red-900">
-            limited time
-          </span>
-          <div class="flex items-center gap-1">
-            <span class="text-xl font-bold text-black">
-              $75
-              <span class="pl-1 text-[10px] text-gray-400">/ one-time</span>
+          The Ultimate Local SEO Audit
+        </div>
+
+        <!-- Main Headline -->
+        <h2
+          class="mb-4 max-w-3xl text-5xl font-black text-balance text-[#2d2828] md:text-6xl"
+        >
+          Invisible on Google Maps? <br />Stop Losing Jobs
+        </h2>
+
+        <span class="m-[-10px] text-xs text-[#2d2828]">with</span>
+
+        <!-- HEATWORKS Logo -->
+        <div class="my-4">
+          <img
+            src="/heatworks/HEATWORKS-logo.png"
+            alt="HEATWORKS Logo"
+            width="300"
+            height="120"
+            class="mx-auto h-auto w-[300px]"
+          />
+        </div>
+
+        <!-- Tagline -->
+        <p
+          class="text-md mt-4 mb-8 max-w-xl text-center text-balance text-[#2d2828]"
+        >
+          <span class="font-bold">HEATWORKS</span> is your <i>5-minute</i>
+          <span class="font-medium">Google Local Home Services Audit</span>
+          built for landscapers who hate guessing. See your
+          <i>actual rankings</i>
+          across your
+          <span class="font-medium">entire metro</span>
+          area.
+        </p>
+
+        <!-- CTA Row -->
+        <div
+          class="z-10 mt-8 mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
+        >
+          <!-- Price Badge -->
+          <div
+            class="flex flex-col items-center rounded-lg border-2 border-red-900 bg-white px-6 py-2 text-center shadow-md"
+          >
+            <span class="mb-[-5px] text-[9px] font-bold text-red-900">
+              limited time
             </span>
+            <div class="flex items-center gap-1">
+              <span class="text-xl font-bold text-black">
+                $75
+                <span class="pl-1 text-[10px] text-gray-400">/ one-time</span>
+              </span>
+            </div>
+          </div>
+
+          <PrimaryCTA title="Start Audit" url="/audit" />
+        </div>
+      </div>
+
+      <!-- iPad/Video Container -->
+      <div
+        class="relative z-20 mx-auto mt-0 hidden w-full max-w-[1280px] px-4 md:block"
+      >
+        <div class="relative mx-auto aspect-[16/9] w-full">
+          <img
+            src="/heatworks/ipad.png"
+            alt="iPad mockup displaying Heatworks audit"
+            class="absolute inset-0 z-10 h-full w-full object-contain"
+          />
+          <!-- Video area (iPad screen) -->
+          <div
+            class="absolute top-[15.08%] left-[15.08%] z-[5] flex h-[69.84%] w-[69.84%] items-center justify-center"
+            aria-label="iPad screen area"
+          >
+            <video
+              src="/heatworks/video_compressed-2.mp4"
+              autoplay
+              loop
+              muted
+              playsinline
+              class="h-full w-full object-cover"
+            >
+            </video>
           </div>
         </div>
-
-        <PrimaryCTA title="Start Audit" url="/audit" />
       </div>
     </div>
 
-    <!-- iPad/Video Container -->
+    <!-- Grass Transition Image -->
     <div
-      class="relative z-20 mx-auto mt-0 hidden w-full max-w-[1280px] px-4 md:block"
+      class="absolute bottom-[-8rem] left-0 z-[15] mb-0 w-full transform overflow-hidden sm:bottom-[-10rem] md:bottom-[-12rem] lg:bottom-[-16rem]"
     >
-      <div class="relative mx-auto aspect-[16/9] w-full">
-        <img
-          src="/heatworks/ipad.png"
-          alt="iPad mockup displaying Heatworks audit"
-          class="absolute inset-0 z-10 h-full w-full object-contain"
-        />
-        <!-- Video area (iPad screen) -->
-        <div
-          class="absolute top-[15.08%] left-[15.08%] z-[5] flex h-[69.84%] w-[69.84%] items-center justify-center"
-          aria-label="iPad screen area"
-        >
-          <video
-            src="/heatworks/video_compressed-2.mp4"
-            autoplay
-            loop
-            muted
-            playsinline
-            class="h-full w-full object-cover"
-          >
-          </video>
-        </div>
-      </div>
+      <img
+        src="/heatworks/grass-transition.webp"
+        alt="Grass transition effect"
+        width="1440"
+        height="1035"
+        class="h-auto w-full object-fill"
+      />
     </div>
-  </div>
-
-  <!-- Grass Transition Image -->
-  <div
-    class="absolute bottom-[-8rem] left-0 z-[15] mb-0 w-full transform overflow-hidden sm:bottom-[-10rem] md:bottom-[-12rem] lg:bottom-[-16rem]"
-  >
-    <img
-      src="/heatworks/grass-transition.webp"
-      alt="Grass transition effect"
-      width="1440"
-      height="1035"
-      class="h-auto w-full object-fill"
-    />
-  </div>
+  </Container>
 </section>
+
+<style>
+  .stormy-background {
+    background:
+      radial-gradient(
+        ellipse at 50% 20%,
+        rgba(250, 235, 215, 0.85),
+        transparent 60%
+      ),
+      radial-gradient(ellipse at center, #9fcdfe, #161326 70%),
+      linear-gradient(to top, #afdcfa, #142c61);
+  }
+</style>
