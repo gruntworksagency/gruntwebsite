@@ -14,7 +14,7 @@ const navBarLinks = [
 
 <header class="relative z-50 h-[var(--navbar-height)]">
   <div
-    class="fixed inset-x-0 top-0 z-50 flex h-[var(--navbar-height)] items-center justify-between border-b border-zinc-200 bg-white px-2 py-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:px-6"
+    class="fixed inset-x-0 top-0 z-50 flex h-[var(--navbar-height)] items-center justify-between border-b border-zinc-200 bg-white px-2 py-3 shadow-sm md:px-6 dark:border-zinc-800 dark:bg-zinc-900"
   >
     <div class="flex flex-1 items-center justify-start gap-4">
       <a href={homeUrl} aria-label="Brand">
@@ -29,21 +29,23 @@ const navBarLinks = [
     </div>
     <nav class="hidden md:block">
       <ul class="flex items-center gap-x-2">
-        {navBarLinks.map((link) => (
-          <li>
-            <a
-              href={link.url}
-              class="group inline-flex items-center gap-x-2 rounded-full px-4 py-2 text-sm font-medium text-zinc-600 outline-offset-2 transition hover:text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:active:text-zinc-400"
-            >
-              {link.name}
-            </a>
-          </li>
-        ))}
+        {
+          navBarLinks.map((link) => (
+            <li>
+              <a
+                href={link.url}
+                class="group inline-flex items-center gap-x-2 rounded-full px-4 py-2 text-sm font-medium text-zinc-600 outline-offset-2 transition hover:text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:active:text-zinc-400"
+              >
+                {link.name}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
     <div class="flex items-center gap-x-4">
       <Authentication />
-      <ThemeIcon />
+      <!-- <ThemeIcon /> -->
     </div>
   </div>
 </header>

@@ -119,3 +119,8 @@
     cursor: pointer;
   }
 }
+
+.rounded-r-nav {
+  border-top-right-radius: var(--nav-radius, 36px);
+  border-bottom-right-radius: var(--nav-radius, 36px);
+}
