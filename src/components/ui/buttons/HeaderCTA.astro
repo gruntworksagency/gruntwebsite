@@ -1,16 +1,13 @@
 ---
 import Icon from "@components/ui/icons/Icon.astro";
-// General-purpose Primary CTA button for use everywhere except the navbar.
-// Destructure the properties from Astro.props
+// Header CTA button for use in the navbar/header only (half rectangle, half pill shape)
 const { title, url, noArrow, noZapIcon } = Astro.props;
-// Define TypeScript interface for the properties
 interface Props {
   title?: string;
   url?: string;
   noArrow?: boolean;
   noZapIcon?: boolean;
 }
-// Define CSS classes for styling the button
 const baseClasses =
   "group inline-flex items-center justify-center gap-x-2 px-4 py-6 text-sm font-bold text-neutral-50 ring-zinc-500 transition duration-300 focus-visible:ring-3 outline-hidden";
 const borderClasses = "border border-transparent";
@@ -19,11 +16,12 @@ const bgColorClasses =
 const disableClasses = "disabled:pointer-events-none disabled:opacity-50";
 const fontSizeClasses = "2xl:text-base";
 const ringClasses = "dark:ring-zinc-200";
-// Rectangle shape with slightly rounded corners (7px)
-const shapeClasses = "rounded-[7px]";
+// Note the updated rounding class: `rounded-r-full` creates the pill shape on the right,
+// while the absence of a left-rounding class makes the left edge square.
+const shapeClasses = "rounded-r-full";
 ---
 
-<!-- General-purpose Primary CTA button (rectangle, slightly rounded corners) -->
+<!-- Header CTA button (half rectangle, half pill, navbar use only) -->
 <a
   class={`${baseClasses} ${shapeClasses} ${borderClasses} ${bgColorClasses} ${disableClasses} ${fontSizeClasses} ${ringClasses}`}
   href={url}
