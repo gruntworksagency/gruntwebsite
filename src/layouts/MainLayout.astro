@@ -65,12 +65,10 @@ interface Props {
     The Navbar is placed at the top, with a slot for the main content and FooterSection at the bottom.
     */
     }
-    <div class="mx-auto max-w-(--breakpoint-xl) flex-grow px-4 sm:px-6 lg:px-8">
-      <Navbar />
-      <main>
-        <slot />
-      </main>
-    </div>
+    <Navbar />
+    <main class="flex-grow">
+      <slot />
+    </main>
     <FooterSection />
     <script>
       // https://preline.co
