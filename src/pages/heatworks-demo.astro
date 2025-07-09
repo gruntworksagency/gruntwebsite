@@ -1,12 +1,68 @@
 ---
 import MainLayout from "@/layouts/MainLayout.astro";
 import HeroHeatworks from "@components/sections/landing/HeroHeatworks.astro";
+import FeaturesGeneral from "@components/sections/features/FeaturesGeneral.astro";
+import FeaturesNavs from "@components/sections/features/FeaturesNavs.astro";
+import featureImage from "public/heatworks/feature-cards.webp";
+import features from "@data/features.json";
+import startupSteve from "public/heatworks/startup-steve.webp";
+import growthGary from "public/heatworks/growth-gary.webp";
+import establishedEddie from "public/heatworks/established-eddie.webp";
+import Container from "@components/ui/Container.astro";
 ---
 
 <MainLayout title="Heatworks Demo | Gruntworks">
   <HeroHeatworks />
-  <!-- You can add other page content below the hero section -->
-  <div class="h-96 bg-neutral-800">
-    <!-- Placeholder for content after hero -->
-  </div>
+  <Container maxWidth="max-w-[1140px] px-10">
+    <!-- Pill Text -->
+    <div
+      class="mx-auto mt-16 mb-6 block justify-self-center rounded-full bg-white/80 px-4 py-2 text-center text-sm font-bold text-[#2d2828] backdrop-blur-sm"
+    >
+      Heatworks Features
+    </div>
+    <h2 class="text-center text-6xl font-bold">What's included?</h2>
+    <FeaturesGeneral
+      title="Heatworks Local SEO Audit"
+      subTitle="Unearth exactly what's blocking your Local SEO. Identify and fix your Local SEO visibility gaps with our comprehensive audit, live heatmap, and personalized 30-day playbook."
+      src={featureImage}
+      alt="Gruntworks products in floating boxes"
+      features={features}
+      imageClass="max-w-[700px] mx-auto"
+    />
+
+    <FeaturesNavs
+      title="Who is the <span class='text-orange-500 dark:text-orange-400'>Heatworks Audit</span> for?"
+      tabs={[
+        {
+          heading: "Startup Steve",
+          content:
+            "Founders and small teams seeking affordable, scalable solutions. Get quick wins, learn marketing fundamentals, and set your business up for future success—without breaking the bank.",
+          svg: "house",
+          src: startupSteve,
+          alt: "Persona illustration for Startup Steve",
+        },
+        {
+          heading: "Growth Gary",
+          content:
+            "Ambitious owners and marketers ready to unlock new growth. See how others have scaled with our proven audit, and reclaim your time with our done-for-you approach that delivers ROI fast.",
+          svg: "tools",
+          src: growthGary,
+          alt: "Persona illustration for Growth Gary",
+          first: true,
+        },
+        {
+          heading: "Established Eddie",
+          content:
+            "Operational leaders focused on efficiency and integration. Leverage data-driven insights to optimize your systems, ensure stability, and drive sustainable, long-term growth.",
+          svg: "dashboard",
+          src: establishedEddie,
+          alt: "Persona illustration for Established Eddie",
+          second: true,
+        },
+      ]}
+    />
+    <div class="h-96 bg-neutral-800">
+      <!-- Placeholder for content after hero -->
+    </div>
+  </Container>
 </MainLayout>

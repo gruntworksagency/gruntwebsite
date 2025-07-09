@@ -1,22 +1,25 @@
 [
   {
-    "heading": "Dedicated Teams",
-    "content": "Benefit from our committed teams who ensure your success is personal. Count on expert guidance and exceptional results throughout your project journey.",
+    "heading": "Live Heatmap",
+    "content": "See who's ranking across your metro area in real time.",
     "svg": "groups"
   },
   {
-    "heading": "Simplicity and Affordability",
-    "content": "Find easy-to-use, affordable solutions with Gruntworks's line of tools and equipment. Our products make procurement simple and keep projects within budget.",
+    "heading": "100-Point Audit",
+    "content": "Full PDF report on your Google Business Page, Website and SEO performance.",
     "svg": "verified"
   },
   {
-    "heading": "Comprehensive Documentation",
-    "content": "Integrate with ease using Gruntworks's exhaustive guides and libraries. Achieve seamless product adoption with our full suite of documentation designed for your success.",
+    "heading": "30-Day Playbook",
+    "content": "Follow an easy step-by-step roadmap to boost visibility in 30 days flat.",
     "svg": "books"
   },
   {
-    "heading": "User-Centric Design",
-    "content": "Experience the difference with Gruntworks's user-focused design — where functionality meets practicality for an enhanced work experience.",
+    "heading": "1:1 Consultation (limited)",
+    "content": "Select accounts receive a 45 minute 1:1 zoom call for a full strategic consultation.",
+    "link": "https://cal.com/gruntworks/45min",
+    "linkText": "Do you qualify?",
     "svg": "frame"
   }
 ]
+

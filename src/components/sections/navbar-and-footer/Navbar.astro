@@ -1,5 +1,5 @@
 ---
-import BrandLogo from "@components/BrandLogo.astro";
+import HeatLogo from "@components/HeatLogo.astro";
 import NavLink from "@components/ui/links/NavLink.astro";
 import ThemeIcon from "@components/ThemeIcon.astro";
 // import Authentication from "../misc/Authentication.astro";
@@ -18,7 +18,7 @@ const navBarLinks = [
 <header
   class="fixed inset-x-0 top-4 z-50 flex w-full flex-wrap text-sm md:flex-nowrap md:justify-start"
 >
-  <Container maxWidth="max-w-[1440px]" class="w-full">
+  <Container maxWidth="max-w-[1200px]" class="w-full">
     {
       /* UPDATED: Removed right-side padding on medium and larger screens (md:pr-0, lg:pr-0) 
       to allow the CTA button to be flush with the edge.
@@ -35,7 +35,7 @@ const navBarLinks = [
           href={homeUrl}
           aria-label="Brand"
         >
-          <BrandLogo />
+          <HeatLogo />
         </a>
         <div class="mr-5 ml-auto md:hidden">
           <button
