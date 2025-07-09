@@ -26,7 +26,7 @@ const { title, subTitle, src, alt, features, imageClass } = Astro.props;
 ---
 
 <section>
-  <Container class="py-10 lg:py-14">
+  <Container class="py-4 lg:py-8">
     <!-- Block to display the feature image -->
     <div class="relative mb-6 overflow-hidden md:mb-8">
       {
@@ -44,7 +44,9 @@ const { title, subTitle, src, alt, features, imageClass } = Astro.props;
     </div>
 
     <!-- Displaying the main content consisting of title, subtitle, and several `IconBlock` components -->
-    <div class="mt-5 grid gap-8 lg:mt-16 lg:grid-cols-3 lg:gap-12">
+    <div
+      class="mt-5 grid gap-8 rounded-xl bg-neutral-100 p-10 lg:grid-cols-3 lg:gap-12 dark:bg-neutral-900/80"
+    >
       <!-- Block for title and subtitle -->
       <div class="lg:col-span-1">
         <!-- Rendering title -->

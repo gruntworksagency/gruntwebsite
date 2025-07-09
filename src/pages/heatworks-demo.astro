@@ -13,56 +13,93 @@ import Container from "@components/ui/Container.astro";
 
 <MainLayout title="Heatworks Demo | Gruntworks">
   <HeroHeatworks />
-  <Container maxWidth="max-w-[1140px] px-10">
-    <!-- Pill Text -->
-    <div
-      class="mx-auto mt-16 mb-6 block justify-self-center rounded-full bg-white/80 px-4 py-2 text-center text-sm font-bold text-[#2d2828] backdrop-blur-sm"
-    >
-      Heatworks Features
-    </div>
-    <h2 class="text-center text-6xl font-bold">What's included?</h2>
-    <FeaturesGeneral
-      title="Heatworks Local SEO Audit"
-      subTitle="Unearth exactly what's blocking your Local SEO. Identify and fix your Local SEO visibility gaps with our comprehensive audit, live heatmap, and personalized 30-day playbook."
-      src={featureImage}
-      alt="Gruntworks products in floating boxes"
-      features={features}
-      imageClass="max-w-[700px] mx-auto"
-    />
+  <section class="features-bg-section">
+    <Container maxWidth="max-w-[1140px] px-10">
+      <!-- Pill Text -->
+      <div
+        class="mx-auto mt-16 mb-6 block justify-self-center rounded-full bg-white/80 px-4 py-2 text-center text-sm font-bold text-[#2d2828] backdrop-blur-sm"
+      >
+        Heatworks Features
+      </div>
+      <h2
+        class="mb-0 text-center text-5xl font-bold text-[#efe3e3] md:text-6xl"
+      >
+        What's included?
+      </h2>
+      <FeaturesGeneral
+        title="Heatworks Local SEO Audit"
+        subTitle="Unearth exactly what's blocking your Local SEO. Identify and fix your Local SEO visibility gaps with our comprehensive audit, live heatmap, and personalized 30-day playbook."
+        src={featureImage}
+        alt="Gruntworks products in floating boxes"
+        features={features}
+        imageClass="max-w-[700px] mx-auto"
+      />
 
-    <FeaturesNavs
-      title="Who is the <span class='text-orange-500 dark:text-orange-400'>Heatworks Audit</span> for?"
-      tabs={[
-        {
-          heading: "Startup Steve",
-          content:
-            "Founders and small teams seeking affordable, scalable solutions. Get quick wins, learn marketing fundamentals, and set your business up for future success—without breaking the bank.",
-          svg: "house",
-          src: startupSteve,
-          alt: "Persona illustration for Startup Steve",
-        },
-        {
-          heading: "Growth Gary",
-          content:
-            "Ambitious owners and marketers ready to unlock new growth. See how others have scaled with our proven audit, and reclaim your time with our done-for-you approach that delivers ROI fast.",
-          svg: "tools",
-          src: growthGary,
-          alt: "Persona illustration for Growth Gary",
-          first: true,
-        },
-        {
-          heading: "Established Eddie",
-          content:
-            "Operational leaders focused on efficiency and integration. Leverage data-driven insights to optimize your systems, ensure stability, and drive sustainable, long-term growth.",
-          svg: "dashboard",
-          src: establishedEddie,
-          alt: "Persona illustration for Established Eddie",
-          second: true,
-        },
-      ]}
-    />
-    <div class="h-96 bg-neutral-800">
-      <!-- Placeholder for content after hero -->
-    </div>
-  </Container>
+      <FeaturesNavs
+        title="Who is the <span class='text-orange-500 dark:text-orange-400'>Heatworks Audit</span> for?"
+        tabs={[
+          {
+            heading: "Startup Steve",
+            content:
+              "Founders and small teams seeking affordable, scalable solutions. Get quick wins, learn marketing fundamentals, and set your business up for future success—without breaking the bank.",
+            svg: "house",
+            src: startupSteve,
+            alt: "Persona illustration for Startup Steve",
+          },
+          {
+            heading: "Growth Gary",
+            content:
+              "Ambitious owners and marketers ready to unlock new growth. See how others have scaled with our proven audit, and reclaim your time with our done-for-you approach that delivers ROI fast.",
+            svg: "tools",
+            src: growthGary,
+            alt: "Persona illustration for Growth Gary",
+            first: true,
+          },
+          {
+            heading: "Established Eddie",
+            content:
+              "Operational leaders focused on efficiency and integration. Leverage data-driven insights to optimize your systems, ensure stability, and drive sustainable, long-term growth.",
+            svg: "dashboard",
+            src: establishedEddie,
+            alt: "Persona illustration for Established Eddie",
+            second: true,
+          },
+        ]}
+      />
+      <div class="h-96 bg-neutral-800">
+        <!-- Placeholder for content after hero -->
+      </div>
+    </Container>
+  </section>
 </MainLayout>
+
+<style>
+  .features-bg-section {
+    background-image: url("/heatworks/darker-rock-texture.webp");
+    background-repeat: repeat;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    /* Ensure stacking context for pseudo-element */
+    overflow: visible;
+  }
+  .features-bg-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 500px;
+    background: linear-gradient(to bottom, #1b130d 20%, #1b130d00 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  /* Ensure content is above the overlay */
+  .features-bg-section > * {
+    position: relative;
+    z-index: 2;
+  }
+</style>
