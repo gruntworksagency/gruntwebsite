@@ -1,16 +1,19 @@
 ---
 // Get heading and content from Astro props
-const { heading, content } = Astro.props;
+const { heading, content, link, linkText } = Astro.props;
 // Define TypeScript interface for props
 interface Props {
   heading?: string;
   content?: string;
+  link?: string;
+  linkText?: string;
 }
 // Define classes for heading and content
 const headingClasses =
   "text-balance text-lg font-bold text-neutral-800 dark:text-neutral-200";
 const contentClasses =
   "mt-1 text-pretty text-neutral-700 dark:text-neutral-300";
+const linkClasses = "text-[#1a5cc7] underline hover:text-[#092e69] font-bold";
 ---
 
 <!-- The root container that arranges your slot and the heading/content -->
@@ -23,6 +26,18 @@ const contentClasses =
       {heading}
     </h3>
     <!-- Content text of the section -->
-    <p class={contentClasses}>{content}</p>
+    <p class={contentClasses}>
+      {content}
+      {
+        link && linkText && (
+          <>
+            {" "}
+            <a href={link} class={linkClasses}>
+              {linkText}
+            </a>
+          </>
+        )
+      }
+    </p>
   </div>
 </div>
