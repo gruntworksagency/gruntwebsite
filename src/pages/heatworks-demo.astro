@@ -9,10 +9,36 @@ import startupSteve from "public/heatworks/startup-steve.webp";
 import growthGary from "public/heatworks/growth-gary.webp";
 import establishedEddie from "public/heatworks/established-eddie.webp";
 import Container from "@components/ui/Container.astro";
+import faqs from "@data/faqs.json";
+import FAQ from "@components/sections/misc/FAQ.astro";
+import AnnouncementBanner from "@components/ui/banners/AnnouncementBanner.astro";
+import PricingSection from "@components/sections/pricing/PricingSection.astro";
+import pricing from "@data/pricing.json";
+
+const avatarSrcs: Array<string> = [
+  "https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
+  "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
+  "https://images.unsplash.com/photo-1599566147214-ce487862ea4f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80",
+  "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
+];
+const reviewStarCount = 4;
+const reviewRating = `<span class="font-bold">4.8</span> / 5`;
+const reviewReviews = `Already Over <span class="font-bold">100</span> Audits`;
 ---
 
-<MainLayout title="Heatworks Demo | Gruntworks">
-  <HeroHeatworks />
+<MainLayout title="Heatworks Audit | Gruntworks">
+  <AnnouncementBanner
+    btnId="dismiss-button"
+    btnTitle="Start your Heatworks Audit now!"
+    url="https://github.com/mearashadowfax/Gruntworks"
+  />
+  <HeroHeatworks
+    withReview={true}
+    avatars={avatarSrcs}
+    starCount={reviewStarCount}
+    rating={reviewRating}
+    reviews={reviewReviews}
+  />
   <section class="features-bg-section">
     <Container maxWidth="max-w-[1140px] px-10">
       <!-- Pill Text -->
@@ -66,6 +92,15 @@ import Container from "@components/ui/Container.astro";
           },
         ]}
       />
+    </Container>
+  </section>
+
+  <section class="relative bg-neutral-900">
+    <div class="clearance-tape relative z-1"></div>
+    <Container maxWidth="max-w-[1140px] px-10 z-10 relative">
+      <FAQ title="Frequently<br />asked questions" faqs={faqs} />
+      <PricingSection pricing={pricing} />
+
       <div class="h-96 bg-neutral-800">
         <!-- Placeholder for content after hero -->
       </div>
@@ -92,8 +127,23 @@ import Container from "@components/ui/Container.astro";
     top: 0;
     left: 0;
     width: 100%;
-    height: 500px;
-    background: linear-gradient(to bottom, #1b130d 20%, #1b130d00 100%);
+    height: 600px;
+    background: linear-gradient(
+      to bottom,
+      #1b130d 20%,
+      rgba(23, 21, 18, 0.1) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+  }
+  .features-bg-section::after {
+    content: "";
+    position: absolute;
+    bottom: 0; /* Changed from top: 0 */
+    left: 0;
+    width: 100%;
+    height: 80%;
+    background: linear-gradient(to top, #171717 30%, #17171700 100%);
     z-index: 1;
     pointer-events: none;
   }
@@ -101,5 +151,26 @@ import Container from "@components/ui/Container.astro";
   .features-bg-section > * {
     position: relative;
     z-index: 2;
+  }
+  .clearance-tape {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-bottom: -200px;
+    height: 200px;
+    padding: 1.5rem;
+    background: repeating-linear-gradient(
+      -45deg,
+      #f2a417,
+      #f2a417 15px,
+      #141617 15px,
+      #141617 30px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

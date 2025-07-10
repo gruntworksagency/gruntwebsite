@@ -9,10 +9,8 @@ interface Props {
   linkText?: string;
 }
 // Define classes for heading and content
-const headingClasses =
-  "text-balance text-lg font-bold text-neutral-800 dark:text-neutral-200";
-const contentClasses =
-  "mt-1 text-pretty text-neutral-700 dark:text-neutral-300";
+const headingClasses = "text-balance text-lg font-bold text-neutral-300";
+const contentClasses = "mt-1 text-pretty text-neutral-500";
 const linkClasses = "text-[#1a5cc7] underline hover:text-[#092e69] font-bold";
 ---
 
@@ -30,12 +28,11 @@ const linkClasses = "text-[#1a5cc7] underline hover:text-[#092e69] font-bold";
       {content}
       {
         link && linkText && (
-          <>
-            {" "}
+          <div class="mt-2">
             <a href={link} class={linkClasses}>
               {linkText}
             </a>
-          </>
+          </div>
         )
       }
     </p>

@@ -61,10 +61,50 @@ interface Props {
     >
       <!-- Text Content Container -->
       <div
-        class="container mx-auto flex flex-col items-center px-4 pt-[10rem] text-center"
+        class="mx-auto flex flex-col items-center px-4 pt-[10rem] text-center"
       >
+        <!-- Pill Text -->
+        <div
+          class="mb-6 inline-block rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-[#2d2828] backdrop-blur-sm"
+        >
+          The Ultimate Local SEO Audit
+        </div>
+
+        <!-- Main Headline -->
+        <h2
+          class="mb-4 max-w-3xl text-5xl font-black text-balance text-[#2d2828] md:text-6xl"
+        >
+          Invisible on Google Maps? <br />
+          <span class="pt-1 text-3xl font-bold">Stop Losing Jobs</span>
+        </h2>
+
+        <span class="m-[-10px] text-xs text-[#2d2828]">with</span>
+
+        <!-- HEATWORKS Logo -->
+        <div class="my-4">
+          <img
+            src="/heatworks/HEATWORKS-logo.png"
+            alt="HEATWORKS Logo"
+            width="300"
+            height="120"
+            class="mx-auto h-auto w-[250px]"
+          />
+        </div>
+
+        <!-- Tagline -->
+        <p
+          class="text-md mt-4 mb-8 max-w-2xl text-center text-balance text-[#2d2828]"
+        >
+          <span class="font-bold">HEATWORKS</span> is more than just your ultimate
+          <span class="font-medium">Google Local Home Services Audit</span>.
+          <br />See your
+          <i>actual rankings</i>
+          across your
+          <span class="font-medium">entire metro area</span>
+          area. <br />Built for landscapers who hate guessing.
+        </p>
         <!-- Review Section: This section presents avatars, review ratings and the number of reviews -->
-        <div class="z-100 mb-4 inline-block">
+        <div class="inline-block">
           {
             withReview ? (
               <ReviewComponent
@@ -79,50 +119,9 @@ interface Props {
           }
         </div>
 
-        <!-- Pill Text -->
-        <div
-          class="mb-6 inline-block rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-[#2d2828] backdrop-blur-sm"
-        >
-          The Ultimate Local SEO Audit
-        </div>
-
-        <!-- Main Headline -->
-        <h2
-          class="mb-4 max-w-3xl text-5xl font-black text-balance text-[#2d2828] md:text-6xl"
-        >
-          Invisible on Google Maps? <br />
-          <span class="pt-1 text-4xl font-bold">Stop Losing Jobs</span>
-        </h2>
-
-        <span class="m-[-10px] text-xs text-[#2d2828]">with</span>
-
-        <!-- HEATWORKS Logo -->
-        <div class="my-4">
-          <img
-            src="/heatworks/HEATWORKS-logo.png"
-            alt="HEATWORKS Logo"
-            width="300"
-            height="120"
-            class="mx-auto h-auto w-[300px]"
-          />
-        </div>
-
-        <!-- Tagline -->
-        <p
-          class="text-md mt-4 mb-8 max-w-xl text-center text-balance text-[#2d2828]"
-        >
-          <span class="font-bold">HEATWORKS</span> is your <i>5-minute</i>
-          <span class="font-medium">Google Local Home Services Audit</span>
-          built for landscapers who hate guessing. See your
-          <i>actual rankings</i>
-          across your
-          <span class="font-medium">entire metro</span>
-          area.
-        </p>
-
         <!-- CTA Row -->
         <div
-          class="z-10 mt-8 mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
+          class="z-10 mt-2 mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row md:mt-8"
         >
           <!-- Price Badge -->
           <div

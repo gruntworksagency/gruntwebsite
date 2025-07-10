@@ -1,38 +1,60 @@
 {
   "title": "Simple, Transparent Pricing",
   "subTitle": "Boost efficiency with Gruntworks's clear, value-driven plans.",
-  "badge": "Best value",
   "thirdOption": "Enterprise Solutions?",
   "btnText": "Get a Custom Quote",
-
-  "starterKit": {
-    "name": "Starter Kit",
-    "description": "Best option for DIY projects",
-    "price": "49",
-    "cents": ".00",
-    "billingFrequency": "USD / monthly",
-    "features": [
-      "Key hardware tools",
-      "Access to guides & tutorials",
-      "Standard support"
-    ],
-    "purchaseBtnTitle": "Get the Starter Kit",
-    "purchaseLink": "#"
-  },
-
-  "professionalToolbox": {
-    "name": "Professional Toolbox",
-    "description": "Best for large scale uses",
-    "price": "89",
-    "cents": ".00",
-    "billingFrequency": "USD / monthly",
-    "features": [
-      "Premium tool selection",
-      "Priority support",
-      "Exclusive content & deals",
-      "Bulk order discounts"
-    ],
-    "purchaseBtnTitle": "Get the Professional Toolbox",
-    "purchaseLink": "#"
-  }
+  "products": [
+    {
+      "type": "saas",
+      "name": "SaaS Tools",
+      "description": "DIY, poor results",
+      "price": "$40-200",
+      "cents": "",
+      "billingFrequency": "/ month",
+      "features": [
+        "Another SaaS tool to learn",
+        "Another subscription",
+        "You do all the work",
+        "Generic/shallow insights",
+        "No support"
+      ],
+      "purchaseBtnTitle": null,
+      "purchaseLink": null
+    },
+    {
+      "type": "heatworks",
+      "name": "Heatworks",
+      "description": "Fast & elite insights",
+      "price": "$149",
+      "cents": "",
+      "billingFrequency": "/ one-time",
+      "features": [
+        "Dashboard, report and plan",
+        "Built for your industry",
+        "Simple click-to-buy",
+        "One time payment",
+        "Fast delivery (24hrs)"
+      ],
+      "purchaseBtnTitle": "Get the Heatworks Audit",
+      "purchaseLink": "#",
+      "badge": "Best Value"
+    },
+    {
+      "type": "agency",
+      "name": "Agencies",
+      "description": "Expensive, slow results",
+      "price": "$2,000+",
+      "cents": "",
+      "billingFrequency": "/ month",
+      "features": [
+        "What will you get?",
+        "High retainers",
+        "Slow to implement",
+        "Horrible sales process",
+        "Long-term contracts"
+      ],
+      "purchaseBtnTitle": null,
+      "purchaseLink": null
+    }
+  ]
 }
