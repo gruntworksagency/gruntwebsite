@@ -1,0 +1,68 @@
+---
+// Props definition with defaults
+const {
+  quoteText = "Your inspiring quote goes here!",
+  backgroundImageSrc = "",
+  overlayImageSrc = "",
+  bgImageClasses = "",
+  overlayImageClasses = "",
+  textClasses = "",
+  style = {},
+} = Astro.props;
+
+const bannerStyle = backgroundImageSrc
+  ? {
+      backgroundImage: `url('${backgroundImageSrc}')`,
+      backgroundRepeat: "repeat",
+    }
+  : {};
+---
+
+<div class="quote-banner relative overflow-hidden" style={bannerStyle}>
+  {
+    backgroundImageSrc && (
+      <img
+        src={backgroundImageSrc}
+        alt="Background texture"
+        class={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${bgImageClasses}`}
+        aria-hidden="true"
+        draggable="false"
+      />
+    )
+  }
+  {
+    overlayImageSrc && (
+      <img
+        src={overlayImageSrc}
+        alt="Overlay texture"
+        class={`pointer-events-none absolute inset-0 z-10 h-full w-full object-cover ${overlayImageClasses}`}
+        aria-hidden="true"
+        draggable="false"
+      />
+    )
+  }
+  <blockquote
+    class={`quote-banner__text relative z-20 ${textClasses}`}
+    style={style}
+  >
+    {quoteText}
+  </blockquote>
+</div>
+
+<style>
+  .quote-banner {
+    width: 100%;
+    padding: 4rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+  }
+
+  .quote-banner__text:after {
+    content: "";
+    display: inline-block;
+    width: 100%;
+  }
+</style>
