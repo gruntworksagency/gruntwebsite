@@ -14,6 +14,7 @@ import FAQ from "@components/sections/misc/FAQ.astro";
 import AnnouncementBanner from "@components/ui/banners/AnnouncementBanner.astro";
 import PricingSection from "@components/sections/pricing/PricingSection.astro";
 import pricing from "@data/pricing.json";
+import QuoteBanner from "@components/sections/misc/QuoteBanner.astro";
 
 const avatarSrcs: Array<string> = [
   "https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
@@ -24,153 +25,188 @@ const avatarSrcs: Array<string> = [
 const reviewStarCount = 4;
 const reviewRating = `<span class="font-bold">4.8</span> / 5`;
 const reviewReviews = `Already Over <span class="font-bold">100</span> Audits`;
+
+const CONTAINER_MAX_WIDTH = "max-w-[1140px] px-10";
+const ANNOUNCEMENT_BANNER_BTN_TITLE = "Start your Heatworks Audit now!";
+const ANNOUNCEMENT_BANNER_URL = "https://github.com/mearashadowfax/Gruntworks";
+const FEATURES_GENERAL_TITLE = "Heatworks Local SEO Audit";
+const FEATURES_GENERAL_SUB_TITLE =
+  "Unearth exactly what's blocking your Local SEO. Identify and fix your Local SEO visibility gaps with our comprehensive audit, live heatmap, and personalized 30-day playbook.";
+const FEATURES_NAVS_CONFIG = {
+  title:
+    "Who is the <span class='text-orange-500 dark:text-orange-400'>Heatworks Audit</span> for?",
+  tabs: [
+    {
+      heading: "Startup Steve",
+      content:
+        "Founders and small teams seeking affordable, scalable solutions. Get quick wins, learn marketing fundamentals, and set your business up for future success—without breaking the bank.",
+      svg: "house",
+      src: startupSteve,
+      alt: "Persona illustration for Startup Steve",
+    },
+    {
+      heading: "Growth Gary",
+      content:
+        "Ambitious owners and marketers ready to unlock new growth. See how others have scaled with our proven audit, and reclaim your time with our done-for-you approach that delivers ROI fast.",
+      svg: "tools",
+      src: growthGary,
+      alt: "Persona illustration for Growth Gary",
+      first: true,
+    },
+    {
+      heading: "Established Eddie",
+      content:
+        "Operational leaders focused on efficiency and integration. Leverage data-driven insights to optimize your systems, ensure stability, and drive sustainable, long-term growth.",
+      svg: "dashboard",
+      src: establishedEddie,
+      alt: "Persona illustration for Established Eddie",
+      second: true,
+    },
+  ],
+};
+const FAQ_TITLE = "Frequently<br />asked questions";
+
+const QUOTE_BANNER_TEXT = "Built for landscapers who hate guessing.";
+const QUOTE_BANNER_BACKGROUND_IMAGE = "/heatworks/seed-texture.webp";
+const QUOTE_BANNER_BG_IMAGE_CLASSES = "object-repeat w-[50px] h-[50px]";
+const QUOTE_BANNER_OVERLAY_IMAGE_SRC = "/heatworks/heatworks-icon.svg";
+const QUOTE_BANNER_OVERLAY_IMAGE_CLASSES = "opacity-20 mix-blend-screen";
+const QUOTE_BANNER_TEXT_CLASSES =
+  "font-black text-[10vw] text-center leading-none uppercase text-white drop-shadow-lg";
 ---
 
-<MainLayout title="Heatworks Audit | Gruntworks">
-  <AnnouncementBanner
-    btnId="dismiss-button"
-    btnTitle="Start your Heatworks Audit now!"
-    url="https://github.com/mearashadowfax/Gruntworks"
-  />
-  <HeroHeatworks
-    withReview={true}
-    avatars={avatarSrcs}
-    starCount={reviewStarCount}
-    rating={reviewRating}
-    reviews={reviewReviews}
-  />
-  <section class="features-bg-section">
-    <Container maxWidth="max-w-[1140px] px-10">
-      <!-- Pill Text -->
-      <div
-        class="mx-auto mt-16 mb-6 block justify-self-center rounded-full bg-white/80 px-4 py-2 text-center text-sm font-bold text-[#2d2828] backdrop-blur-sm"
-      >
-        Heatworks Features
-      </div>
-      <h2
-        class="mb-0 text-center text-5xl font-bold text-[#efe3e3] md:text-6xl"
-      >
-        What's included?
-      </h2>
-      <FeaturesGeneral
-        title="Heatworks Local SEO Audit"
-        subTitle="Unearth exactly what's blocking your Local SEO. Identify and fix your Local SEO visibility gaps with our comprehensive audit, live heatmap, and personalized 30-day playbook."
-        src={featureImage}
-        alt="Gruntworks products in floating boxes"
-        features={features}
-        imageClass="max-w-[700px] mx-auto"
+<div class="bg-repeat-space">
+  <MainLayout title="Heatworks Audit | Gruntworks">
+    <AnnouncementBanner
+      btnId="dismiss-button"
+      btnTitle={ANNOUNCEMENT_BANNER_BTN_TITLE}
+      url={ANNOUNCEMENT_BANNER_URL}
+    />
+    <HeroHeatworks
+      withReview={true}
+      avatars={avatarSrcs}
+      starCount={reviewStarCount}
+      rating={reviewRating}
+      reviews={reviewReviews}
+    />
+    <section class="features-bg-section">
+      <Container maxWidth="max-w-[1140px] px-10">
+        <!-- Pill Text -->
+        <div
+          class="mx-auto mt-16 mb-6 block justify-self-center rounded-full bg-white/80 px-4 py-2 text-center text-sm font-bold text-[#2d2828] backdrop-blur-sm"
+        >
+          Heatworks Features
+        </div>
+        <h2
+          class="mb-0 text-center text-5xl font-bold text-[#efe3e3] md:text-6xl"
+        >
+          What's included?
+        </h2>
+        <FeaturesGeneral
+          title={FEATURES_GENERAL_TITLE}
+          subTitle={FEATURES_GENERAL_SUB_TITLE}
+          src={featureImage}
+          alt="Gruntworks products in floating boxes"
+          features={features}
+          imageClass="max-w-[700px] mx-auto"
+        />
+
+        <FeaturesNavs {...FEATURES_NAVS_CONFIG} />
+      </Container>
+    </section>
+
+    <section class="relative bg-neutral-900">
+      <div class="clearance-tape relative z-1"></div>
+      <Container maxWidth={`${CONTAINER_MAX_WIDTH} z-10 relative`}>
+        <FAQ title={FAQ_TITLE} faqs={faqs} />
+        <PricingSection pricing={pricing} />
+      </Container>
+    </section>
+
+    <section class="relative bg-neutral-900">
+      <QuoteBanner
+        quoteText={QUOTE_BANNER_TEXT}
+        backgroundImageSrc={QUOTE_BANNER_BACKGROUND_IMAGE}
+        overlayImageSrc={QUOTE_BANNER_OVERLAY_IMAGE_SRC}
+        bgImageClasses={QUOTE_BANNER_BG_IMAGE_CLASSES}
+        overlayImageClasses={QUOTE_BANNER_OVERLAY_IMAGE_CLASSES}
+        textClasses={QUOTE_BANNER_TEXT_CLASSES}
       />
+    </section>
 
-      <FeaturesNavs
-        title="Who is the <span class='text-orange-500 dark:text-orange-400'>Heatworks Audit</span> for?"
-        tabs={[
-          {
-            heading: "Startup Steve",
-            content:
-              "Founders and small teams seeking affordable, scalable solutions. Get quick wins, learn marketing fundamentals, and set your business up for future success—without breaking the bank.",
-            svg: "house",
-            src: startupSteve,
-            alt: "Persona illustration for Startup Steve",
-          },
-          {
-            heading: "Growth Gary",
-            content:
-              "Ambitious owners and marketers ready to unlock new growth. See how others have scaled with our proven audit, and reclaim your time with our done-for-you approach that delivers ROI fast.",
-            svg: "tools",
-            src: growthGary,
-            alt: "Persona illustration for Growth Gary",
-            first: true,
-          },
-          {
-            heading: "Established Eddie",
-            content:
-              "Operational leaders focused on efficiency and integration. Leverage data-driven insights to optimize your systems, ensure stability, and drive sustainable, long-term growth.",
-            svg: "dashboard",
-            src: establishedEddie,
-            alt: "Persona illustration for Established Eddie",
-            second: true,
-          },
-        ]}
-      />
-    </Container>
-  </section>
+    <section>
+      <Container maxWidth={`${CONTAINER_MAX_WIDTH} z-10 relative`}>
+        <div class="h-96 bg-neutral-800">
+          <!-- Placeholder for content after hero -->
+        </div>
+      </Container>
+    </section>
+  </MainLayout>
 
-  <section class="relative bg-neutral-900">
-    <div class="clearance-tape relative z-1"></div>
-    <Container maxWidth="max-w-[1140px] px-10 z-10 relative">
-      <FAQ title="Frequently<br />asked questions" faqs={faqs} />
-      <PricingSection pricing={pricing} />
-
-      <div class="h-96 bg-neutral-800">
-        <!-- Placeholder for content after hero -->
-      </div>
-    </Container>
-  </section>
-</MainLayout>
-
-<style>
-  .features-bg-section {
-    background-image: url("/heatworks/darker-rock-texture.webp");
-    background-repeat: repeat;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    /* Ensure stacking context for pseudo-element */
-    overflow: visible;
-  }
-  .features-bg-section::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 600px;
-    background: linear-gradient(
-      to bottom,
-      #1b130d 20%,
-      rgba(23, 21, 18, 0.1) 100%
-    );
-    z-index: 1;
-    pointer-events: none;
-  }
-  .features-bg-section::after {
-    content: "";
-    position: absolute;
-    bottom: 0; /* Changed from top: 0 */
-    left: 0;
-    width: 100%;
-    height: 80%;
-    background: linear-gradient(to top, #171717 30%, #17171700 100%);
-    z-index: 1;
-    pointer-events: none;
-  }
-  /* Ensure content is above the overlay */
-  .features-bg-section > * {
-    position: relative;
-    z-index: 2;
-  }
-  .clearance-tape {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    margin-bottom: -200px;
-    height: 200px;
-    padding: 1.5rem;
-    background: repeating-linear-gradient(
-      -45deg,
-      #f2a417,
-      #f2a417 15px,
-      #141617 15px,
-      #141617 30px
-    );
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-</style>
+  <style>
+    .features-bg-section {
+      background-image: url("/heatworks/darker-rock-texture.webp");
+      background-repeat: repeat;
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      /* Ensure stacking context for pseudo-element */
+      overflow: visible;
+    }
+    .features-bg-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 600px;
+      background: linear-gradient(
+        to bottom,
+        #1b130d 20%,
+        rgba(23, 21, 18, 0.1) 100%
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
+    .features-bg-section::after {
+      content: "";
+      position: absolute;
+      bottom: 0; /* Changed from top: 0 */
+      left: 0;
+      width: 100%;
+      height: 80%;
+      background: linear-gradient(to top, #171717 30%, #17171700 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Ensure content is above the overlay */
+    .features-bg-section > * {
+      position: relative;
+      z-index: 2;
+    }
+    .clearance-tape {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      margin-bottom: -200px;
+      height: 200px;
+      padding: 1.5rem;
+      background: repeating-linear-gradient(
+        -45deg,
+        #f2a417,
+        #f2a417 15px,
+        #141617 15px,
+        #141617 30px
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</div>
