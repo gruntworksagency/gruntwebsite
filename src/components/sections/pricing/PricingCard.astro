@@ -1,0 +1,112 @@
+---
+import Icon from "@components/ui/icons/Icon.astro";
+
+type Product = {
+  type: "saas" | "heatworks" | "agency";
+  name: string;
+  description: string;
+  price: string;
+  cents: string;
+  billingFrequency: string;
+  features: string[];
+  purchaseBtnTitle: string | null;
+  purchaseLink: string | null;
+  badge?: string;
+};
+
+const { product } = Astro.props as { product: Product };
+
+const cardClasses = {
+  saas: "bg-gray-500 text-neutral-300 lg:-mr-4 p-6 sm:p-8 lg:py-12 max-w-[300px] justify-self-end",
+  heatworks:
+    "bg-linear-to-tr from-[#FF512F] to-[#F09819] text-white shadow-xl lg:scale-105 lg:relative lg:z-10 lg:mt-4 lg:mb-4 p-6 sm:p-8 lg:py-16",
+  agency: "bg-gray-500 text-neutral-300 p-6 sm:p-8 lg:py-12 max-w-[300px]",
+};
+
+const descriptionClasses = {
+  saas: "text-indigo-300",
+  heatworks: "text-orange-200",
+  agency: "text-indigo-300",
+};
+
+const priceClasses = {
+  saas: "text-neutral-200",
+  heatworks: "text-white",
+  agency: "text-neutral-200",
+};
+
+const centsClasses = {
+  saas: "text-neutral-300",
+  heatworks: "text-orange-100",
+  agency: "text-neutral-300",
+};
+
+const frequencyClasses = {
+  saas: "text-indigo-200",
+  heatworks: "text-orange-200",
+  agency: "text-indigo-200",
+};
+
+const featureClasses = {
+  saas: "text-neutral-300",
+  heatworks: "text-orange-100",
+  agency: "text-neutral-300",
+};
+
+const buttonClasses = {
+  heatworks:
+    "bg-opacity-50 block rounded-lg bg-orange-200/40 px-8 py-3 text-center text-sm font-bold text-neutral-100 ring-orange-300 outline-hidden transition duration-300 hover:bg-orange-300 focus-visible:ring-3 active:bg-orange-400 md:text-base",
+  saas: "",
+  agency: "",
+};
+---
+
+<div class:list={["w-full rounded-xl p-6 sm:p-8", cardClasses[product.type]]}>
+  <div class="mb-4 flex flex-col items-start justify-between gap-4 lg:flex-row">
+    <div>
+      <h3 class="pb-2 text-2xl leading-[1rem] font-bold text-white sm:text-3xl">
+        {product.name}
+      </h3>
+      <p class:list={["", descriptionClasses[product.type]]}>
+        {product.description}
+      </p>
+    </div>
+    {
+      product.badge && (
+        <span class="bg-opacity-70 order-first inline-block rounded-full bg-orange-200/60 px-3 py-1 text-center text-xs font-bold tracking-wider text-orange-600 uppercase lg:order-none">
+          {product.badge}
+        </span>
+      )
+    }
+  </div>
+
+  <div class="mb-4">
+    <span class:list={["text-4xl font-bold", priceClasses[product.type]]}>
+      {product.price}
+    </span>
+    <span class:list={["text-lg font-bold", centsClasses[product.type]]}>
+      {product.cents}
+    </span>
+    <span class:list={["text-sm", frequencyClasses[product.type]]}>
+      {product.billingFrequency}
+    </span>
+  </div>
+  <ul class:list={["mb-6 space-y-2", featureClasses[product.type]]}>
+    {
+      product.features.map((feature: string) => (
+        <li class="flex items-center gap-1.5">
+          <Icon name="checkCircle" />
+          <span>{feature}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    product.purchaseBtnTitle && (
+      <a href={product.purchaseLink} class:list={[buttonClasses[product.type]]}>
+        {product.purchaseBtnTitle}
+      </a>
+    )
+  }
+</div>

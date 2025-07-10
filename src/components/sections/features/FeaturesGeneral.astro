@@ -4,6 +4,8 @@ import { Image } from "astro:assets";
 import IconBlock from "@components/ui/blocks/IconBlock.astro";
 import Icon from "@components/ui/icons/Icon.astro";
 import Container from "@components/ui/Container.astro";
+import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
+import HeatworksIcon from "@components/ui/icons/HeatworksIcon.astro";
 
 interface Feature {
   heading: string;
@@ -42,23 +44,41 @@ const { title, subTitle, src, alt, features, imageClass } = Astro.props;
         )
       }
     </div>
+    <div class="-mb-[65px] ml-[50px] flex justify-start">
+      <Image
+        src="/heatworks/worm-man.png"
+        alt="Worm Man"
+        width={100}
+        height={100}
+        format={"webp"}
+        loading={"eager"}
+        class="z-10"
+      />
+    </div>
 
     <!-- Displaying the main content consisting of title, subtitle, and several `IconBlock` components -->
     <div
-      class="mt-5 grid gap-8 rounded-xl bg-neutral-100 p-10 lg:grid-cols-3 lg:gap-12 dark:bg-neutral-900/80"
+      class="relative grid gap-8 rounded-xl border border-neutral-900 bg-[#1d1a18] bg-[url('/heatworks/soil-grain-overlay.webp')] bg-repeat p-16 bg-blend-soft-light shadow-2xl shadow-black/70 lg:grid-cols-3 lg:gap-12"
     >
-      <!-- Block for title and subtitle -->
-      <div class="lg:col-span-1">
+      {/* Gradient overlay */}
+      <div
+        class="pointer-events-none absolute inset-0 z-0 rounded-xl bg-gradient-to-tl from-[#16100a] to-transparent opacity-20 mix-blend-overlay"
+      >
+      </div>
+      <div class="relative z-10 lg:col-span-1">
         <!-- Rendering title -->
+        <div class="mx-auto mb-2">
+          <HeatworksIcon />
+        </div>
         <h2
-          class="text-2xl font-bold text-balance text-neutral-800 md:text-3xl dark:text-neutral-200"
+          class="text-2xl font-bold text-balance text-neutral-300 md:text-3xl"
         >
           {title}
         </h2>
         <!-- Rendering subtitle -->
         {
           subTitle && (
-            <p class="mt-2 text-pretty text-neutral-600 md:mt-4 dark:text-neutral-400">
+            <p class="mt-2 text-[14px] text-pretty text-neutral-500 md:mt-4">
               {subTitle}
             </p>
           )
@@ -66,7 +86,7 @@ const { title, subTitle, src, alt, features, imageClass } = Astro.props;
       </div>
 
       <!-- Block to display the IconBlock components -->
-      <div class="lg:col-span-2">
+      <div class="relative z-10 lg:col-span-2">
         <div class="grid gap-8 sm:grid-cols-2 md:gap-12">
           <!-- Injecting IconBlock components with different properties -->
           {
@@ -83,6 +103,10 @@ const { title, subTitle, src, alt, features, imageClass } = Astro.props;
               ))
           }
         </div>
+      </div>
+
+      <div class="relative z-10 flex justify-end lg:col-span-3">
+        <PrimaryCTA title="Start Audit" url="/audit" />
       </div>
     </div>
   </Container>
