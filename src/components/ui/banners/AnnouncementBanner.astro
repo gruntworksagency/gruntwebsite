@@ -1,4 +1,6 @@
 ---
+import heatworksIcon from "@assets/images/heatworks/heatworks-icon.svg";
+import heatworksPattern2Tile from "@assets/images/heatworks/heatworks-pattern-2-tile.webp";
 const { title, btnId, btnTitle, url } = Astro.props;
 
 interface Props {
@@ -17,13 +19,13 @@ interface Props {
   >
     <div
       class="banner-with-pattern-bg relative overflow-hidden rounded-xl bg-neutral-800 p-4 text-center shadow-xs dark:bg-neutral-200"
+      style={{
+        backgroundImage: `url(${heatworksPattern2Tile.src})`,
+        backgroundRepeat: "repeat",
+      }}
     >
       <div class="absolute top-1/2 left-[-150px] z-2 -translate-y-1/2">
-        <img
-          src="/heatworks/heatworks-icon.svg"
-          alt="Heatworks Icon"
-          class="w-[400px]"
-        />
+        <img src={heatworksIcon.src} alt="Heatworks Icon" class="w-[400px]" />
       </div>
       <div
         class="pointer-events-none absolute inset-0 z-1 h-full w-full"
@@ -104,8 +106,8 @@ interface Props {
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url("/heatworks/heatworks-pattern-2-tile.webp");
-    background-repeat: repeat;
+    /* background-image: url("/heatworks/heatworks-pattern-2-tile.webp"); */
+    /* background-repeat: repeat; */
     z-index: 1;
     opacity: 0.3; /* Adjust this value as needed for the desired opacity */
     border-radius: inherit; /* Inherit border-radius from parent */

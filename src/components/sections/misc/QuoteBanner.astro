@@ -1,68 +1,43 @@
 ---
-// Props definition with defaults
 const {
-  quoteText = "Your inspiring quote goes here!",
-  backgroundImageSrc = "",
-  overlayImageSrc = "",
-  bgImageClasses = "",
-  overlayImageClasses = "",
-  textClasses = "",
-  style = {},
+  quoteTextOne = "Built for landscapers",
+  quoteTextTwo = "who hate guessing.",
+  containerClasses = "flex h-screen w-full items-center overflow-hidden bg-slate-950",
+  textClasses = "text-center font-bold uppercase whitespace-nowrap",
 } = Astro.props;
-
-const bannerStyle = backgroundImageSrc
-  ? {
-      backgroundImage: `url('${backgroundImageSrc}')`,
-      backgroundRepeat: "repeat",
-    }
-  : {};
 ---
 
-<div class="quote-banner relative overflow-hidden" style={bannerStyle}>
-  {
-    backgroundImageSrc && (
-      <img
-        src={backgroundImageSrc}
-        alt="Background texture"
-        class={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${bgImageClasses}`}
-        aria-hidden="true"
-        draggable="false"
-      />
-    )
-  }
-  {
-    overlayImageSrc && (
-      <img
-        src={overlayImageSrc}
-        alt="Overlay texture"
-        class={`pointer-events-none absolute inset-0 z-10 h-full w-full object-cover ${overlayImageClasses}`}
-        aria-hidden="true"
-        draggable="false"
-      />
-    )
-  }
-  <blockquote
-    class={`quote-banner__text relative z-20 ${textClasses}`}
-    style={style}
+<div id="text-container" class={containerClasses}>
+  <div
+    class="text-lines-container flex w-full flex-col items-center justify-center"
   >
-    {quoteText}
-  </blockquote>
+    <div class="container-fill-text">
+      <span class={`container-fill-text__display ${textClasses}`}
+        >{quoteTextOne}</span
+      >
+    </div>
+    <div class="container-fill-text">
+      <span class={`container-fill-text__display ${textClasses}`}
+        >{quoteTextTwo}</span
+      >
+    </div>
+  </div>
 </div>
 
-<style>
-  .quote-banner {
+<style is:global>
+  .container-fill-text {
+    position: relative;
+    white-space: nowrap;
     width: 100%;
-    padding: 4rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f9f9f9;
-    box-sizing: border-box;
+    container-type: inline-size;
+    container-name: text-fit;
   }
 
-  .quote-banner__text:after {
-    content: "";
-    display: inline-block;
-    width: 100%;
+  .container-fill-text__display {
+    font-size: clamp(1rem, calc(7.8cqw), 2500px);
+  }
+
+  .container-fill-text__reference {
+    display: none;
   }
 </style>

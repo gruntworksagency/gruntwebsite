@@ -6,6 +6,8 @@ import Icon from "@components/ui/icons/Icon.astro";
 import Container from "@components/ui/Container.astro";
 import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
 import HeatworksIcon from "@components/ui/icons/HeatworksIcon.astro";
+import wormMan from "@assets/images/heatworks/worm-man.png";
+import soilGrainOverlay from "@assets/images/heatworks/soil-grain-overlay.webp";
 
 interface Feature {
   heading: string;
@@ -44,9 +46,9 @@ const { title, subTitle, src, alt, features, imageClass } = Astro.props;
         )
       }
     </div>
-    <div class="-mb-[65px] ml-[50px] flex justify-start">
+    <div class="-mb-[65px] ml-[50px] flex justify-end">
       <Image
-        src="/heatworks/worm-man.png"
+        src={wormMan}
         alt="Worm Man"
         width={100}
         height={100}
@@ -58,7 +60,8 @@ const { title, subTitle, src, alt, features, imageClass } = Astro.props;
 
     <!-- Displaying the main content consisting of title, subtitle, and several `IconBlock` components -->
     <div
-      class="relative grid gap-8 rounded-xl border border-neutral-900 bg-[#1d1a18] bg-[url('/heatworks/soil-grain-overlay.webp')] bg-repeat p-16 bg-blend-soft-light shadow-2xl shadow-black/70 lg:grid-cols-3 lg:gap-12"
+      class="relative grid gap-8 rounded-xl border border-neutral-900 bg-[#1d1a18] bg-repeat p-16 bg-blend-soft-light shadow-2xl shadow-black/70 lg:grid-cols-3 lg:gap-12"
+      style={{ backgroundImage: `url(${soilGrainOverlay.src})` }}
     >
       {/* Gradient overlay */}
       <div

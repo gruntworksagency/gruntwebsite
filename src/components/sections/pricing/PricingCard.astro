@@ -17,11 +17,11 @@ type Product = {
 const { product } = Astro.props as { product: Product };
 
 const cardClasses = {
-  saas: "z-10 relative -mb-[20px] lg:mt-0 py-4 bg-gray-500 px-6  justify-self-end opacity-80  lg:-mb-[20px] lg:max-w-[300px] lg:py-16",
+  saas: "z-10 relative -mb-[20px] lg:mt-0 py-4 bg-gray-500 px-6  justify-self-end opacity-80  lg:-mb-[20px] lg:max-w-[300px] ",
   heatworks:
-    "z-20 relative bg-linear-to-tr from-[#FF512F] to-[#F09819] text-white shadow-xl shadow-black/40 lg:scale-105 lg:relative lg:mt-4 lg:mb-4 p-6  py-16",
+    "z-20 relative bg-linear-to-tr from-[#FF512F] to-[#F09819] text-white shadow-xl shadow-black/40 lg:scale-105 lg:relative  lg:mt-4 lg:mb-4 px-6  py-16",
   agency:
-    "z-10 relative -mt-[20px] lg:mt-0 py-4 lg:py-16 bg-gray-500 px-6 justify-self-end lg:justify-self-start opacity-80  lg:-mb-[20px] lg:max-w-[300px] lg:py-16",
+    "z-10 relative -mt-[20px] lg:mt-0 py-4  bg-gray-500 px-6 justify-self-end lg:justify-self-start opacity-80  lg:-mb-[20px] lg:max-w-[300px]",
 };
 
 const titleClasses = {
