@@ -3,11 +3,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import HeroHeatworks from "@components/sections/landing/HeroHeatworks.astro";
 import FeaturesGeneral from "@components/sections/features/FeaturesGeneral.astro";
 import FeaturesNavs from "@components/sections/features/FeaturesNavs.astro";
-import featureImage from "public/heatworks/feature-cards.webp";
 import features from "@data/features.json";
-import startupSteve from "public/heatworks/startup-steve.webp";
-import growthGary from "public/heatworks/growth-gary.webp";
-import establishedEddie from "public/heatworks/established-eddie.webp";
 import Container from "@components/ui/Container.astro";
 import faqs from "@data/faqs.json";
 import FAQ from "@components/sections/misc/FAQ.astro";
@@ -15,64 +11,44 @@ import AnnouncementBanner from "@components/ui/banners/AnnouncementBanner.astro"
 import PricingSection from "@components/sections/pricing/PricingSection.astro";
 import pricing from "@data/pricing.json";
 import QuoteBanner from "@components/sections/misc/QuoteBanner.astro";
+import { getEntry } from "astro:content";
 
-const avatarSrcs: Array<string> = [
-  "https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
-  "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
-  "https://images.unsplash.com/photo-1599566147214-ce487862ea4f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80",
-  "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
-];
-const reviewStarCount = 4;
-const reviewRating = `<span class="font-bold">4.8</span> / 5`;
-const reviewReviews = `Already Over <span class="font-bold">100</span> Audits`;
+// Layout Constants
+const pageContentEntry = await getEntry("heatworksDemo", "index");
+if (!pageContentEntry) {
+  throw new Error("Could not load heatworksDemo content entry");
+}
+const pageContent = pageContentEntry.data;
 
-const CONTAINER_MAX_WIDTH = "max-w-[1140px] px-10";
-const ANNOUNCEMENT_BANNER_BTN_TITLE = "Start your Heatworks Audit now!";
-const ANNOUNCEMENT_BANNER_URL = "https://github.com/mearashadowfax/Gruntworks";
-const FEATURES_GENERAL_TITLE = "Heatworks Local SEO Audit";
+// Review Section Variables
+const avatarSrcs: Array<string> = pageContent!.review_section.avatar_srcs;
+const reviewStarCount = pageContent!.review_section.review_star_count;
+const reviewRating = pageContent!.review_section.review_rating;
+const reviewReviews = pageContent!.review_section.review_reviews;
+
+// Features Section Variables
+const FEATURES_GENERAL_TITLE =
+  pageContent!.features_section.features_general_title;
 const FEATURES_GENERAL_SUB_TITLE =
-  "Unearth exactly what's blocking your Local SEO. Identify and fix your Local SEO visibility gaps with our comprehensive audit, live heatmap, and personalized 30-day playbook.";
-const FEATURES_NAVS_CONFIG = {
-  title:
-    "Who is the <span class='text-orange-500 dark:text-orange-400'>Heatworks Audit</span> for?",
-  tabs: [
-    {
-      heading: "Startup Steve",
-      content:
-        "Founders and small teams seeking affordable, scalable solutions. Get quick wins, learn marketing fundamentals, and set your business up for future success—without breaking the bank.",
-      svg: "house",
-      src: startupSteve,
-      alt: "Persona illustration for Startup Steve",
-    },
-    {
-      heading: "Growth Gary",
-      content:
-        "Ambitious owners and marketers ready to unlock new growth. See how others have scaled with our proven audit, and reclaim your time with our done-for-you approach that delivers ROI fast.",
-      svg: "tools",
-      src: growthGary,
-      alt: "Persona illustration for Growth Gary",
-      first: true,
-    },
-    {
-      heading: "Established Eddie",
-      content:
-        "Operational leaders focused on efficiency and integration. Leverage data-driven insights to optimize your systems, ensure stability, and drive sustainable, long-term growth.",
-      svg: "dashboard",
-      src: establishedEddie,
-      alt: "Persona illustration for Established Eddie",
-      second: true,
-    },
-  ],
-};
-const FAQ_TITLE = "Frequently<br />asked questions";
+  pageContent!.features_section.features_general_sub_title;
+const FEATURES_NAVS_CONFIG = pageContent!.features_section.features_navs_config;
 
-const QUOTE_BANNER_TEXT = "Built for landscapers who hate guessing.";
-const QUOTE_BANNER_BACKGROUND_IMAGE = "/heatworks/seed-texture.webp";
-const QUOTE_BANNER_BG_IMAGE_CLASSES = "object-repeat w-[50px] h-[50px]";
-const QUOTE_BANNER_OVERLAY_IMAGE_SRC = "/heatworks/heatworks-icon.svg";
-const QUOTE_BANNER_OVERLAY_IMAGE_CLASSES = "opacity-20 mix-blend-screen";
+// FAQ Section Variables
+const FAQ_TITLE = pageContent!.faq_section.faq_title;
+
+// Announcement Banner Variables
+const ANNOUNCEMENT_BANNER_BTN_TITLE =
+  pageContent!.announcement_banner.announcement_banner_btn_title;
+const ANNOUNCEMENT_BANNER_URL =
+  pageContent!.announcement_banner.announcement_banner_url;
+
+// Quote Banner Variables
+const QUOTE_BANNER_TEXT_1 = pageContent!.quote_banner.quote_banner_text_1;
+const QUOTE_BANNER_TEXT_2 = pageContent!.quote_banner.quote_banner_text_2;
 const QUOTE_BANNER_TEXT_CLASSES =
-  "font-black text-[10vw] text-center leading-none uppercase text-white drop-shadow-lg";
+  pageContent!.quote_banner.quote_banner_text_classes;
+const QUOTE_BANNER_CONTAINER_CLASSES =
+  pageContent!.quote_banner.quote_banner_container_classes;
 ---
 
 <div class="bg-repeat-space">
@@ -88,8 +64,21 @@ const QUOTE_BANNER_TEXT_CLASSES =
       starCount={reviewStarCount}
       rating={reviewRating}
       reviews={reviewReviews}
+      heatworksLogoSrc={pageContent!.hero_section.heatworks_logo}
+      cloud1MinSrc={pageContent!.hero_section.cloud_1_min}
+      cloud2MinSrc={pageContent!.hero_section.cloud_2_min}
+      cloud3MinSrc={pageContent!.hero_section.cloud_3_min}
+      ipadSrc={pageContent!.hero_section.ipad}
+      videoCompressed2Src={pageContent!.hero_section.video_compressed_2}
+      grassTransitionSrc={pageContent!.hero_section.grass_transition}
     />
-    <section class="features-bg-section">
+    <section
+      class="features-bg-section"
+      style={{
+        backgroundImage: `url(${pageContent!.background_images.darker_rock_texture.src})`,
+        backgroundRepeat: "repeat",
+      }}
+    >
       <Container maxWidth="max-w-[1140px] px-10">
         <!-- Pill Text -->
         <div
@@ -105,7 +94,7 @@ const QUOTE_BANNER_TEXT_CLASSES =
         <FeaturesGeneral
           title={FEATURES_GENERAL_TITLE}
           subTitle={FEATURES_GENERAL_SUB_TITLE}
-          src={featureImage}
+          src={pageContent.feature_image}
           alt="Gruntworks products in floating boxes"
           features={features}
           imageClass="max-w-[700px] mx-auto"
@@ -115,38 +104,40 @@ const QUOTE_BANNER_TEXT_CLASSES =
       </Container>
     </section>
 
-    <section class="relative bg-neutral-900">
+    <section class="relative bg-neutral-900 pb-16">
       <div class="clearance-tape relative z-1"></div>
-      <Container maxWidth={`${CONTAINER_MAX_WIDTH} z-10 relative`}>
+      <Container
+        maxWidth={`${pageContent.layout_constants.container_max_width} z-10 relative`}
+      >
         <FAQ title={FAQ_TITLE} faqs={faqs} />
         <PricingSection pricing={pricing} />
       </Container>
     </section>
 
-    <section class="relative bg-neutral-900">
-      <QuoteBanner
-        quoteText={QUOTE_BANNER_TEXT}
-        backgroundImageSrc={QUOTE_BANNER_BACKGROUND_IMAGE}
-        overlayImageSrc={QUOTE_BANNER_OVERLAY_IMAGE_SRC}
-        bgImageClasses={QUOTE_BANNER_BG_IMAGE_CLASSES}
-        overlayImageClasses={QUOTE_BANNER_OVERLAY_IMAGE_CLASSES}
-        textClasses={QUOTE_BANNER_TEXT_CLASSES}
-      />
-    </section>
-
-    <section>
-      <Container maxWidth={`${CONTAINER_MAX_WIDTH} z-10 relative`}>
-        <div class="h-96 bg-neutral-800">
-          <!-- Placeholder for content after hero -->
-        </div>
+    <section class="overflow-visible">
+      <div
+        class="relative z-50 -mt-[60px] -mb-2 h-[60px] w-full"
+        style={{
+          backgroundImage: `url(${pageContent!.background_images.grass_repeat.src})`,
+          backgroundSize: "60px 60px",
+          backgroundRepeat: "repeat-x",
+        }}
+      >
+      </div>
+      <Container maxWidth={`max-w-full z-10 relative`}>
+        <QuoteBanner
+          id="heatworks-quote-banner"
+          quoteTextOne={QUOTE_BANNER_TEXT_1}
+          quoteTextTwo={QUOTE_BANNER_TEXT_2}
+          containerClasses={QUOTE_BANNER_CONTAINER_CLASSES}
+          textClasses={QUOTE_BANNER_TEXT_CLASSES}
+        />
       </Container>
     </section>
   </MainLayout>
 
   <style>
     .features-bg-section {
-      background-image: url("/heatworks/darker-rock-texture.webp");
-      background-repeat: repeat;
       width: 100vw;
       position: relative;
       left: 50%;

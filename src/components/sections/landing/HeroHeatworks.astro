@@ -3,9 +3,24 @@ import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
 import Container from "@components/ui/Container.astro";
 import { Image } from "astro:assets";
 import ReviewComponent from "@components/ui/blocks/ReviewComponent.astro";
+// Removed all direct image/video imports
 
 // Define props from Astro
-const { withReview, avatars, starCount, rating, reviews } = Astro.props;
+const {
+  withReview,
+  avatars,
+  starCount,
+  rating,
+  reviews,
+  heatworksLogoSrc,
+  cloud1MinSrc,
+  cloud2MinSrc,
+  cloud3MinSrc,
+  ipadSrc,
+  videoCompressed2Src,
+  grassTransitionSrc,
+  heroBackgroundSrc,
+} = Astro.props;
 
 // Define TypeScript interface for props
 interface Props {
@@ -14,17 +29,20 @@ interface Props {
   starCount?: number;
   rating?: string;
   reviews?: string;
+  heatworksLogoSrc: any;
+  cloud1MinSrc: any;
+  cloud2MinSrc: any;
+  cloud3MinSrc: any;
+  ipadSrc: any;
+  videoCompressed2Src: string | { src: string };
+  grassTransitionSrc: any;
+  heroBackgroundSrc?: any;
 }
 ---
 
 <!-- 
   NOTE FOR USER: 
-  The assets for this component (images and video) are expected to be in the `public/heatworks/` directory.
-  - /heatworks/hero-bg.webp
-  - /heatworks/HEATWORKS-logo.png
-  - /heatworks/ipad.png
-  - /heatworks/video_compressed-2.mp4
-  - /heatworks/grass-transition.webp
+  The assets for this component (images and video) are now passed as props from the parent page.
 -->
 <section
   class="stormy-background relative flex min-h-screen flex-col justify-center overflow-hidden"
@@ -33,28 +51,28 @@ interface Props {
     class="clouds-layer pointer-events-none absolute top-0 left-0 z-10 h-[180px] w-full md:h-[220px] lg:h-[260px]"
   >
     <Image
-      src="/heatworks/cloud-3-min.png"
+      src={cloud3MinSrc}
       alt=""
       width={490}
       height={316}
       class="cloud-left absolute top-0 left-[-150px] h-[200px] w-auto lg:h-[300px]"
     />
     <Image
-      src="/heatworks/cloud-2-min.png"
+      src={cloud2MinSrc}
       alt=""
       width={998}
       height={239}
       class="cloud-center absolute top-[-20px] left-1/2 h-[200px] w-auto -translate-x-1/2 lg:h-[300px]"
     />
     <Image
-      src="/heatworks/cloud-1-min.png"
+      src={cloud1MinSrc}
       alt=""
       width={598}
       height={338}
       class="cloud-right absolute top-0 right-[-300px] h-[300px] w-auto lg:right-[-150px] lg:h-[400px]"
     />
   </div>
-  <Container maxWidth="max-w-(--breakpoint-xl)">
+  <Container maxWidth="max-w-[--breakpoint-xl]">
     <!-- Main Content -->
     <div
       class="relative z-20 flex flex-col items-center pb-16 md:pb-24 lg:pb-32"
@@ -83,7 +101,7 @@ interface Props {
         <!-- HEATWORKS Logo -->
         <div class="my-4">
           <img
-            src="/heatworks/HEATWORKS-logo.png"
+            src={heatworksLogoSrc.src}
             alt="HEATWORKS Logo"
             width="300"
             height="120"
@@ -148,7 +166,7 @@ interface Props {
       >
         <div class="relative mx-auto aspect-[16/9] w-full">
           <img
-            src="/heatworks/ipad.png"
+            src={ipadSrc.src}
             alt="iPad mockup displaying Heatworks audit"
             class="absolute inset-0 z-10 h-full w-full object-contain"
           />
@@ -158,32 +176,34 @@ interface Props {
             aria-label="iPad screen area"
           >
             <video
-              src="/heatworks/video_compressed-2.mp4"
+              src={typeof videoCompressed2Src === "string"
+                ? videoCompressed2Src
+                : videoCompressed2Src.src}
               autoplay
-              loop
               muted
+              loop
               playsinline
-              class="h-full w-full object-cover"
+              class="h-full w-full rounded-[18px] object-cover shadow-lg"
+              aria-label="Heatworks audit demo video"
             >
             </video>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Grass Transition Image -->
-    <div
-      class="absolute bottom-[-7rem] left-0 z-[15] mb-0 w-full transform overflow-hidden sm:bottom-[-10rem] md:bottom-[-12rem] lg:bottom-[-16rem] xl:bottom-[-24rem]"
-    >
-      <img
-        src="/heatworks/grass-transition.webp"
-        alt="Grass transition effect"
-        width="1440"
-        height="1035"
-        class="h-auto w-full object-fill"
-      />
-    </div>
   </Container>
+  <!-- Grass Transition Image -->
+  <div
+    class="absolute bottom-[-7rem] left-0 z-[15] mb-0 w-full transform overflow-hidden sm:bottom-[-10rem] md:bottom-[-12rem] lg:bottom-[-16rem] xl:bottom-[-24rem]"
+  >
+    <img
+      src={grassTransitionSrc}
+      alt="Grass transition effect"
+      width="1440"
+      height="1035"
+      class="h-auto w-full object-fill"
+    />
+  </div>
 </section>
 
 <style>
