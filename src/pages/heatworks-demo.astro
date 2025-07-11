@@ -20,6 +20,13 @@ if (!pageContentEntry) {
 }
 const pageContent = pageContentEntry.data;
 
+// SEO Specific Variables
+const PAGE_TITLE =
+  "Heatworks Audit | Gruntworks - Comprehensive Review and Performance Analysis";
+const PAGE_DESCRIPTION =
+  "Get a detailed Heatworks Audit from Gruntworks. We provide in-depth analysis and recommendations for optimizing your Heatworks system's performance and efficiency. Learn how to maximize your investment.";
+const OG_TITLE = "Heatworks Audit by Gruntworks: Optimize Your System Now!";
+
 // Review Section Variables
 const avatarSrcs: Array<string> = pageContent!.review_section.avatar_srcs;
 const reviewStarCount = pageContent!.review_section.review_star_count;
@@ -52,7 +59,11 @@ const QUOTE_BANNER_CONTAINER_CLASSES =
 ---
 
 <div class="bg-repeat-space">
-  <MainLayout title="Heatworks Audit | Gruntworks">
+  <MainLayout
+    title={PAGE_TITLE}
+    customDescription={PAGE_DESCRIPTION}
+    customOgTitle={OG_TITLE}
+  >
     <AnnouncementBanner
       btnId="dismiss-button"
       btnTitle={ANNOUNCEMENT_BANNER_BTN_TITLE}
