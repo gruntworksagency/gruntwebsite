@@ -25,25 +25,31 @@ interface Props {
       <div class="space-y-6 sm:space-y-8">
         <div class="space-y-2 md:space-y-4">
           <h2
-            class="text-balance text-3xl font-bold text-neutral-800 dark:text-neutral-200 lg:text-4xl"
+            class="text-3xl font-bold text-balance text-neutral-800 lg:text-4xl"
           >
             {title}
           </h2>
-          {
-            subTitle && (
-              <p class="text-pretty text-neutral-600 dark:text-neutral-400">
-                {subTitle}
-              </p>
-            )
-          }
+          {subTitle && <p class="text-pretty text-neutral-600">{subTitle}</p>}
         </div>
         {
           benefits && (
             <ul class="space-y-2 sm:space-y-4">
               {benefits.map((item) => (
                 <li class="flex space-x-3">
-                  <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-0.5 h-6 w-6 text-orange-400 dark:text-orange-300 flex-none"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                  <span class="text-pretty text-base font-medium text-neutral-600 dark:text-neutral-400">
+                  <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="mt-0.5 h-6 w-6 flex-none text-orange-400"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                  <span class="text-base font-medium text-pretty text-neutral-600">
                     {item}
                   </span>
                 </li>

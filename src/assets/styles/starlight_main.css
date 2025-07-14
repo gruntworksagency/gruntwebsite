@@ -6,29 +6,8 @@
     cursor: pointer;
   }
 }
-/* Dark mode colors. */
+/* Global color variables (formerly light mode colors). */
 :root {
-    --primary-button-hover: #ff801f;
-    --backdrop-color: #272727cc;
-    --sl-color-accent: #ff801f;
-    --sl-color-accent-high: #ffa057;
-    --sl-color-accent-low: #562800;
-    --sl-color-black: #181818;
-    --sl-color-gray-1: #eee;
-    --sl-color-gray-2: #c2c2c2;
-    --sl-color-gray-3: #8b8b8b;
-    --sl-color-gray-4: #585858;
-    --sl-color-gray-5: #383838;
-    --sl-color-gray-6: #272727;
-    --sl-color-white: #fff;
-    --yellow-hsl: 43.3, 96.4%, 56.3%;
-    --overlay-yellow: hsla(var(--yellow-hsl), .2);
-    --border: hsla(var(--border-neutral), .4);
-    --border-neutral: 0, 0%, 25.1%;
-}
-
-/* Light mode colors. */
-:root[data-theme='light'] {
     --primary-button-hover: #ff801f;
     --backdrop-color: #f6f6f699;
     --sl-color-accent: #f76b15;

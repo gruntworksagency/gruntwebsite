@@ -1,7 +1,6 @@
 ---
 import HeatLogo from "@components/HeatLogo.astro";
 import NavLink from "@components/ui/links/NavLink.astro";
-import ThemeIcon from "@components/ThemeIcon.astro";
 // import Authentication from "../misc/Authentication.astro";
 import Container from "@components/ui/Container.astro";
 import HeaderCTA from "@components/ui/buttons/HeaderCTA.astro";
@@ -25,13 +24,13 @@ const navBarLinks = [
     */
     }
     <nav
-      class="relative w-full rounded-[36px] border border-yellow-100/40 bg-yellow-50/60 px-4 py-3 backdrop-blur-md md:flex md:items-center md:justify-between md:px-6 md:py-0 md:pr-0 md:pl-6 lg:px-8 lg:pr-0 lg:pl-8 dark:border-neutral-700/40 dark:bg-neutral-800/80 dark:backdrop-blur-md"
+      class="relative w-full rounded-[36px] border border-yellow-100/40 bg-yellow-50/60 px-4 py-3 backdrop-blur-md md:flex md:items-center md:justify-between md:px-6 md:py-0 md:pr-0 md:pl-6 lg:px-8 lg:pr-0 lg:pl-8"
       aria-label="Global"
       style="--nav-radius: 36px;"
     >
       <div class="flex items-center justify-between">
         <a
-          class="flex-none rounded-lg text-xl font-bold ring-zinc-500 outline-hidden focus-visible:ring-3 dark:ring-zinc-200 dark:focus:outline-hidden"
+          class="flex-none rounded-lg text-xl font-bold ring-zinc-500 outline-hidden focus-visible:ring-3"
           href={homeUrl}
           aria-label="Brand"
         >
@@ -40,7 +39,7 @@ const navBarLinks = [
         <div class="mr-5 ml-auto md:hidden">
           <button
             type="button"
-            class="hs-collapse-toggle flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-neutral-600 transition duration-300 hover:bg-neutral-200 disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:focus:outline-hidden"
+            class="hs-collapse-toggle flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-neutral-600 transition duration-300 hover:bg-neutral-200 disabled:pointer-events-none disabled:opacity-50"
             data-hs-collapse="#navbar-collapse-with-animation"
             aria-controls="navbar-collapse-with-animation"
             aria-label="Toggle navigation"
@@ -76,9 +75,9 @@ const navBarLinks = [
             </svg>
           </button>
         </div>
-        <span class="inline-block md:hidden">
+        <!-- <span class="inline-block md:hidden">
           <ThemeIcon />
-        </span>
+        </span> -->
       </div>
       <div
         id="navbar-collapse-with-animation"

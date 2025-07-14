@@ -48,7 +48,7 @@ export default defineConfig({
       SiteTitle: "./src/components/ui/starlight/SiteTitle.astro",
       Head: "./src/components/ui/starlight/Head.astro",
       MobileMenuFooter: "./src/components/ui/starlight/MobileMenuFooter.astro",
-      ThemeSelect: "./src/components/ui/starlight/ThemeSelect.astro",
+      // ThemeSelect: "./src/components/ui/starlight/ThemeSelect.astro",
     },
     head: [
       {

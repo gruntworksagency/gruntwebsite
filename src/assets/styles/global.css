@@ -2,8 +2,6 @@
 @import 'preline/variants.css';
 @plugin '@tailwindcss/forms';
 
-@custom-variant dark (&:is(.dark *));
-
 @theme {
   /* https://tailwindcss.com/docs/colors#customizing-your-colors */
   --color-*: initial;

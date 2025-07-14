@@ -15,5 +15,5 @@
     }
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "exclude": ["dist", "src/components/ui/starlight/ThemeSelect.astro", "src/components/ui/starlight/ThemeSelectMobile.astro"]
 }
