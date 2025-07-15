@@ -32,8 +32,8 @@
       "Time-Sensitive Strategy Session",
       "$250 credit toward advanced services"
     ],
-    "purchaseBtnTitle": "Get Your Audit",
-    "purchaseLink": "https://buy.stripe.com/test_6oE7sM3Uw6Yt3Cw9AA",
+    "purchaseBtnTitle": "Start Your Audit",
+    "purchaseLink": "/audit",
     "badge": "Most Popular"
   },
   {

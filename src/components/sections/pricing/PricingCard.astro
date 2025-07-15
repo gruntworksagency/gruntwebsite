@@ -1,5 +1,6 @@
 ---
 import Icon from "@components/ui/icons/Icon.astro";
+import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
 
 type Product = {
   type: "saas" | "heatworks" | "agency";
@@ -111,18 +112,15 @@ const { product } = Astro.props as { product: Product };
   </ul>
 
   {
-    product.purchaseBtnTitle && (
-      <a
-        href={product.purchaseLink}
-        class:list={[
-          product.type === "heatworks" &&
-            "bg-opacity-50 block rounded-lg bg-orange-200/40 px-8 py-3 text-center text-sm font-bold text-neutral-100 ring-orange-300 outline-hidden transition duration-300 hover:bg-orange-300 focus-visible:ring-3 active:bg-orange-400 md:text-base",
-          product.type === "saas" && "",
-          product.type === "agency" && "",
-        ]}
-      >
-        {product.purchaseBtnTitle}
-      </a>
+    product.type === "heatworks" && product.purchaseBtnTitle && (
+      <div class="[&>a]:hover:bg-opacity-100 w-full [&>a]:w-full [&>a]:bg-white/60 [&>a]:text-orange-600 [&>a]:hover:bg-white">
+        <PrimaryCTA
+          title={product.purchaseBtnTitle}
+          url={product.purchaseLink || undefined}
+          noZapIcon={false}
+          noArrow={false}
+        />
+      </div>
     )
   }
 </div>
