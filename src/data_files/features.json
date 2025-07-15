@@ -1,24 +1,28 @@
 [
   {
     "type": "feature",
+    "id": "live-heatmap",
     "heading": "Live Heatmap",
     "content": "See who's ranking across your metro area in real time.",
     "svg": "groups"
   },
   {
     "type": "feature",
+    "id": "100-point-audit",
     "heading": "100-Point Audit",
     "content": "Full PDF report on your Google Business Page, Website and SEO performance.",
     "svg": "verified"
   },
   {
     "type": "feature",
+    "id": "30-day-playbook",
     "heading": "30-Day Playbook",
     "content": "Follow an easy step-by-step roadmap to boost visibility in 30 days flat.",
     "svg": "books"
   },
   {
     "type": "feature",
+    "id": "consultation",
     "heading": "1:1 Consultation (limited)",
     "content": "Select accounts receive a 45 minute 1:1 zoom call for a full strategic consultation.",
     "link": "https://cal.com/gruntworks/45min",

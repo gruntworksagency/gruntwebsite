@@ -18,24 +18,23 @@ import tools from "@images/automated-tools.avif";
 import dashboard from "@images/dashboard-image.avif";
 import { partnersData } from "@/data_files/constants";
 
-// Get unified siteData collection and filter by type
-const siteData = await getCollection("siteData");
+// Get data from individual collections
+const faqsData = await getCollection("faqs");
+const featuresData = await getCollection("features");
+const pricingData = await getCollection("pricing");
+
 const faqs = {
   subTitle:
     "Ask us anything about our brand and products, and get factual responses.",
-  faqs: siteData.filter((e) => e.data.type === "faq").map((e) => e.data),
+  faqs: faqsData.map((e) => e.data),
 };
-const features = siteData
-  .filter((e) => e.data.type === "feature")
-  .map((e) => e.data);
+const features = featuresData.map((e) => e.data);
 const pricing = {
   title: "Simple, Transparent Pricing",
   subTitle: "Boost efficiency with Gruntworks's clear, value-driven plans.",
   thirdOption: "Enterprise Solutions?",
   btnText: "Get a Custom Quote",
-  products: siteData
-    .filter((e) => e.data.type === "pricing")
-    .map((e) => e.data),
+  products: pricingData.map((e) => e.data),
 };
 
 const avatarSrcs: Array<string> = [

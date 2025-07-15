@@ -1,6 +1,7 @@
 [
   {
     "type": "pricing",
+    "id": "saas-tools",
     "name": "SaaS Tools",
     "description": "DIY, poor results",
     "price": "$40-200",
@@ -18,37 +19,39 @@
   },
   {
     "type": "pricing",
-    "name": "Heatworks",
-    "description": "Fast & elite insights",
-    "price": "$149",
+    "id": "heatworks-audit",
+    "name": "Heatworks Audit",
+    "description": "Competitive Analysis",
+    "price": "$47",
     "cents": "",
-    "billingFrequency": "/ one-time",
+    "billingFrequency": "one-time",
     "features": [
-      "Dashboard, report and plan",
-      "Built for your industry",
-      "Simple click-to-buy",
-      "One time payment",
-      "Fast delivery (24hrs)"
+      "Interactive Heatmap Dashboard",
+      "100-Point Competitive Edge Audit",
+      "30-Day Momentum Plan",
+      "Time-Sensitive Strategy Session",
+      "$250 credit toward advanced services"
     ],
-    "purchaseBtnTitle": "Get the Heatworks Audit",
-    "purchaseLink": "#",
-    "badge": "Best Value"
+    "purchaseBtnTitle": "Get Your Audit",
+    "purchaseLink": "https://buy.stripe.com/test_6oE7sM3Uw6Yt3Cw9AA",
+    "badge": "Most Popular"
   },
   {
     "type": "pricing",
-    "name": "Agencies",
-    "description": "Expensive, slow results",
-    "price": "$2,000+",
+    "id": "local-seo-agency",
+    "name": "Local SEO Agency",
+    "description": "Full service, premium results",
+    "price": "$2,500+",
     "cents": "",
     "billingFrequency": "/ month",
     "features": [
-      "What will you get?",
-      "High retainers",
-      "Slow to implement",
-      "Horrible sales process",
-      "Long-term contracts"
+      "Everything in the audit, plus:",
+      "Complete local SEO management",
+      "Monthly strategy calls",
+      "Ongoing optimization",
+      "Priority support"
     ],
-    "purchaseBtnTitle": null,
-    "purchaseLink": null
+    "purchaseBtnTitle": "Get Started",
+    "purchaseLink": "https://cal.com/gruntworks/discovery"
   }
 ]

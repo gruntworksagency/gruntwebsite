@@ -1,10 +1,10 @@
 // https://docs.astro.build/en/guides/content-collections/#defining-collections
 
-import { z, defineCollection } from 'astro:content';
-import { docsSchema } from '@astrojs/starlight/schema';
-import { glob } from 'astro/loaders';
+import { z, defineCollection } from "astro:content";
+import { docsSchema } from "@astrojs/starlight/schema";
+import { glob, file } from "astro/loaders";
 
-// Define schemas for the discriminated union
+// Define individual schemas
 const faqSchema = z.object({
   type: z.literal("faq"),
   id: z.string(),
@@ -14,6 +14,7 @@ const faqSchema = z.object({
 
 const featureSchema = z.object({
   type: z.literal("feature"),
+  id: z.string(),
   heading: z.string(),
   content: z.string(),
   svg: z.string(),
@@ -23,6 +24,7 @@ const featureSchema = z.object({
 
 const pricingSchema = z.object({
   type: z.literal("pricing"),
+  id: z.string(),
   name: z.string(),
   description: z.string(),
   price: z.string(),
@@ -34,10 +36,20 @@ const pricingSchema = z.object({
   badge: z.string().optional(),
 });
 
-// Create unified siteData collection
-const siteDataCollection = defineCollection({
-  loader: glob({ pattern: "**/*.json", base: "./src/data_files" }),
-  schema: z.discriminatedUnion("type", [faqSchema, featureSchema, pricingSchema]),
+// Create separate collections for each data type (reverting to working approach)
+const faqCollection = defineCollection({
+  loader: file("src/data_files/faqs.json"),
+  schema: faqSchema,
+});
+
+const featureCollection = defineCollection({
+  loader: file("src/data_files/features.json"),
+  schema: featureSchema,
+});
+
+const pricingCollection = defineCollection({
+  loader: file("src/data_files/pricing.json"),
+  schema: pricingSchema,
 });
 
 const productsCollection = defineCollection({
@@ -158,8 +170,8 @@ const heatworksDemoCollection = defineCollection({
       cloud_2_min: image(),
       cloud_3_min: image(),
       ipad: image(),
-      video_compressed_2: z.string(), // Changed from image() to z.string()
-      grass_transition: z.string(),    // Changed from image() to z.string()
+      video_compressed_2: z.string(),
+      grass_transition: z.string(),
     }),
     background_images: z.object({
       darker_rock_texture: image(),
@@ -187,5 +199,7 @@ export const collections = {
   'blog': blogCollection,
   'insights': insightsCollection,
   heatworksDemo: heatworksDemoCollection,
-  siteData: siteDataCollection,
+  faqs: faqCollection,
+  features: featureCollection,
+  pricing: pricingCollection,
 };

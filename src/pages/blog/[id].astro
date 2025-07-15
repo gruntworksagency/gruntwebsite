@@ -8,7 +8,7 @@ import SocialShare from "@components/ui/buttons/SocialShare.astro";
 import PostFeedback from "@components/ui/feedback/PostFeedback.astro";
 import { Image } from "astro:assets";
 import { capitalize, formatDate } from "@utils/utils";
-import { getCollection, Content } from "astro:content";
+import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { SITE } from "@data/constants";
 
@@ -25,6 +25,9 @@ export async function getStaticPaths() {
 
 // Get the current post's data
 const { post } = Astro.props;
+
+// Render the blog post content
+const { Content } = await render(post);
 
 const blogPosts: CollectionEntry<"blog">[] = await getCollection("blog");
 
