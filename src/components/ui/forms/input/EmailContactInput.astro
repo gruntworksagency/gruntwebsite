@@ -1,10 +1,11 @@
 ---
-const { label = "Email", id, required } = Astro.props;
+const { label = "Email", id, required, value } = Astro.props;
 
 interface Props {
   label?: string;
   id: string;
   required?: boolean;
+  value?: string;
 }
 ---
 
@@ -21,5 +22,6 @@ interface Props {
     class="block w-full rounded-lg border border-neutral-600 bg-neutral-700/30 px-4 py-3 text-sm text-neutral-700 placeholder:text-neutral-500 focus:border-neutral-200 focus:ring-3 focus:ring-neutral-400 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50"
     placeholder="Email"
     required={required}
+    value={value}
   />
 </div>

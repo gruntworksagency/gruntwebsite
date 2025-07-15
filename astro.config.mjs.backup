@@ -1,11 +1,11 @@
 import { defineConfig, passthroughImageService } from "astro/config";
 import { loadEnv } from "vite";
 
-const { DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, PUBLIC_GOOGLE_MAPS_API_KEY } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
+const { AUTH_SECRET, AUTH_TRUST_HOST, AUTH_WEBHOOK_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, PUBLIC_GOOGLE_MAPS_API_KEY } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 
-process.env.DATABASE_URL = DATABASE_URL;
-process.env.BETTER_AUTH_SECRET = BETTER_AUTH_SECRET;
-process.env.BETTER_AUTH_URL = BETTER_AUTH_URL;
+process.env.AUTH_SECRET = AUTH_SECRET;
+process.env.AUTH_TRUST_HOST = AUTH_TRUST_HOST;
+process.env.AUTH_WEBHOOK_SECRET = AUTH_WEBHOOK_SECRET;
 process.env.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID;
 process.env.GOOGLE_CLIENT_SECRET = GOOGLE_CLIENT_SECRET;
 process.env.PUBLIC_GOOGLE_MAPS_API_KEY = PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -14,7 +14,10 @@ import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import compress from "astro-compress";
 import starlight from "@astrojs/starlight";
+
 import mdx from "@astrojs/mdx";
+
+import auth from "auth-astro";
 import node from '@astrojs/node';
 
 // https://astro.build/config
@@ -87,7 +90,7 @@ export default defineConfig({
       Image: false,
       JavaScript: true,
       SVG: true,
-    }), mdx()],
+    }), mdx(), auth()],
 
   vite: {
     plugins: [tailwindcss()],

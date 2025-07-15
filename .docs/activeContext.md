@@ -1,91 +1,213 @@
-RIPER·Ω₃ Active [Session: AuditContactForm]
+RIPER·Ω₁ Active [Session: better-auth-research]
 
-### Project Plan: Audit Contact Form Page (Revised)
+Entering research mode to comprehensively investigate Better Auth as an alternative to auth-astro. I'll gather documentation, compatibility information, and migration strategies.
+Ran tool
+Ran tool
+Ran tool
 
-#### Purpose
+Ran tool
+Ran tool
+Ran tool
 
-Create a new static Astro page for an audit contact form, enabling users to submit basic info for audits. Align with site style: one-column layout, MainLayout, Preline UI for forms, Tailwind CSS. The form will be structured for future server-side handling, but initial API route implementation for email or database storage is deferred.
+## Research Summary: Better Auth Migration Strategy
 
-#### Structure Outline
+RIPER·Ω₁ Complete [Session: better-auth-research]
 
-- **Page Layout**: Use `MainLayout.astro` for consistency (header, footer). Single section with title (`<h1>`), short description (`<p>`), and a form.
-- **Form Elements**: Standard HTML `<form>` with fields (name, email, phone, message) using existing input components (`TextInput`, `EmailContactInput`, `PhoneInput`, `TextAreaInput`) and Preline UI classes for styling. The form will use `method="POST"`.
-- **Styling**: Match `contact.astro` for responsive layout and overall design. Dark mode support is not required.
-- **Accessibility/SEO**: Add `aria-labels` and appropriate meta tags via `MainLayout` props.
-- **Validation**: Basic client-side validation using HTML5 attributes like `required` and `type="email"`. Server-side validation and submission logic will be addressed in a later phase.
+Based on my comprehensive research, **Better Auth is the optimal solution** for your authentication needs. Here's my analysis and migration strategy:
 
-#### Planned Phases
+## Why Better Auth Over auth-astro
 
-1.  **Setup**: Review existing `ContactSection.astro` for form component usage and general layout patterns.
-2.  **Development**: Create the new Astro page file (`src/pages/audit.astro`) and integrate the necessary form input components.
-3.  **Testing**: Manually test the form's display, client-side validation, and responsiveness across different screen sizes. Verify that the page renders correctly within the existing site structure.
-4.  **Deployment**: Build and verify the page in a production environment.
+### **Critical Issues with auth-astro:**
 
-#### Required Context
+- **Version incompatibility**: Current auth-astro uses `@auth/core: "^0.40.0"` while it needs `@auth/core@^0.18.6` (22-version difference)
+- **Complex configuration**: Requires extensive manual setup with frequent errors
+- **Limited Astro integration**: Not designed specifically for Astro's architecture
+- **Poor developer experience**: Complex documentation and difficult troubleshooting
 
-- Dependencies: Astro 5.x, Preline UI, Tailwind CSS.
-- Edge Cases: Focus only on basic form presentation and client-side validation for now. Server-side concerns (e.g., empty fields, invalid email, spam prevention, large messages, email integration, database storage) are out of scope for this phase.
-- Example Snippet (for illustration only, not final code):
+### **Better Auth Advantages:**
 
-  ```astro
-  // src/pages/audit.astro (example structure)
-  ---
-  import MainLayout from "@/layouts/MainLayout.astro";
-  // Import input components as needed:
-  // import TextInput from "@components/ui/forms/input/TextInput.astro";
-  // import EmailContactInput from "@components/ui/forms/input/EmailContactInput.astro";
-  // import PhoneInput from "@components/ui/forms/input/PhoneInput.astro";
-  // import TextAreaInput from "@components/ui/forms/input/TextAreaInput.astro";
-  // import AuthBtn from "@components/ui/buttons/AuthBtn.astro";
+1. **Framework-agnostic design** with native Astro support
+2. **Superior developer experience** - consistently praised for ease of setup
+3. **Built-in security features**: rate limiting, CSRF protection, password policies
+4. **Comprehensive feature set**: MFA, organizations, admin tools, magic links
+5. **Active development** with responsive community support
+6. **Modern TypeScript-first approach** with full type safety
 
-  const pageTitle: string = "Audit Contact Form";
-  const metaDescription: string = "Submit your information for an audit request.";
-  ---
+## Migration Strategy
 
-  <MainLayout
-    title={pageTitle}
-    customDescription={metaDescription}
-  >
-    <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-      <div class="mx-auto max-w-2xl lg:max-w-5xl">
-        <div class="text-center">
-          <h1 class="text-2xl font-bold tracking-tight text-balance text-neutral-800 md:text-4xl md:leading-tight">
-            Audit Contact Request
-          </h1>
-          <p class="mt-1 text-pretty text-neutral-600">
-            Please fill out the form below with your information, and we will get back to you shortly regarding your audit request.
-          </p>
-        </div>
+### **Phase 1: Setup & Configuration**
 
-        <div class="mt-12 flex flex-col rounded-xl p-4 sm:p-6 lg:p-8">
-          <h2 class="mb-8 text-xl font-bold text-neutral-700">Your Information</h2>
-          <form method="POST">
-            <div class="grid gap-4">
-              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <!-- Example of using TextInput -->
-                <!-- <TextInput id="audit-firstname" label="First Name" name="firstname" required /> -->
-                <!-- <TextInput id="audit-lastname" label="Last Name" name="lastname" required /> -->
-              </div>
-              <!-- <EmailContactInput id="audit-email" required /> -->
-              <!-- <PhoneInput id="audit-phone" /> -->
-              <!-- <TextAreaInput id="audit-message" label="Message" name="message" rows="4" required /> -->
-            </div>
-            <div class="mt-4 grid">
-              <!-- <AuthBtn title="Submit Request" /> -->
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-  </MainLayout>
-  ```
+**1. Install Better Auth Dependencies:**
 
-ACTION PLAN CHECKLIST:
+```bash
+npm install better-auth pg @types/pg
+npm install -D @better-auth/cli
+```
 
-1.  [Create new file `src/pages/audit.astro` with `MainLayout` import and basic structure.]
-2.  [Add title (`Audit Contact Request`) and a short description to `audit.astro` in a one-column layout.]
-3.  [Implement HTML form in `audit.astro` with `method="POST"` and appropriate input fields (First Name, Last Name, Email, Phone Number, Message) using existing input components (`TextInput`, `EmailContactInput`, `PhoneInput`, `TextAreaInput`) and Preline UI styling classes.]
-4.  [Ensure client-side validation using HTML5 `required` attributes for relevant form fields.]
-5.  [Test the page to ensure the form and its elements are displayed correctly and are responsive.]
+**2. Environment Variables:**
 
-Plan complete. Switch to Execute Agent.
+```env
+BETTER_AUTH_SECRET="generate-with-openssl-rand-base64-32"
+BETTER_AUTH_URL="http://localhost:4321"
+DATABASE_URL="your-postgres-connection-string"
+```
+
+**3. Create Better Auth Configuration (`src/lib/auth.ts`):**
+
+```typescript
+import { betterAuth } from "better-auth";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  database: new Pool({
+    connectionString: process.env.DATABASE_URL,
+  }),
+  emailAndPassword: {
+    enabled: true,
+  },
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    },
+  },
+  // Built-in security features
+  rateLimit: {
+    enabled: true,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // requests per window
+  },
+});
+```
+
+### **Phase 2: Database Migration**
+
+**1. Generate Schema:**
+
+```bash
+npx @better-auth/cli generate
+```
+
+**2. Apply Migration:**
+
+```bash
+npx @better-auth/cli migrate
+```
+
+### **Phase 3: Astro Integration**
+
+**1. Update `astro.config.mjs`:**
+
+```javascript
+import { defineConfig } from "astro/config";
+import node from "@astrojs/node";
+
+export default defineConfig({
+  output: "server",
+  adapter: node({
+    mode: "standalone",
+  }),
+  // Remove auth-astro integration
+});
+```
+
+**2. Create Auth API Route (`src/pages/api/auth/[...all].ts`):**
+
+```typescript
+import { auth } from "@/lib/auth";
+import type { APIRoute } from "astro";
+
+export const ALL: APIRoute = async (ctx) => {
+  return auth.handler(ctx.request);
+};
+```
+
+**3. Update Middleware (`src/middleware.ts`):**
+
+```typescript
+import { defineMiddleware } from "astro:middleware";
+import { auth } from "@/lib/auth";
+
+export const onRequest = defineMiddleware(async ({ locals, request }, next) => {
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
+
+  locals.user = session?.user || null;
+  locals.session = session?.session || null;
+
+  return next();
+});
+```
+
+### **Phase 4: Client-Side Setup**
+
+**1. Create Auth Client (`src/lib/auth-client.ts`):**
+
+```typescript
+import { createAuthClient } from "better-auth/client";
+
+export const authClient = createAuthClient({
+  baseURL: "http://localhost:4321",
+});
+
+export const { signIn, signOut, signUp, useSession } = authClient;
+```
+
+**2. Update Components:**
+Replace auth-astro components with Better Auth equivalents in your login/register pages.
+
+### **Phase 5: Data Migration**
+
+**1. Migrate User Data:**
+Better Auth provides migration scripts for auth-astro/Auth.js users. The CLI can generate migration scripts to preserve existing user data.
+
+**2. Update Authentication Logic:**
+Replace `getSession` calls from auth-astro with Better Auth's session management.
+
+## Key Benefits of This Migration
+
+### **Immediate Improvements:**
+
+- ✅ **Resolves version compatibility issues**
+- ✅ **Eliminates configuration errors**
+- ✅ **Provides built-in security features**
+- ✅ **Simplifies middleware implementation**
+
+### **Long-term Advantages:**
+
+- 🚀 **Better developer experience**
+- 🔒 **Enhanced security with rate limiting & CSRF protection**
+- 🏗️ **Modular plugin architecture**
+- 📈 **Active development and community support**
+- 🎯 **Framework-agnostic flexibility**
+
+## Risk Assessment
+
+### **Low Risk Migration:**
+
+- Better Auth provides migration guides from Auth.js
+- Database schema migration is automated
+- Gradual rollout possible (can run alongside existing auth temporarily)
+- Strong TypeScript support reduces integration errors
+
+### **Migration Timeline:**
+
+- **Phase 1-2**: 2-4 hours (setup & database)
+- **Phase 3-4**: 4-6 hours (integration & client)
+- **Phase 5**: 2-3 hours (data migration & testing)
+- **Total**: 1-2 days for complete migration
+
+## Recommendation
+
+**Proceed with Better Auth migration immediately.** The current auth-astro issues will only worsen over time due to dependency conflicts, while Better Auth offers:
+
+1. **Immediate problem resolution**
+2. **Superior long-term maintainability**
+3. **Enhanced security features**
+4. **Better developer experience**
+5. **Future-proof architecture**
+
+The migration is straightforward with excellent documentation and tooling support. Better Auth's design philosophy aligns perfectly with modern web development practices and Astro's architecture.
+
+Ready to proceed with implementation? /p

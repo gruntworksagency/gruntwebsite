@@ -1,0 +1,207 @@
+---
+export const prerender = false;
+import MainLayout from "@/layouts/MainLayout.astro";
+import { auth } from "@/lib/auth";
+
+const session = await auth.api.getSession({
+  headers: Astro.request.headers,
+});
+
+if (session?.user) return Astro.redirect("/audit");
+
+// Get error message from URL params
+const url = new URL(Astro.request.url);
+const error = url.searchParams.get("error");
+const errorMessages = {
+  unauthorized: "Please sign in to access that page.",
+  session_expired: "Your session has expired. Please sign in again.",
+  general: "An error occurred during authentication.",
+};
+---
+
+<MainLayout title="Login">
+  <div class="login-container">
+    <h1>Login</h1>
+
+    {
+      error && (
+        <div class="error-message">
+          {errorMessages[error as keyof typeof errorMessages] ||
+            errorMessages.general}
+        </div>
+      )
+    }
+
+    <p>Auth status: {session?.user ? "Logged in" : "Not logged in"}</p>
+
+    <form id="signin-form">
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Email"
+        required
+      />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Password"
+        required
+      />
+      <button type="submit">Sign In</button>
+    </form>
+
+    <form id="signup-form">
+      <input
+        type="text"
+        id="signup-name"
+        name="name"
+        placeholder="Name"
+        required
+      />
+      <input
+        type="email"
+        id="signup-email"
+        name="email"
+        placeholder="Email"
+        required
+      />
+      <input
+        type="password"
+        id="signup-password"
+        name="password"
+        placeholder="Password"
+        required
+      />
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <div class="divider">OR</div>
+    <button id="google-signin">Sign in with Google</button>
+
+    <button id="signout">Sign Out</button>
+  </div>
+</MainLayout>
+
+<script>
+  import { authClient } from "../lib/auth-client";
+
+  const signinForm = document.getElementById("signin-form") as HTMLFormElement;
+  if (signinForm) {
+    signinForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(signinForm);
+      try {
+        await authClient.signIn.email({
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+        });
+        window.location.href = "/audit";
+      } catch (error) {
+        console.error("Sign in error:", error);
+      }
+    });
+  }
+
+  const signupForm = document.getElementById("signup-form") as HTMLFormElement;
+  if (signupForm) {
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(signupForm);
+      try {
+        await authClient.signUp.email({
+          name: formData.get("name") as string,
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+        });
+        window.location.href = "/audit";
+      } catch (error) {
+        console.error("Sign up error:", error);
+      }
+    });
+  }
+
+  const googleSigninButton = document.getElementById("google-signin");
+  if (googleSigninButton) {
+    googleSigninButton.addEventListener("click", async () => {
+      try {
+        await authClient.signIn.social({
+          provider: "google",
+          callbackURL: "/audit",
+        });
+      } catch (error) {
+        console.error("Google sign in error:", error);
+      }
+    });
+  }
+
+  const signoutButton = document.getElementById("signout");
+  if (signoutButton) {
+    signoutButton.addEventListener("click", async () => {
+      try {
+        await authClient.signOut();
+        window.location.href = "/login";
+      } catch (error) {
+        console.error("Sign out error:", error);
+      }
+    });
+  }
+</script>
+
+<style>
+  .login-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  .error-message {
+    background-color: #fee;
+    color: #c33;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+
+  form {
+    margin-bottom: 1rem;
+  }
+
+  input,
+  button {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    background-color: #007cba;
+    color: white;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #005a87;
+  }
+
+  #google-signin {
+    background-color: #4285f4;
+    color: white;
+  }
+
+  #google-signin:hover {
+    background-color: #357ae8;
+  }
+
+  .divider {
+    text-align: center;
+    margin: 1rem 0;
+    color: #666;
+  }
+</style>

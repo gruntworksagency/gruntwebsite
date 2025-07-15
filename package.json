@@ -9,32 +9,43 @@
     "dev": "bunx astro dev",
     "start": "bunx astro dev",
     "build": "bunx astro check && bunx astro build && bun process-html.mjs",
-    "preview": "bunx astro preview",
+    "preview": "node dist/server/entry.mjs",
     "astro": "bunx astro",
     "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/mdx": "^4.3.0",
+    "@astrojs/node": "^9.3.0",
     "@astrojs/sitemap": "^3.4.1",
     "@astrojs/starlight": "^0.34.4",
     "@fontsource-variable/inter": "^5.2.6",
+    "@prisma/adapter-neon": "^6.12.0",
+    "@prisma/client": "^6.12.0",
     "@tailwindcss/vite": "^4.1.11",
+    "@types/pg": "^8.15.4",
+    "@types/ws": "^8.18.1",
     "astro": "^5.10.1",
     "astro-compress": "^2.3.8",
+    "better-auth": "^1.2.12",
     "clipboard": "^2.0.11",
     "globby": "^14.1.0",
     "gsap": "^3.12.7",
     "html-minifier-terser": "^7.2.0",
     "lenis": "^1.3.4",
+    "nodemailer": "^7.0.5",
+    "pg": "^8.16.3",
     "preline": "^3.1.0",
     "rimraf": "^6.0.1",
     "sharp": "^0.34.2",
     "sharp-ico": "^0.1.5",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
+    "@better-auth/cli": "^1.2.12",
     "@tailwindcss/forms": "^0.5.10",
+    "@types/nodemailer": "^6.4.17",
     "astro-vtbot": "^2.1.5",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
@@ -45,12 +56,10 @@
   },
   "lint-staged": {
     "*.{js,ts,astro}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.{css,scss}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }
