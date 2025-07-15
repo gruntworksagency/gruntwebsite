@@ -75,7 +75,7 @@ const ogTitle = `${post.data.title} | Insights | ${SITE.title}`;
           </div>
           <div id="pin" class="mt-10 hidden space-y-4 md:block">
             <div
-              class="h-px w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700"
+              class="h-px w-full overflow-hidden bg-neutral-300 bg-neutral-700"
             >
               <div
                 id="progress"
@@ -88,7 +88,7 @@ const ogTitle = `${post.data.title} | Insights | ${SITE.title}`;
             </p>
             <div id="toc" class="">
               <ul
-                class="space-y-2 text-base text-pretty text-neutral-700 transition duration-300 dark:text-neutral-400"
+                class="space-y-2 text-base text-pretty text-neutral-700 transition duration-300"
               >
               </ul>
             </div>
@@ -97,14 +97,12 @@ const ogTitle = `${post.data.title} | Insights | ${SITE.title}`;
 
         <div class="md:pt-8">
           <h1
-            class="mb-4 text-center text-2xl font-bold text-balance text-neutral-800 sm:text-3xl md:mb-6 md:text-left dark:text-neutral-200"
+            class="mb-4 text-center text-2xl font-bold text-balance text-neutral-800 sm:text-3xl md:mb-6 md:text-left"
           >
             {post.data.title}
           </h1>
 
-          <article
-            class="text-lg text-pretty text-neutral-700 dark:text-neutral-300"
-          >
+          <article class="text-lg text-pretty text-neutral-700">
             <Content />
           </article>
         </div>

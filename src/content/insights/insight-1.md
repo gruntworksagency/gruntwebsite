@@ -1,7 +1,7 @@
 ---
 title: "The Future of Construction Technology"
 description: "Explore Gruntworks's pioneering role in revolutionizing construction through advanced technology and innovative solutions."
-cardImage: "@/images/insights/insight-1.avif"
+cardImage: "../../assets/images/insights/insight-1.avif"
 cardImageAlt: "Top view mechanical tools arrangement"
 ---
 

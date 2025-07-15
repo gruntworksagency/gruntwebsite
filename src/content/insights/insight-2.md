@@ -1,7 +1,7 @@
 ---
 title: "The Importance of Collaboration"
 description: "Explore how collaboration is central to Gruntworks's construction approach, driving effective communication and teamwork to achieve outstanding outcomes."
-cardImage: "@/images/insights/insight-2.avif"
+cardImage: "../../assets/images/insights/insight-2.avif"
 cardImageAlt: "Top view mechanical tools arrangement"
 ---
 

@@ -18,7 +18,7 @@ const { blogEntry } = Astro.props;
      which automatically prefetches the linked page to speed up navigation. -->
 <a
   href={`/blog/${blogEntry.id}/`}
-  class="group relative block h-full rounded-2xl bg-white transition-all duration-300 hover:-translate-y-1 dark:bg-zinc-900"
+  class="group relative block h-full rounded-2xl bg-white bg-zinc-900 transition-all duration-300 hover:-translate-y-1"
 >
   <!-- The container for the blog post's cover image. Uses astro:assets' Image for image source -->
   <div

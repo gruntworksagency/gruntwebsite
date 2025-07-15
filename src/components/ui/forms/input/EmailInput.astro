@@ -11,11 +11,7 @@ interface Props {
 <!-- Container for the label, input, and validation message -->
 <div>
   <!-- Label for the email input field -->
-  <label
-    for={id}
-    class="mb-2 block text-sm text-neutral-800 dark:text-neutral-200"
-    >{label}</label
-  >
+  <label for={id} class="mb-2 block text-sm text-neutral-800">{label}</label>
   <!-- Label for the email input field -->
   <div class="relative">
     <!-- Email input field -->
@@ -24,7 +20,7 @@ interface Props {
       id={id}
       name="email"
       autocomplete="email"
-      class="block w-full rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-700 focus:border-neutral-200 focus:ring-3 focus:ring-neutral-400 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-600 dark:bg-neutral-700/30 dark:text-neutral-300 dark:focus:ring-1"
+      class="block w-full rounded-lg border border-neutral-200 border-neutral-600 bg-neutral-50 bg-neutral-700/30 px-4 py-3 text-sm text-neutral-700 focus:border-neutral-200 focus:ring-1 focus:ring-3 focus:ring-neutral-400 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50"
       required
       aria-describedby={id}
     />

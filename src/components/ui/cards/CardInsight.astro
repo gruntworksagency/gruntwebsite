@@ -15,7 +15,7 @@ const { insightEntry, label = "Read more" } = Astro.props;
 <!-- The anchor tag is the root container for the "Insight" card. It links to the insight detail page. -->
 <a
   href={`/insights/${insightEntry.id}/`}
-  class="group relative block h-full rounded-2xl bg-white transition-all duration-300 hover:-translate-y-1 dark:bg-zinc-900"
+  class="group relative block h-full rounded-2xl bg-white bg-zinc-900 transition-all duration-300 hover:-translate-y-1"
 >
   <!-- This is the container for the insight's cover image. -->
   <div class="relative overflow-hidden rounded-xl pt-[50%] sm:pt-[70%]">
@@ -31,17 +31,17 @@ const { insightEntry, label = "Read more" } = Astro.props;
   <div class="mt-7">
     <!-- The title of the insight -->
     <h3
-      class="text-xl font-bold text-neutral-800 group-hover:text-neutral-600 dark:text-neutral-200 dark:group-hover:text-neutral-400"
+      class="text-xl font-bold text-neutral-800 group-hover:text-neutral-400 group-hover:text-neutral-600"
     >
       {insightEntry.data.title}
     </h3>
     <!-- The description of the insight -->
-    <p class="mt-3 text-neutral-600 dark:text-neutral-400">
+    <p class="mt-3 text-neutral-600">
       {insightEntry.data.description}
     </p>
     <!-- The "Read More" hyperlink going to the full insight. With an arrow icon -->
     <p
-      class="mt-5 inline-flex items-center gap-x-1 font-medium text-orange-400 decoration-2 group-hover:underline dark:text-orange-300"
+      class="mt-5 inline-flex items-center gap-x-1 font-medium text-orange-300 text-orange-400 decoration-2 group-hover:underline"
     >
       {label}
       <Icon name="arrowRightStatic" />

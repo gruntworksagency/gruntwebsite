@@ -93,13 +93,13 @@ const ogTitle = "Hardware Tools | Gruntworks";
     <div class="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
       <div class="flex items-center gap-12">
         <h1
-          class="text-2xl font-bold tracking-tight text-balance text-neutral-800 md:text-4xl md:leading-tight dark:text-neutral-200"
+          class="text-2xl font-bold tracking-tight text-balance text-neutral-800 md:text-4xl md:leading-tight"
         >
           {title}
         </h1>
         {
           subTitle && (
-            <p class="hidden max-w-(--breakpoint-sm) text-pretty text-neutral-600 md:block dark:text-neutral-400">
+            <p class="hidden max-w-(--breakpoint-sm) text-pretty text-neutral-600 md:block">
               {subTitle}
             </p>
           )
@@ -107,8 +107,10 @@ const ogTitle = "Hardware Tools | Gruntworks";
       </div>
       <PrimaryCTA title="Customer Stories" url="#testimonials" noArrow={true} />
     </div>
-    {/* Displaying products in alternating styles. Alternative product gets different card styling.
-    Maps through all product entries and displays them with either CardSmall or CardWide based on their position. */}
+    {
+      /* Displaying products in alternating styles. Alternative product gets different card styling.
+    Maps through all product entries and displays them with either CardSmall or CardWide based on their position. */
+    }
     <section class="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
       {
         product.map((product, index) => {

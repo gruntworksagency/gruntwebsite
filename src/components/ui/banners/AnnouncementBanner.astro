@@ -18,7 +18,7 @@ interface Props {
     aria-label="Informational Banner"
   >
     <div
-      class="banner-with-pattern-bg relative overflow-hidden rounded-xl bg-neutral-800 p-4 text-center shadow-xs dark:bg-neutral-200"
+      class="banner-with-pattern-bg relative overflow-hidden rounded-xl bg-neutral-800 p-4 text-center shadow-xs"
       style={{
         backgroundImage: `url(${heatworksPattern2Tile.src})`,
         backgroundRepeat: "repeat",
@@ -37,13 +37,13 @@ interface Props {
         <div class="z-10 ml-auto">
           {
             title && (
-              <p class="me-2 inline-block font-medium text-neutral-50 hover:text-orange-500 dark:text-neutral-700">
+              <p class="me-2 inline-block font-medium text-neutral-50 hover:text-orange-500">
                 {title}
               </p>
             )
           }
           <a
-            class="group inline-flex items-center gap-x-2 rounded-full border-2 border-neutral-50 px-3 py-2 text-sm font-semibold text-neutral-50 backdrop-brightness-75 transition duration-300 hover:border-orange-500 hover:text-orange-500 disabled:pointer-events-none disabled:opacity-50 sm:backdrop-brightness-100 dark:border-neutral-700 dark:text-neutral-700 dark:backdrop-brightness-100 dark:hover:border-neutral-700/70 dark:hover:text-neutral-800/70 dark:focus:outline-hidden"
+            class="group inline-flex items-center gap-x-2 rounded-full border-2 border-neutral-700 px-3 py-2 text-sm font-semibold text-neutral-50 backdrop-brightness-100 transition duration-300 hover:border-orange-500 hover:text-orange-500 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50 sm:backdrop-brightness-100"
             href={url}
             target="_blank"
           >
@@ -63,7 +63,7 @@ interface Props {
         </div>
         <button
           type="button"
-          class="z-10 ml-auto inline-flex items-center gap-x-2 rounded-full border border-transparent bg-gray-100 p-2 text-sm font-semibold text-gray-800 hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-50 dark:bg-neutral-700 dark:text-neutral-50 dark:hover:bg-neutral-700/80 dark:hover:text-neutral-50 dark:focus:outline-hidden"
+          class="z-10 ml-auto inline-flex items-center gap-x-2 rounded-full border border-transparent bg-neutral-700 p-2 text-sm font-semibold text-neutral-50 hover:bg-neutral-700/80 hover:text-neutral-50 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50"
           id={btnId}
         >
           <span class="sr-only">Dismiss</span>

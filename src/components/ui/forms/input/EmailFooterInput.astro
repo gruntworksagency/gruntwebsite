@@ -7,14 +7,12 @@ interface Props {
   title?: string;
 }
 
-const {
-  title = "Subscribe",
-} = Astro.props;
+const { title = "Subscribe" } = Astro.props;
 const placeholder = "Enter your email";
 ---
 
 <div
-  class="mt-4 flex flex-col items-center gap-2 rounded-lg bg-neutral-200 p-2 sm:flex-row sm:gap-3 dark:bg-neutral-800"
+  class="mt-4 flex flex-col items-center gap-2 rounded-lg bg-neutral-200 bg-neutral-800 p-2 sm:flex-row sm:gap-3"
 >
   <div class="w-full">
     <label for={id} class="sr-only">{label}</label>
@@ -23,11 +21,11 @@ const placeholder = "Enter your email";
       name="email"
       id="email"
       placeholder={placeholder}
-      class="block w-full rounded-l-lg border-zinc-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400"
+      class="block w-full rounded-l-lg border-zinc-200 border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-zinc-400 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
     />
   </div>
   <a
-    class="inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-orange-400 p-3 text-sm font-bold whitespace-nowrap text-neutral-50 ring-zinc-500 outline-hidden transition duration-300 hover:bg-orange-500 focus-visible:ring-3 disabled:pointer-events-none disabled:opacity-50 sm:w-auto dark:ring-zinc-200 dark:focus:ring-1 dark:focus:outline-hidden"
+    class="inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent bg-orange-400 p-3 text-sm font-bold whitespace-nowrap text-neutral-50 ring-zinc-200 ring-zinc-500 outline-hidden transition duration-300 hover:bg-orange-500 focus:ring-1 focus:outline-hidden focus-visible:ring-3 disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
     href="#"
   >
     {title}

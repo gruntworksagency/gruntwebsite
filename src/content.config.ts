@@ -23,7 +23,7 @@ const featureSchema = z.object({
 });
 
 const pricingSchema = z.object({
-  type: z.literal("pricing"),
+  type: z.enum(["saas", "heatworks", "agency"]),
   id: z.string(),
   name: z.string(),
   description: z.string(),

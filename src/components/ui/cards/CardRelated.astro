@@ -13,7 +13,7 @@ const { blogEntry } = Astro.props;
 
 <a
   href={`/blog/${blogEntry.id}/`}
-  class="group relative block h-full rounded-2xl bg-white transition-all duration-300 hover:-translate-y-1 dark:bg-zinc-900"
+  class="group relative block h-full rounded-2xl bg-white bg-zinc-900 transition-all duration-300 hover:-translate-y-1"
 >
   <div class="p-4">
     <Image
@@ -25,12 +25,12 @@ const { blogEntry } = Astro.props;
     />
     <!-- The title of the blog post -->
     <h3
-      class="mt-2 text-lg font-medium text-balance text-neutral-800 group-hover:text-orange-400 dark:text-neutral-300 dark:group-hover:text-neutral-50"
+      class="mt-2 text-lg font-medium text-balance text-neutral-800 group-hover:text-neutral-50 group-hover:text-orange-400"
     >
       {blogEntry.data.title}
     </h3>
     <!-- The formatted publication date of the blog post -->
-    <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+    <p class="mt-2 text-sm text-neutral-600">
       {formatDate(blogEntry.data.pubDate)}
     </p>
   </div>

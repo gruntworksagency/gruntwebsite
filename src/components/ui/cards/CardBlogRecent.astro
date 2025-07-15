@@ -32,10 +32,10 @@ const { blogEntry } = Astro.props;
   <div class="sm:order-1">
     <!-- Blog title which is also a hyperlink to the blog detail page  -->
     <h2
-      class="text-2xl font-bold tracking-tight text-balance text-neutral-800 md:text-3xl lg:text-4xl lg:leading-tight xl:text-5xl xl:leading-tight dark:text-neutral-200"
+      class="text-2xl font-bold tracking-tight text-balance text-neutral-800 md:text-3xl lg:text-4xl lg:leading-tight xl:text-5xl xl:leading-tight"
     >
       <a
-        class="ring-zinc-500 outline-hidden transition duration-300 hover:text-orange-400 focus-visible:ring-3 dark:text-neutral-300 dark:ring-zinc-200 dark:hover:text-neutral-50 dark:focus:outline-hidden"
+        class="ring-zinc-200 ring-zinc-500 outline-hidden transition duration-300 hover:text-neutral-50 hover:text-orange-400 focus:outline-hidden focus-visible:ring-3"
         href={`/blog/${blogEntry.id}/`}
       >
         {blogEntry.data.description}
@@ -46,7 +46,7 @@ const { blogEntry } = Astro.props;
       <AvatarBlogLarge blogEntry={blogEntry} />
 
       <div class="ms-3 sm:ms-4">
-        <p class="font-bold text-neutral-800 sm:mb-1 dark:text-neutral-200">
+        <p class="font-bold text-neutral-800 sm:mb-1">
           {blogEntry.data.author}
         </p>
         <p class="text-xs text-neutral-500">

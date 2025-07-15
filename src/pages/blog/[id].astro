@@ -83,17 +83,17 @@ const ogTitle = `${post.data.title} | Blog | ${SITE.title}`;
             <div class="flex items-center justify-between gap-x-2">
               <div>
                 {/* Post metadata and author info */}
-                <span class="font-bold text-neutral-700 dark:text-neutral-300">
+                <span class="font-bold text-neutral-700">
                   {post.data.author}
                 </span>
                 <ul class="text-xs text-neutral-500">
                   <li
-                    class="relative inline-block pe-6 before:absolute before:end-2 before:top-1/2 before:size-1 before:-translate-y-1/2 before:rounded-full before:bg-neutral-300 last:pe-0 last-of-type:before:hidden dark:text-neutral-400 dark:before:bg-neutral-600"
+                    class="relative inline-block pe-6 before:absolute before:end-2 before:top-1/2 before:size-1 before:-translate-y-1/2 before:rounded-full before:bg-neutral-300 before:bg-neutral-600 last:pe-0 last-of-type:before:hidden"
                   >
                     {formatDate(post.data.pubDate)}
                   </li>
                   <li
-                    class="relative inline-block pe-6 before:absolute before:end-2 before:top-1/2 before:size-1 before:-translate-y-1/2 before:rounded-full before:bg-neutral-300 last:pe-0 last-of-type:before:hidden dark:text-neutral-400 dark:before:bg-neutral-600"
+                    class="relative inline-block pe-6 before:absolute before:end-2 before:top-1/2 before:size-1 before:-translate-y-1/2 before:rounded-full before:bg-neutral-300 before:bg-neutral-600 last:pe-0 last-of-type:before:hidden"
                   >
                     {post.data.readTime} min read
                   </li>
@@ -104,9 +104,7 @@ const ogTitle = `${post.data.title} | Blog | ${SITE.title}`;
         </div>
       </div>
       {/* Blog post title */}
-      <h2
-        class="mb-3 text-2xl font-bold text-neutral-800 md:text-3xl dark:text-neutral-200"
-      >
+      <h2 class="mb-3 text-2xl font-bold text-neutral-800 md:text-3xl">
         {post.data.title}
       </h2>
       {/* Blog post contents */}
@@ -129,7 +127,7 @@ const ogTitle = `${post.data.title} | Blog | ${SITE.title}`;
         >
           {
             post.data.tags?.map((tag: string) => (
-              <span class="inline-flex items-center gap-x-1.5 rounded-lg bg-neutral-400/30 px-3 py-1.5 text-xs font-medium text-neutral-700 outline-hidden focus:outline-hidden focus-visible:ring-3 focus-visible:outline-hidden dark:bg-neutral-700/60 dark:text-neutral-300">
+              <span class="inline-flex items-center gap-x-1.5 rounded-lg bg-neutral-400/30 bg-neutral-700/60 px-3 py-1.5 text-xs font-medium text-neutral-700 outline-hidden focus:outline-hidden focus-visible:ring-3 focus-visible:outline-hidden">
                 {capitalize(tag)}
               </span>
             ))
@@ -139,7 +137,7 @@ const ogTitle = `${post.data.title} | Blog | ${SITE.title}`;
         <div class="flex items-center justify-end gap-x-1.5">
           <Bookmark />
           <div
-            class="mx-3 block h-4 border-e border-neutral-400 dark:border-neutral-500"
+            class="mx-3 block h-4 border-e border-neutral-400 border-neutral-500"
           >
           </div>
           <div class="inline-flex">
@@ -159,7 +157,7 @@ const ogTitle = `${post.data.title} | Blog | ${SITE.title}`;
   <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
     <div class="mb-10 max-w-2xl">
       <h2
-        class="text-2xl font-bold text-balance text-neutral-800 md:text-4xl md:leading-tight dark:text-neutral-200"
+        class="text-2xl font-bold text-balance text-neutral-800 md:text-4xl md:leading-tight"
       >
         Related articles
       </h2>

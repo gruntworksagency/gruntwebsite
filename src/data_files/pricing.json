@@ -1,6 +1,6 @@
 [
   {
-    "type": "pricing",
+    "type": "saas",
     "id": "saas-tools",
     "name": "SaaS Tools",
     "description": "DIY, poor results",
@@ -18,7 +18,7 @@
     "purchaseLink": null
   },
   {
-    "type": "pricing",
+    "type": "heatworks",
     "id": "heatworks-audit",
     "name": "Heatworks Audit",
     "description": "Competitive Analysis",
@@ -37,7 +37,7 @@
     "badge": "Most Popular"
   },
   {
-    "type": "pricing",
+    "type": "agency",
     "id": "local-seo-agency",
     "name": "Local SEO Agency",
     "description": "Full service, premium results",
