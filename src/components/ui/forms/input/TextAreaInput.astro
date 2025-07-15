@@ -1,10 +1,11 @@
 ---
-const { label, id, name } = Astro.props;
+const { label, id, name, required } = Astro.props;
 
 interface Props {
   label: string;
   name: string;
   id: string;
+  required?: boolean;
 }
 ---
 
@@ -14,6 +15,7 @@ interface Props {
     id={id}
     name={name}
     rows="4"
-    class="block w-full rounded-lg border border-neutral-200 border-neutral-600 bg-neutral-50 bg-neutral-700/30 px-4 py-3 text-sm text-neutral-700 placeholder:text-neutral-400 placeholder:text-neutral-500 focus:border-neutral-200 focus:ring-1 focus:ring-3 focus:ring-neutral-400 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50"
-    placeholder={label}></textarea>
+    class="block w-full rounded-lg border border-neutral-600 bg-neutral-700/30 px-4 py-3 text-sm text-neutral-700 placeholder:text-neutral-500 focus:border-neutral-200 focus:ring-3 focus:ring-neutral-400 focus:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+    placeholder={label}
+    required={required}></textarea>
 </div>
