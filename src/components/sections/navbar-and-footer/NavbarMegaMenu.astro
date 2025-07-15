@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 const homeUrl = "/";
 const navBarLinks = [
   { name: "Home", url: "/" },
@@ -15,10 +16,12 @@ const navBarLinks = [
   >
     <div class="flex flex-1 items-center justify-start gap-4">
       <a href={homeUrl} aria-label="Brand">
-        <img
+        <Image
           class="h-auto w-24"
-          src="/assets/screwfast_logo.webp"
+          src="@assets/images/screwfast_logo.webp"
           alt="Gruntworks Logo"
+          width={96}
+          height={24}
           loading="lazy"
           decoding="async"
         />

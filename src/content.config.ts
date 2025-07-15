@@ -4,6 +4,42 @@ import { z, defineCollection } from 'astro:content';
 import { docsSchema } from '@astrojs/starlight/schema';
 import { glob } from 'astro/loaders';
 
+// Define schemas for the discriminated union
+const faqSchema = z.object({
+  type: z.literal("faq"),
+  id: z.string(),
+  question: z.string(),
+  answer: z.string(),
+});
+
+const featureSchema = z.object({
+  type: z.literal("feature"),
+  heading: z.string(),
+  content: z.string(),
+  svg: z.string(),
+  link: z.string().optional(),
+  linkText: z.string().optional(),
+});
+
+const pricingSchema = z.object({
+  type: z.literal("pricing"),
+  name: z.string(),
+  description: z.string(),
+  price: z.string(),
+  cents: z.string(),
+  billingFrequency: z.string(),
+  features: z.array(z.string()),
+  purchaseBtnTitle: z.string().nullable(),
+  purchaseLink: z.string().nullable(),
+  badge: z.string().optional(),
+});
+
+// Create unified siteData collection
+const siteDataCollection = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/data_files" }),
+  schema: z.discriminatedUnion("type", [faqSchema, featureSchema, pricingSchema]),
+});
+
 const productsCollection = defineCollection({
   type: 'content',
   schema: ({ image }) => z.object({
@@ -65,7 +101,6 @@ const blogCollection = defineCollection({
   schema: ({ image }) => z.object ({
   title: z.string(),
   description: z.string(),
-  contents: z.array(z.string()),
   author: z.string(),
   role: z.string().optional(),
   authorImage: image(),
@@ -152,4 +187,5 @@ export const collections = {
   'blog': blogCollection,
   'insights': insightsCollection,
   heatworksDemo: heatworksDemoCollection,
+  siteData: siteDataCollection,
 };

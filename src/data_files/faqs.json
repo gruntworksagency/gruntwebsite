@@ -1,36 +1,39 @@
-{
-  "subTitle": "Ask us anything about our brand and products, and get factual responses.",
-  "faqs": [
-    {
-      "id": "what-deliverables",
-      "question": "What exactly will I receive?",
-      "answer": "<p>Short answer: a ton of value!</p><br/>\n    <ul>\n      <li><strong>Interactive Heatmap Dashboard</strong> - Live link showing your Google Maps rankings across your service area</li>\n      <li><strong>100-Point Competitive Edge Audit</strong> - Comprehensive analysis of your local SEO performance, including the Red Zone Revenue Leakage Report</li>\n      <li><strong>30-Day Momentum Plan</strong> - Step-by-step guide for quick wins you can implement immediately</li>\n      <li><strong>Time-Sensitive Strategy Session</strong> - 30-minute consultation with $250 credit toward advanced services (must book within 72 hours)</li>\n    </ul>\n<br/>\n    <p>All reports are delivered as professional PDFs within 24 hours of your Google Business Profile connection.</p>"
-    },
-    {
-      "id": "why-not-free-audit",
-      "question": "Why not a free audit?",
-      "answer": "<p>There's a crucial difference between our paid diagnostic and generic free audits:</p><br/>\n    <ul>\n      <li><strong>Quality:</strong> Free audits are typically automated and generic. Ours is manually analyzed by local SEO specialists</li>\n      <li><strong>Hyper-Local Focus:</strong> We provide neighborhood-level visibility data, not just overall rankings</li>\n      <li><strong>Financial Context:</strong> We translate rankings into actual revenue impact for your business</li>\n      <li><strong>Actionable Plans:</strong> You get a specific 30-day roadmap, not just a list of problems</li>\n    </ul>\n<br/>\n    <p>Think of it as an investment that pays for itself with just one additional job from improved visibility.</p>"
-    },
-    {
-      "id": "how-long-delivery",
-      "question": "How long until I receive my audit results?",
-      "answer": "<p>We guarantee delivery within 24 hours of when you connect your Google Business Profile. Here's the timeline:</p><br/>\n    <ul>\n      <li><strong>Immediate:</strong> Order confirmation and next steps</li>\n      <li><strong>Within 24 hours:</strong> Complete audit results delivered via email</li>\n      <li><strong>72-hour window:</strong> Book your strategy session to unlock your $250 service credit</li>\n    </ul>\n<br/>\n    <p>Our rapid turnaround ensures you can start implementing improvements immediately while the insights are fresh.</p>"
-    },
-    {
-      "id": "how-connect-google-business",
-      "question": "How do I connect my Google Business Profile?",
-      "answer": "<p>After payment, you'll receive detailed instructions to securely connect your Google Business Profile:</p><br/>\n    <ul>\n      <li>Click the secure authorization link in your confirmation email</li>\n      <li>Log in with your Google account that manages your business listing</li>\n      <li>Grant read-only access to our whitelabeled audit tool</li>\n      <li>Your data remains secure and private throughout the process</li>\n    </ul>\n<br/>\n    <p>This connection allows us to pull accurate ranking data for your specific business across all service areas. The process takes less than 2 minutes.</p>"
-    },
-    {
-      "id": "can-implement-myself",
-      "question": "Can I implement the recommendations myself?",
-      "answer": "<p>Absolutely! The 30-Day Momentum Plan is specifically designed for DIY implementation. It includes:</p><br/>\n    <ul>\n      <li><strong>\"Momentum Items\"</strong> - Simple fixes you can do yourself with step-by-step instructions</li>\n      <li><strong>Priority rankings</strong> - Which changes will have the biggest impact first</li>\n      <li><strong>Time estimates</strong> - How long each task should take</li>\n      <li><strong>Success metrics</strong> - How to measure your improvements</li>\n    </ul>\n<br/>\n    <p>However, the audit also identifies \"Core Engine Items\" - complex technical issues that typically require expert help. This is where our advanced services come in if you want professional implementation.</p>"
-    },
-    {
-      "id": "money-back-guarantee",
-      "question": "Do you offer any guarantees?",
-      "answer": "<p>Yes! We stand behind the quality of our work:</p><br/>\n    <ul>\n      <li><strong>24-Hour Delivery Guarantee:</strong> Your audit will be delivered within 24 hours or it's free</li>\n      <li><strong>Data Accuracy Promise:</strong> All ranking data is pulled directly from Google's systems</li>\n      <li><strong>Actionable Results:</strong> Every recommendation includes specific implementation steps</li>\n      <li><strong>Professional Quality:</strong> All reports are manually reviewed by local SEO specialists</li>\n    </ul>\n<br/>\n    <p>If you're not satisfied with the depth and quality of your audit, contact us within 7 days for a full refund. We're confident you'll find immediate value in the insights.</p>"
-    }
-  ]
-}
+[
+  {
+    "type": "faq",
+    "id": "what-deliverables",
+    "question": "What exactly will I receive?",
+    "answer": "<p>Short answer: a ton of value!</p><br/>\n    <ul>\n      <li><strong>Interactive Heatmap Dashboard</strong> - Live link showing your Google Maps rankings across your service area</li>\n      <li><strong>100-Point Competitive Edge Audit</strong> - Comprehensive analysis of your local SEO performance, including the Red Zone Revenue Leakage Report</li>\n      <li><strong>30-Day Momentum Plan</strong> - Step-by-step guide for quick wins you can implement immediately</li>\n      <li><strong>Time-Sensitive Strategy Session</strong> - 30-minute consultation with $250 credit toward advanced services (must book within 72 hours)</li>\n    </ul>\n<br/>\n    <p>All reports are delivered as professional PDFs within 24 hours of your Google Business Profile connection.</p>"
+  },
+  {
+    "type": "faq",
+    "id": "why-not-free-audit",
+    "question": "Why not a free audit?",
+    "answer": "<p>There's a crucial difference between our paid diagnostic and generic free audits:</p><br/>\n    <ul>\n      <li><strong>Quality:</strong> Free audits are typically automated and generic. Ours is manually analyzed by local SEO specialists</li>\n      <li><strong>Hyper-Local Focus:</strong> We provide neighborhood-level visibility data, not just overall rankings</li>\n      <li><strong>Financial Context:</strong> We translate rankings into actual revenue impact for your business</li>\n      <li><strong>Actionable Plans:</strong> You get a specific 30-day roadmap, not just a list of problems</li>\n    </ul>\n<br/>\n    <p>Think of it as an investment that pays for itself with just one additional job from improved visibility.</p>"
+  },
+  {
+    "type": "faq",
+    "id": "how-long-delivery",
+    "question": "How long until I receive my audit results?",
+    "answer": "<p>We guarantee delivery within 24 hours of when you connect your Google Business Profile. Here's the timeline:</p><br/>\n    <ul>\n      <li><strong>Immediate:</strong> Order confirmation and next steps</li>\n      <li><strong>Within 24 hours:</strong> Complete audit results delivered via email</li>\n      <li><strong>72-hour window:</strong> Book your strategy session to unlock your $250 service credit</li>\n    </ul>\n<br/>\n    <p>Our rapid turnaround ensures you can start implementing improvements immediately while the insights are fresh.</p>"
+  },
+  {
+    "type": "faq",
+    "id": "how-connect-google-business",
+    "question": "How do I connect my Google Business Profile?",
+    "answer": "<p>After payment, you'll receive detailed instructions to securely connect your Google Business Profile:</p><br/>\n    <ul>\n      <li>Click the secure authorization link in your confirmation email</li>\n      <li>Log in with your Google account that manages your business listing</li>\n      <li>Grant read-only access to our whitelabeled audit tool</li>\n      <li>Your data remains secure and private throughout the process</li>\n    </ul>\n<br/>\n    <p>This connection allows us to pull accurate ranking data for your specific business across all service areas. The process takes less than 2 minutes.</p>"
+  },
+  {
+    "type": "faq",
+    "id": "can-implement-myself",
+    "question": "Can I implement the recommendations myself?",
+    "answer": "<p>Absolutely! The 30-Day Momentum Plan is specifically designed for DIY implementation. It includes:</p><br/>\n    <ul>\n      <li><strong>\"Momentum Items\"</strong> - Simple fixes you can do yourself with step-by-step instructions</li>\n      <li><strong>Priority rankings</strong> - Which changes will have the biggest impact first</li>\n      <li><strong>Time estimates</strong> - How long each task should take</li>\n      <li><strong>Success metrics</strong> - How to measure your improvements</li>\n    </ul>\n<br/>\n    <p>However, the audit also identifies \"Core Engine Items\" - complex technical issues that typically require expert help. This is where our advanced services come in if you want professional implementation.</p>"
+  },
+  {
+    "type": "faq",
+    "id": "money-back-guarantee",
+    "question": "Do you offer any guarantees?",
+    "answer": "<p>Yes! We stand behind the quality of our work:</p><br/>\n    <ul>\n      <li><strong>24-Hour Delivery Guarantee:</strong> Your audit will be delivered within 24 hours or it's free</li>\n      <li><strong>Data Accuracy Promise:</strong> All ranking data is pulled directly from Google's systems</li>\n      <li><strong>Actionable Results:</strong> Every recommendation includes specific implementation steps</li>\n      <li><strong>Professional Quality:</strong> All reports are manually reviewed by local SEO specialists</li>\n    </ul>\n<br/>\n    <p>If you're not satisfied with the depth and quality of your audit, contact us within 7 days for a full refund. We're confident you'll find immediate value in the insights.</p>"
+  }
+]
 

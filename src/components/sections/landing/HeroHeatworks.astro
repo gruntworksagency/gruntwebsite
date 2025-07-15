@@ -100,11 +100,11 @@ interface Props {
 
         <!-- HEATWORKS Logo -->
         <div class="my-4">
-          <img
-            src={heatworksLogoSrc.src}
+          <Image
+            src={heatworksLogoSrc}
             alt="HEATWORKS Logo"
-            width="300"
-            height="120"
+            width={300}
+            height={120}
             class="mx-auto h-auto w-[250px]"
           />
         </div>
@@ -165,9 +165,11 @@ interface Props {
         class="relative z-20 mx-auto mt-0 hidden w-full max-w-[1280px] px-4 md:block"
       >
         <div class="relative mx-auto aspect-[16/9] w-full">
-          <img
-            src={ipadSrc.src}
+          <Image
+            src={ipadSrc}
             alt="iPad mockup displaying Heatworks audit"
+            width={1280}
+            height={720}
             class="absolute inset-0 z-10 h-full w-full object-contain"
           />
           <!-- Video area (iPad screen) -->

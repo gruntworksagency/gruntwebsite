@@ -3,15 +3,12 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import HeroHeatworks from "@components/sections/landing/HeroHeatworks.astro";
 import FeaturesGeneral from "@components/sections/features/FeaturesGeneral.astro";
 import FeaturesNavs from "@components/sections/features/FeaturesNavs.astro";
-import features from "@data/features.json";
 import Container from "@components/ui/Container.astro";
-import faqs from "@data/faqs.json";
 import FAQ from "@components/sections/misc/FAQ.astro";
 import AnnouncementBanner from "@components/ui/banners/AnnouncementBanner.astro";
 import PricingSection from "@components/sections/pricing/PricingSection.astro";
-import pricing from "@data/pricing.json";
 import QuoteBanner from "@components/sections/misc/QuoteBanner.astro";
-import { getEntry } from "astro:content";
+import { getEntry, getCollection } from "astro:content";
 
 // Layout Constants
 const pageContentEntry = await getEntry("heatworksDemo", "index");
@@ -19,6 +16,26 @@ if (!pageContentEntry) {
   throw new Error("Could not load heatworksDemo content entry");
 }
 const pageContent = pageContentEntry.data;
+
+// Get unified siteData collection and filter by type
+const siteData = await getCollection("siteData");
+const faqs = {
+  subTitle:
+    "Ask us anything about our brand and products, and get factual responses.",
+  faqs: siteData.filter((e) => e.data.type === "faq").map((e) => e.data),
+};
+const features = siteData
+  .filter((e) => e.data.type === "feature")
+  .map((e) => e.data);
+const pricing = {
+  title: "Simple, Transparent Pricing",
+  subTitle: "Boost efficiency with Gruntworks's clear, value-driven plans.",
+  thirdOption: "Enterprise Solutions?",
+  btnText: "Get a Custom Quote",
+  products: siteData
+    .filter((e) => e.data.type === "pricing")
+    .map((e) => e.data),
+};
 
 // SEO Specific Variables
 const PAGE_TITLE =

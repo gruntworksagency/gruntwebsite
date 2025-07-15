@@ -1,7 +1,7 @@
 import { defineConfig, passthroughImageService } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
-import compressor from "astro-compressor";
+import compress from "astro-compress";
 import starlight from "@astrojs/starlight";
 
 import mdx from "@astrojs/mdx";
@@ -67,11 +67,14 @@ export default defineConfig({
       },
     ],
   }),
-  // Only run astro-compressor in production
+  // Only run astro-compress in production
   process.env.NODE_ENV === "production" &&
-    compressor({
-      gzip: false,
-      brotli: true,
+    compress({
+      CSS: true,
+      HTML: true,
+      Image: false,
+      JavaScript: true,
+      SVG: true,
     }),
   mdx()],
   experimental: {

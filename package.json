@@ -10,7 +10,8 @@
     "start": "bunx astro dev",
     "build": "bunx astro check && bunx astro build && bun process-html.mjs",
     "preview": "bunx astro preview",
-    "astro": "bunx astro"
+    "astro": "bunx astro",
+    "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -20,7 +21,7 @@
     "@fontsource-variable/inter": "^5.2.6",
     "@tailwindcss/vite": "^4.1.11",
     "astro": "^5.10.1",
-    "astro-compressor": "^1.0.0",
+    "astro-compress": "^2.3.8",
     "clipboard": "^2.0.11",
     "globby": "^14.1.0",
     "gsap": "^3.12.7",
@@ -35,9 +36,21 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
     "astro-vtbot": "^2.1.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "typescript": "^5.8.3"
+  },
+  "lint-staged": {
+    "*.{js,ts,astro}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{css,scss}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
