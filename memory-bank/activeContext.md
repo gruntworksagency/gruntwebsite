@@ -81,3 +81,10 @@ ACTION PLAN CHECKLIST
 8. [Open PR(s) and merge after review]
 
 Plan complete. Switch to Execute Agent when ready to implement.
+
+<!-- README_SNIPPET_START
+### GitHub Automation – RIPER Helper Script v2
+A hardened Bash helper that streamlines feature-branch creation, PR creation, and automated merges.
+Now includes pre-flight authentication checks, debug mode, and user-friendly error messages.
+Developers can run `scripts/riper-gh.sh branch-and-pr "<slug>"` to open a ready-to-review PR in seconds.
+README_SNIPPET_END -->
