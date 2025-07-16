@@ -11,7 +11,8 @@
     "build": "bunx astro check && bunx astro build && bun process-html.mjs",
     "preview": "node dist/server/entry.mjs",
     "astro": "bunx astro",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:email": "bun run scripts/email-test.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
