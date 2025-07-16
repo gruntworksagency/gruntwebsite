@@ -1,123 +1,107 @@
 ---
 export const prerender = false;
-import MainLayout from "@/layouts/MainLayout.astro";
+import AuthLayout from "@/layouts/AuthLayout.astro";
 import { auth } from "@/lib/auth";
+import HeatworksIcon from "@components/ui/icons/HeatworksIcon.astro";
+import Icon from "@components/ui/icons/Icon.astro";
 
 const session = await auth.api.getSession({
   headers: Astro.request.headers,
 });
 
-if (session?.user) return Astro.redirect("/audit");
-
-// Get error message from URL params
+// Get error message and redirect URL from URL params
 const url = new URL(Astro.request.url);
 const error = url.searchParams.get("error");
+const redirectTo = url.searchParams.get("redirectTo");
+
+if (session?.user) {
+  return Astro.redirect(redirectTo || "/audit");
+}
+
 const errorMessages = {
-  unauthorized: "Please sign in to access that page.",
   session_expired: "Your session has expired. Please sign in again.",
   general: "An error occurred during authentication.",
 };
 ---
 
-<MainLayout title="Login">
-  <div class="login-container">
-    <h1>Login</h1>
+<AuthLayout title="Login">
+  <div class="flex min-h-screen items-center justify-center bg-neutral-200">
+    <div class="w-full max-w-sm rounded-2xl bg-white p-8 shadow-md">
+      <div class="mb-4 flex justify-center">
+        <HeatworksIcon />
+      </div>
 
-    {
-      error && (
-        <div class="error-message">
-          {errorMessages[error as keyof typeof errorMessages] ||
-            errorMessages.general}
-        </div>
-      )
-    }
+      <h1 class="mb-2 text-center text-2xl font-bold text-slate-800">
+        Heatworks Audit Access
+      </h1>
+      <p class="mb-6 text-center text-sm text-slate-600">
+        Howdy! Sign-in with your email or google.
+      </p>
 
-    <p>Auth status: {session?.user ? "Logged in" : "Not logged in"}</p>
+      {
+        error && (
+          <div class="my-4 rounded-md border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+            {errorMessages[error as keyof typeof errorMessages] ||
+              errorMessages.general}
+          </div>
+        )
+      }
 
-    <form id="signin-form">
-      <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        id="password"
-        name="password"
-        placeholder="Password"
-        required
-      />
-      <button type="submit">Sign In</button>
-    </form>
+      <button
+        id="google-signin"
+        class="flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50"
+      >
+        <Icon name="google" />
+        <span class="ml-2 py-3">Continue with Google</span>
+      </button>
 
-    <form id="signup-form">
-      <input
-        type="text"
-        id="signup-name"
-        name="name"
-        placeholder="Name"
-        required
-      />
-      <input
-        type="email"
-        id="signup-email"
-        name="email"
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        id="signup-password"
-        name="password"
-        placeholder="Password"
-        required
-      />
-      <button type="submit">Sign Up</button>
-    </form>
+      <div class="divider py-4"><hr /></div>
 
-    <div class="divider">OR</div>
-    <button id="google-signin">Sign in with Google</button>
-
-    <button id="signout">Sign Out</button>
+      <form id="email-login-form">
+        <input
+          type="email"
+          id="email-input"
+          name="email"
+          placeholder="Enter your email"
+          required
+          class="mb-3 w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-base text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        />
+        <button
+          type="submit"
+          class="w-full rounded-lg bg-neutral-500 py-3 text-base font-semibold text-white hover:bg-neutral-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
+        >
+          Send Magic Link
+        </button>
+      </form>
+    </div>
   </div>
-</MainLayout>
+</AuthLayout>
 
 <script>
   import { authClient } from "../lib/auth-client";
 
-  const signinForm = document.getElementById("signin-form") as HTMLFormElement;
-  if (signinForm) {
-    signinForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const formData = new FormData(signinForm);
-      try {
-        await authClient.signIn.email({
-          email: formData.get("email") as string,
-          password: formData.get("password") as string,
-        });
-        window.location.href = "/audit";
-      } catch (error) {
-        console.error("Sign in error:", error);
-      }
-    });
+  function getRedirectUrl() {
+    const url = new URL(window.location.href);
+    return url.searchParams.get("redirectTo") || "/audit";
   }
 
-  const signupForm = document.getElementById("signup-form") as HTMLFormElement;
-  if (signupForm) {
-    signupForm.addEventListener("submit", async (e) => {
+  const emailLoginForm = document.getElementById(
+    "email-login-form",
+  ) as HTMLFormElement;
+  if (emailLoginForm) {
+    emailLoginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const formData = new FormData(signupForm);
+      const formData = new FormData(emailLoginForm);
       try {
-        await authClient.signUp.email({
-          name: formData.get("name") as string,
+        await authClient.signIn.magicLink({
           email: formData.get("email") as string,
-          password: formData.get("password") as string,
+          callbackURL: getRedirectUrl(),
         });
-        window.location.href = "/audit";
+        // Show success message - user should check console for magic link
+        alert("Magic link sent! Check the server console for the login link.");
       } catch (error) {
-        console.error("Sign up error:", error);
+        console.error("Magic link error:", error);
+        alert("Error sending magic link. Please try again.");
       }
     });
   }
@@ -128,80 +112,11 @@ const errorMessages = {
       try {
         await authClient.signIn.social({
           provider: "google",
-          callbackURL: "/audit",
+          callbackURL: getRedirectUrl(),
         });
       } catch (error) {
         console.error("Google sign in error:", error);
       }
     });
   }
-
-  const signoutButton = document.getElementById("signout");
-  if (signoutButton) {
-    signoutButton.addEventListener("click", async () => {
-      try {
-        await authClient.signOut();
-        window.location.href = "/login";
-      } catch (error) {
-        console.error("Sign out error:", error);
-      }
-    });
-  }
 </script>
-
-<style>
-  .login-container {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-  }
-
-  .error-message {
-    background-color: #fee;
-    color: #c33;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-  }
-
-  form {
-    margin-bottom: 1rem;
-  }
-
-  input,
-  button {
-    display: block;
-    width: 100%;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  button {
-    background-color: #007cba;
-    color: white;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #005a87;
-  }
-
-  #google-signin {
-    background-color: #4285f4;
-    color: white;
-  }
-
-  #google-signin:hover {
-    background-color: #357ae8;
-  }
-
-  .divider {
-    text-align: center;
-    margin: 1rem 0;
-    color: #666;
-  }
-</style>

@@ -94,11 +94,11 @@ const navBarLinks = [
           <!-- <Authentication /> -->
 
           {
-            /* UPDATED: Removed the wrapping <span> with negative margins and passed 
-            the 'title' and 'url' props to the PrimaryCTA component.
+            /* UPDATED: The URL will now point to the login page, passing the
+            original destination as a 'redirectTo' query parameter.
           */
           }
-          <HeaderCTA title="Start Audit" url="/audit" />
+          <HeaderCTA title="Start Audit" url="/login?redirectTo=/audit" />
 
           <!-- <span class="hidden md:inline-block">
             <ThemeIcon />

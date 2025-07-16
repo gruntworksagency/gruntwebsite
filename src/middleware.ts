@@ -20,8 +20,8 @@ export const onRequest = defineMiddleware(
     // Check if accessing protected audit page
     if (url.pathname === "/audit") {
       if (!session?.user) {
-        // Redirect to login if no session
-        return redirect("/login?error=unauthorized");
+        // Redirect to login if no session, preserving the intended destination
+        return redirect(`/login?redirectTo=${url.pathname}`);
       }
 
       console.log("User accessing audit page:", session.user.email);
