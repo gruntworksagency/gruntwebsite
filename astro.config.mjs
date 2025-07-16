@@ -1,7 +1,7 @@
 import { defineConfig, passthroughImageService } from "astro/config";
 import { loadEnv } from "vite";
 
-const { DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, PUBLIC_GOOGLE_MAPS_API_KEY } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
+const { DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, PUBLIC_GOOGLE_MAPS_API_KEY, RESEND_API_KEY, RESEND_FROM_EMAIL, MAIL_DOMAIN } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 
 process.env.DATABASE_URL = DATABASE_URL;
 process.env.BETTER_AUTH_SECRET = BETTER_AUTH_SECRET;
@@ -9,6 +9,9 @@ process.env.BETTER_AUTH_URL = BETTER_AUTH_URL;
 process.env.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID;
 process.env.GOOGLE_CLIENT_SECRET = GOOGLE_CLIENT_SECRET;
 process.env.PUBLIC_GOOGLE_MAPS_API_KEY = PUBLIC_GOOGLE_MAPS_API_KEY;
+process.env.RESEND_API_KEY = RESEND_API_KEY;
+process.env.RESEND_FROM_EMAIL = RESEND_FROM_EMAIL;
+process.env.MAIL_DOMAIN = MAIL_DOMAIN;
 
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
