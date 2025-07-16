@@ -1,6 +1,5 @@
 ---
-description: "Core RIPER Sigma framework - referenced by all agents"
-alwaysApply: true
+alwaysApply: false
 ---
 
 # RIPER·Σ Core Protocol v1.0.3
