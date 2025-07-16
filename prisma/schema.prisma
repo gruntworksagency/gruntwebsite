@@ -23,6 +23,7 @@ model user {
   // Relations
   accounts      account[]
   sessions      session[]
+  unsubscribes  Unsubscribe[]
 }
 
 // Session model (matches Better Auth's "session" table)
@@ -68,4 +69,45 @@ model verification {
   expiresAt  DateTime
   createdAt  DateTime?
   updatedAt  DateTime?
+}
+
+// Email bounce tracking model
+model Bounce {
+  id        String   @id @default(cuid())
+  email     String
+  reason    String?
+  bounceType String? // hard or soft bounce
+  messageId String?
+  createdAt DateTime @default(now())
+  
+  @@index([email])
+  @@index([createdAt])
+}
+
+// Email complaint tracking model
+model Complaint {
+  id        String   @id @default(cuid())
+  email     String
+  reason    String?
+  messageId String?
+  createdAt DateTime @default(now())
+  
+  @@index([email])
+  @@index([createdAt])
+}
+
+// Email unsubscribe tracking model
+model Unsubscribe {
+  id        String   @id @default(cuid())
+  email     String
+  userId    String?
+  reason    String?
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user      user?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([email])
+  @@index([createdAt])
+  @@unique([email, userId])
 } 

@@ -1,0 +1,203 @@
+name: Verify Email Environment Variables
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  verify-email-env:
+    runs-on: ubuntu-latest
+    name: Verify Email Environment Variables
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Verify required environment variables are set
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          MAIL_DOMAIN: ${{ secrets.MAIL_DOMAIN }}
+          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
+          RESEND_JWT_SECRET: ${{ secrets.RESEND_JWT_SECRET }}
+        run: |
+          echo "🔍 Checking email environment variables..."
+
+          # Function to check if variable is set and not empty
+          check_var() {
+            local var_name="$1"
+            local var_value="${!var_name}"
+            
+            if [[ -z "$var_value" ]]; then
+              echo "❌ ERROR: $var_name is not set or empty"
+              return 1
+            else
+              echo "✅ $var_name is set"
+              return 0
+            fi
+          }
+
+          # Track if any variables are missing
+          missing_vars=0
+
+          # Check all required variables
+          check_var "RESEND_API_KEY" || missing_vars=$((missing_vars + 1))
+          check_var "RESEND_FROM_EMAIL" || missing_vars=$((missing_vars + 1))
+          check_var "MAIL_DOMAIN" || missing_vars=$((missing_vars + 1))
+          check_var "RESEND_WEBHOOK_SECRET" || missing_vars=$((missing_vars + 1))
+          check_var "RESEND_JWT_SECRET" || missing_vars=$((missing_vars + 1))
+
+          # Validate email format
+          if [[ -n "$RESEND_FROM_EMAIL" ]]; then
+            if [[ "$RESEND_FROM_EMAIL" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+              echo "✅ RESEND_FROM_EMAIL has valid format"
+            else
+              echo "❌ ERROR: RESEND_FROM_EMAIL has invalid format: $RESEND_FROM_EMAIL"
+              missing_vars=$((missing_vars + 1))
+            fi
+          fi
+
+          # Validate mail domain format
+          if [[ -n "$MAIL_DOMAIN" ]]; then
+            if [[ "$MAIL_DOMAIN" =~ ^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+              echo "✅ MAIL_DOMAIN has valid format"
+            else
+              echo "❌ ERROR: MAIL_DOMAIN has invalid format: $MAIL_DOMAIN"
+              missing_vars=$((missing_vars + 1))
+            fi
+          fi
+
+          # Check if FROM_EMAIL domain matches MAIL_DOMAIN
+          if [[ -n "$RESEND_FROM_EMAIL" && -n "$MAIL_DOMAIN" ]]; then
+            email_domain=$(echo "$RESEND_FROM_EMAIL" | cut -d'@' -f2)
+            if [[ "$email_domain" == "$MAIL_DOMAIN" ]]; then
+              echo "✅ RESEND_FROM_EMAIL domain matches MAIL_DOMAIN"
+            else
+              echo "⚠️  WARNING: RESEND_FROM_EMAIL domain ($email_domain) doesn't match MAIL_DOMAIN ($MAIL_DOMAIN)"
+              echo "   This might cause authentication issues. Consider using same domain."
+            fi
+          fi
+
+          # Validate API key format (Resend API keys start with 're_')
+          if [[ -n "$RESEND_API_KEY" ]]; then
+            if [[ "$RESEND_API_KEY" =~ ^re_[a-zA-Z0-9_]{20,}$ ]]; then
+              echo "✅ RESEND_API_KEY has valid format"
+            else
+              echo "❌ ERROR: RESEND_API_KEY doesn't match expected Resend format (should start with 're_')"
+              missing_vars=$((missing_vars + 1))
+            fi
+          fi
+
+          # Print summary
+          echo ""
+          echo "📊 Environment Variables Summary:"
+          echo "================================"
+
+          if [[ $missing_vars -eq 0 ]]; then
+            echo "✅ All email environment variables are properly configured!"
+            echo ""
+            echo "💡 Next steps:"
+            echo "   1. Verify DNS records (SPF, DKIM, DMARC) for $MAIL_DOMAIN"
+            echo "   2. Test email deliverability: bun run scripts/email-test.ts"
+            echo "   3. Monitor webhook events in production"
+          else
+            echo "❌ $missing_vars environment variable(s) need attention"
+            echo ""
+            echo "🔧 Fix these issues:"
+            echo "   1. Add missing variables to GitHub repository secrets"
+            echo "   2. Ensure all values are properly formatted"
+            echo "   3. Re-run this workflow"
+            echo ""
+            echo "📚 Documentation: .docs/email.md"
+            exit 1
+          fi
+
+      - name: Run email deliverability test (staging only)
+        if: env.RESEND_API_KEY != '' && github.ref != 'refs/heads/main'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          MAIL_DOMAIN: ${{ secrets.MAIL_DOMAIN }}
+          RESEND_JWT_SECRET: ${{ secrets.RESEND_JWT_SECRET }}
+        run: |
+          echo "🧪 Running deliverability test..."
+          bun run scripts/email-test.ts test@inbox.mail-tester.com
+
+  lint-email-config:
+    runs-on: ubuntu-latest
+    name: Lint Email Configuration
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check .env.example for email variables
+        run: |
+          echo "🔍 Checking .env.example contains email variables..."
+
+          required_vars=(
+            "RESEND_API_KEY"
+            "RESEND_FROM_EMAIL" 
+            "MAIL_DOMAIN"
+            "RESEND_WEBHOOK_SECRET"
+            "RESEND_JWT_SECRET"
+          )
+
+          missing_from_example=0
+
+          for var in "${required_vars[@]}"; do
+            if grep -q "^${var}=" .env.example; then
+              echo "✅ $var found in .env.example"
+            else
+              echo "❌ $var missing from .env.example"
+              missing_from_example=$((missing_from_example + 1))
+            fi
+          done
+
+          if [[ $missing_from_example -eq 0 ]]; then
+            echo "✅ All required email variables are documented in .env.example"
+          else
+            echo "❌ $missing_from_example variables missing from .env.example"
+            echo "Please add all required email environment variables to .env.example"
+            exit 1
+          fi
+
+      - name: Validate email-related files exist
+        run: |
+          echo "🔍 Checking email system files..."
+
+          required_files=(
+            "src/lib/email.ts"
+            "src/pages/api/resend/webhook.ts" 
+            "src/pages/api/email/unsubscribe/[token].ts"
+            "scripts/email-test.ts"
+            "src/lib/templates/MagicLink.tsx"
+          )
+
+          missing_files=0
+
+          for file in "${required_files[@]}"; do
+            if [[ -f "$file" ]]; then
+              echo "✅ $file exists"
+            else
+              echo "❌ $file missing"
+              missing_files=$((missing_files + 1))
+            fi
+          done
+
+          if [[ $missing_files -eq 0 ]]; then
+            echo "✅ All email system files are present"
+          else
+            echo "❌ $missing_files email system files are missing"
+            exit 1
+          fi
