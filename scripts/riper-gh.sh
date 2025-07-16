@@ -126,14 +126,15 @@ case "$cmd" in
   rehydrate)
     check_gh
     echo "🔄 Attempting to rehydrate .riper-pr-url..."
-    open_prs=$(gh pr list --state open --json url,title)
-    if [[ $(echo "$open_prs" | jq length) -eq 1 ]]; then
-      pr_url=$(echo "$open_prs" | jq -r '.[0].url')
+    open_prs=$(gh pr list --state open)
+    pr_count=$(echo "$open_prs" | wc -l)
+    if [[ $pr_count -eq 1 ]]; then
+      pr_url=$(echo "$open_prs" | awk '{print $1}')
       echo "$pr_url" > .riper-pr-url
       echo "✅ Rehydrated: $pr_url"
     else
-      echo "❌ Found $(echo "$open_prs" | jq length) open PRs. Cannot auto-rehydrate."
-      echo "$open_prs" | jq -r '.[] | "  - \(.title): \(.url)"'
+      echo "❌ Found $pr_count open PRs. Cannot auto-rehydrate."
+      echo "$open_prs"
     fi
     ;;
   test)
