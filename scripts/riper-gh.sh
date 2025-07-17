@@ -33,6 +33,43 @@ update_changelog() {
   echo "Updated changelog: $changelog_file"
 }
 
+# Function to resolve the PR URL based on a 4-tier lookup strategy
+resolve_pr_url() {
+  local pr_url_arg="${1:-}"
+  local resolved_url=""
+  local current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+  # 1. First CLI argument (if supplied)
+  if [[ -n "$pr_url_arg" ]]; then
+    resolved_url="$pr_url_arg"
+    echo "PR URL resolved from CLI argument: $resolved_url"
+  # 2. RIPER_PR_URL env var
+  elif [[ -n "${RIPER_PR_URL:-}" ]]; then
+    resolved_url="$RIPER_PR_URL"
+    echo "PR URL resolved from environment variable: $resolved_url"
+  # 3. .riper-pr-url file
+  elif [[ -f ".riper-pr-url" ]]; then
+    resolved_url=$(< .riper-pr-url)
+    echo "PR URL resolved from .riper-pr-url file: $resolved_url"
+  # 4. GitHub search for an open PR matching the current branch
+  else
+    echo "Attempting to resolve PR URL via GitHub API for branch: $current_branch"
+    resolved_url=$(gh pr list --state open --head "$current_branch" --json url -q '.[0].url' 2>/dev/null)
+    if [[ -n "$resolved_url" ]]; then
+      echo "PR URL resolved from GitHub API: $resolved_url"
+    else
+      echo "Warning: Could not resolve PR URL via GitHub API for branch: $current_branch. Ensure a PR exists or provide it manually." >&2
+    fi
+  fi
+
+  if [[ -z "$resolved_url" ]]; then
+    echo "Error: No PR URL could be resolved. Exiting." >&2
+    exit 1
+  fi
+
+  echo "$resolved_url" # Output the resolved URL
+}
+
 cmd="${1:-}"; shift || true
 
 case "$cmd" in
@@ -55,20 +92,25 @@ case "$cmd" in
     update_changelog "BRANCH_AND_PR" "feat: ${slug}" "Created feature branch and pull request" "$pr_url"
     ;;
   merge)
-    pr_url="$1"
+    pr_url=$(resolve_pr_url "${1:-}")
     echo "Merging PR: $pr_url"
     
     # Get PR title before merging
     pr_title=$(gh pr view "$pr_url" --json title -q .title)
     
     gh pr merge --squash --delete-branch "$pr_url"
-    rm -f .riper-pr-url
+    
+    # Delete .riper-pr-url only if it matches the resolved URL
+    if [[ -f ".riper-pr-url" && "$(< .riper-pr-url)" == "$pr_url" ]]; then
+      rm -f .riper-pr-url
+      echo "Deleted .riper-pr-url"
+    fi
     
     # Update changelog
     update_changelog "MERGE" "$pr_title" "Successfully merged and deleted branch" "$pr_url"
     ;;
   close)
-    pr_url="$1"
+    pr_url=$(resolve_pr_url "${1:-}")
     comment="${2:-closed by RIPER}"
     echo "Closing PR: $pr_url with comment: $comment"
     
@@ -76,7 +118,12 @@ case "$cmd" in
     pr_title=$(gh pr view "$pr_url" --json title -q .title)
     
     gh pr close "$pr_url" --comment "$comment"
-    rm -f .riper-pr-url
+    
+    # Delete .riper-pr-url only if it matches the resolved URL
+    if [[ -f ".riper-pr-url" && "$(< .riper-pr-url)" == "$pr_url" ]]; then
+      rm -f .riper-pr-url
+      echo "Deleted .riper-pr-url"
+    fi
     
     # Update changelog
     update_changelog "CLOSE" "$pr_title" "Closed PR: $comment" "$pr_url"
@@ -94,7 +141,7 @@ case "$cmd" in
     update_changelog "BRANCH_FIX" "fix: ${slug}" "Created fix branch for iteration" "$branch"
     ;;
   readme-append)
-    pr_url="$1"
+    pr_url=$(resolve_pr_url "${1:-}")
     echo "Updating README with feature from PR: $pr_url"
     
     # Extract feature title from PR
@@ -169,10 +216,10 @@ case "$cmd" in
   *)
     echo "Usage: $0 {branch-and-pr|merge|close|branch-fix|readme-append|test} [args...]"
     echo "  branch-and-pr <slug>     - Create feature branch and PR"
-    echo "  merge <pr_url>           - Merge and delete branch"
-    echo "  close <pr_url> [comment] - Close PR with comment"
+    echo "  merge [pr_url]           - Merge and delete branch (PR URL is optional, auto-resolved)"
+    echo "  close [pr_url] [comment] - Close PR with comment (PR URL is optional, auto-resolved)"
     echo "  branch-fix <slug>        - Create fix branch from main"
-    echo "  readme-append <pr_url>   - Update README with feature description"
+    echo "  readme-append [pr_url]   - Update README with feature description (PR URL is optional, auto-resolved)"
     echo "  test                     - Test GitHub CLI authentication"
     exit 1
     ;;
