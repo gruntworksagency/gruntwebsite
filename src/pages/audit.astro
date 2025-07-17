@@ -11,6 +11,8 @@ const session = await auth.api.getSession({
 
 const pageTitle: string = "Audit Contact Request";
 const metaDescription: string = "Submit your information for an audit request.";
+const url = new URL(Astro.request.url);
+const isSuccess = url.searchParams.get("success") === "1";
 ---
 
 <AuditLayout title={pageTitle} customDescription={metaDescription}>
@@ -28,6 +30,14 @@ const metaDescription: string = "Submit your information for an audit request.";
           }
         </p>
       </div>
+
+      {
+        isSuccess && (
+          <div class="mb-6 rounded-lg bg-green-100 p-4 text-green-800">
+            ✅ Thanks! Your audit request has been received.
+          </div>
+        )
+      }
 
       {
         session?.user && (
@@ -49,7 +59,7 @@ const metaDescription: string = "Submit your information for an audit request.";
         <h2 class="mb-8 text-xl font-bold text-neutral-700">
           Your Information
         </h2>
-        <form method="POST" id="audit-form">
+        <form method="POST" action="/api/audit-submission" id="audit-form">
           <div class="grid gap-6">
             <!-- Business Search Section -->
             <div class="business-search-section">
