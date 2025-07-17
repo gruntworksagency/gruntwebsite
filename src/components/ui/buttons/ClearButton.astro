@@ -1,0 +1,59 @@
+---
+export interface Props {
+  inputId: string;
+  onClear?: string; // JavaScript callback function name
+  class?: string;
+}
+
+const { inputId, onClear = "clearField", class: className = "" } = Astro.props;
+---
+
+<button
+  type="button"
+  id={`${inputId}-clear`}
+  class={`clear-input-btn ${className}`}
+  onclick={`${onClear}('${inputId}')`}
+  aria-label="Clear field"
+  style="display: none;"
+>
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
+
+<style>
+  .clear-input-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+
+  .clear-input-btn:hover {
+    color: #374151;
+    background-color: #f3f4f6;
+  }
+
+  .clear-input-btn:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+    ring-offset: 1px;
+  }
+</style>

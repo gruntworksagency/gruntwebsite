@@ -23,6 +23,7 @@ model user {
   // Relations
   accounts      account[]
   sessions      session[]
+  auditSubmissions auditSubmission[]
 }
 
 // Session model (matches Better Auth's "session" table)
@@ -68,4 +69,34 @@ model verification {
   expiresAt  DateTime
   createdAt  DateTime?
   updatedAt  DateTime?
+} 
+
+model auditSubmission {
+  id                String   @id @default(uuid())
+  userId            String
+  businessName      String
+  businessAddress   String?
+  businessPhone     String?
+  businessWebsite   String?
+  placeId           String   @unique
+  googleBusinessUrl String?
+  businessTypes     String?
+
+  firstName      String
+  lastName       String
+  email          String
+  personalPhone  String?
+  message        String
+
+  status        String   @default("new")
+  reviewStatus  String   @default("pending")
+  notes         String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 } 

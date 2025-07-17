@@ -6,6 +6,8 @@ This document covers setup, configuration, and testing for the email service usi
 
 ## Environment Variables
 
+Copy `.env.example` → `.env` and fill in the blanks before running the app.
+
 - `RESEND_API_KEY`: API key from Resend dashboard.
 - `RESEND_FROM_EMAIL`: Verified sender email (e.g., no-reply@gruntworksagency.com).
 - `MAIL_DOMAIN`: Your domain (e.g., gruntworksagency.com).
