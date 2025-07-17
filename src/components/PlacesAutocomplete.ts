@@ -3,13 +3,18 @@ import type { PlaceData, GooglePlace } from "../types/places";
 export class PlacesAutocomplete {
   private autocomplete!: google.maps.places.Autocomplete;
   private inputElement: HTMLInputElement;
+  private clearButton: HTMLButtonElement | null;
   private debounceTimer: NodeJS.Timeout | null = null;
   private isLoading: boolean = false;
 
   constructor(inputElement: HTMLInputElement) {
     this.inputElement = inputElement;
+    this.clearButton = document.getElementById(
+      `${inputElement.id}-clear`,
+    ) as HTMLButtonElement;
     this.initializeAutocomplete(inputElement);
     this.addLoadingStates();
+    this.setupClearFunctionality();
   }
 
   private initializeAutocomplete(input: HTMLInputElement): void {
@@ -34,15 +39,117 @@ export class PlacesAutocomplete {
     });
   }
 
+  private setupClearFunctionality(): void {
+    // Show/hide clear button based on input content
+    this.inputElement.addEventListener("input", () => {
+      this.toggleClearButton();
+    });
+
+    // Handle clear button click
+    if (this.clearButton) {
+      this.clearButton.addEventListener("click", () => {
+        this.clearField();
+      });
+    }
+  }
+
+  private toggleClearButton(): void {
+    if (this.clearButton) {
+      if (this.inputElement.value.trim() !== "") {
+        this.clearButton.style.display = "block";
+      } else {
+        this.clearButton.style.display = "none";
+      }
+    }
+  }
+
+  public clearField(): void {
+    // Clear the input
+    this.inputElement.value = "";
+
+    // Hide clear button
+    if (this.clearButton) {
+      this.clearButton.style.display = "none";
+    }
+
+    // Clear business fields
+    this.clearBusinessFields();
+
+    // Clear Google Places selection
+    if (this.autocomplete) {
+      this.autocomplete.set("place", null);
+    }
+
+    // Update form validation state
+    this.updateFormValidation();
+
+    // Focus back to input
+    this.inputElement.focus();
+  }
+
+  private clearBusinessFields(): void {
+    const fieldIds = [
+      "business-name",
+      "business-address",
+      "business-phone",
+      "business-website",
+      "place-id",
+      "google-business-url",
+      "business-types",
+    ];
+
+    fieldIds.forEach((fieldId) => {
+      const field = document.getElementById(fieldId) as HTMLInputElement;
+      if (field) {
+        field.value = "";
+        field.classList.remove("field-populated");
+      }
+    });
+
+    // Call global clear callback if available
+    if (window.clearBusinessFields) {
+      window.clearBusinessFields();
+    }
+  }
+
+  private updateFormValidation(): void {
+    const submitButton = document.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+    const placeIdField = document.getElementById(
+      "place-id",
+    ) as HTMLInputElement;
+
+    if (submitButton && placeIdField) {
+      const hasValidPlace = placeIdField.value.trim() !== "";
+      submitButton.disabled = !hasValidPlace;
+
+      if (hasValidPlace) {
+        submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+        submitButton.classList.add("cursor-pointer");
+      } else {
+        submitButton.classList.add("opacity-50", "cursor-not-allowed");
+        submitButton.classList.remove("cursor-pointer");
+      }
+    }
+  }
+
   private handlePlaceSelection(): void {
     const place = this.autocomplete.getPlace();
     if (!place.place_id) {
       console.warn("No place selected or place_id missing");
+      this.updateFormValidation();
       return;
     }
 
     const placeData: PlaceData = this.extractPlaceData(place as GooglePlace);
     this.populateForm(placeData);
+
+    // Show clear button after selection
+    this.toggleClearButton();
+
+    // Update validation state
+    this.updateFormValidation();
 
     // Call global callback if available
     if (window.populateBusinessFields) {
