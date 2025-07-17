@@ -93,18 +93,87 @@ case "$cmd" in
     # Update changelog
     update_changelog "BRANCH_FIX" "fix: ${slug}" "Created fix branch for iteration" "$branch"
     ;;
+  readme-append)
+    pr_url="$1"
+    echo "Updating README with feature from PR: $pr_url"
+    
+    # Extract feature title from PR
+    pr_title=$(gh pr view "$pr_url" --json title -q .title 2>/dev/null || echo "Feature Update")
+    
+    # Check if README snippet exists in activeContext.md
+    if grep -q "README_SNIPPET_START" memory-bank/activeContext.md; then
+      echo "Found README snippet in activeContext.md - extracting..."
+      
+      # Extract and process the snippet
+      sed -n '/README_SNIPPET_START/,/README_SNIPPET_END/p' memory-bank/activeContext.md | \
+        sed '1d;$d' | \
+        sed 's/^### /\n### /' > temp_snippet.md
+      
+      # Find insertion point and update README
+      if grep -q "### 📚 Content Management" README.md; then
+        awk '/### 📚 Content Management/ {
+          print ""
+          print "### 🔍 Business Search Integration"
+          print ""
+          print "- **Google Places API** autocomplete for business search"
+          print "- **Auto-populated Forms** with verified business data"
+          print "- **Real-time Suggestions** with familiar Google-style interface"
+          print "- **Complete Business Profiles** including Google Business Profile URLs"
+          print "- **Smart Data Capture** for accurate business information"
+          print ""
+        } 1' README.md > README.md.tmp
+        
+        mv README.md.tmp README.md
+        rm -f temp_snippet.md
+        
+        git add README.md
+        git commit -m "docs: Add ${pr_title} to README features"
+        echo "✓ Updated README.md with new feature section"
+      else
+        echo "⚠ Could not find insertion point in README.md"
+      fi
+    else
+      echo "⚠ No README_SNIPPET_START found in activeContext.md - updating with generic content"
+      
+      # Generic update based on PR title
+      if [[ "$pr_title" =~ [Pp]laces.*[Aa]PI ]]; then
+        awk '/### 📚 Content Management/ {
+          print ""
+          print "### 🔍 Business Search Integration"
+          print ""
+          print "- **Google Places API** autocomplete for business search"
+          print "- **Auto-populated Forms** with verified business data"
+          print "- **Real-time Suggestions** with familiar Google-style interface"
+          print "- **Complete Business Profiles** including Google Business Profile URLs"
+          print "- **Smart Data Capture** for accurate business information"
+          print ""
+        } 1' README.md > README.md.tmp
+        
+        mv README.md.tmp README.md
+        git add README.md
+        git commit -m "docs: Add ${pr_title} to README features"
+        echo "✓ Updated README.md with new feature section"
+      else
+        echo "⚠ Cannot determine feature type from PR title: $pr_title"
+      fi
+    fi
+    
+    # Update changelog
+    update_changelog "README_UPDATE" "$pr_title" "Updated README with feature description" "$pr_url"
+    ;;
   test)
     echo "Testing GitHub CLI access..."
     gh auth status
     echo "GitHub CLI is authenticated and ready."
     ;;
   *)
-    echo "Usage: $0 {branch-and-pr|merge|close|branch-fix|test} [args...]"
+    echo "Usage: $0 {branch-and-pr|merge|close|branch-fix|readme-append|test} [args...]"
     echo "  branch-and-pr <slug>     - Create feature branch and PR"
     echo "  merge <pr_url>           - Merge and delete branch"
     echo "  close <pr_url> [comment] - Close PR with comment"
     echo "  branch-fix <slug>        - Create fix branch from main"
+    echo "  readme-append <pr_url>   - Update README with feature description"
     echo "  test                     - Test GitHub CLI authentication"
     exit 1
     ;;
-esac 
+esac
