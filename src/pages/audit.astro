@@ -199,12 +199,6 @@ const metaDescription: string = "Submit your information for an audit request.";
   </section>
 </AuditLayout>
 
-<!-- Load Google Maps API with Places Library -->
-<script
-  src={`https://maps.googleapis.com/maps/api/js?key=${import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initPlacesAutocomplete`}
-  async
-  defer></script>
-
 <script>
   import { authClient } from "../lib/auth-client";
   import { PlacesAutocomplete } from "../components/PlacesAutocomplete.ts";
@@ -356,6 +350,12 @@ const metaDescription: string = "Submit your information for an audit request.";
     });
   }
 </script>
+
+<!-- Load Google Maps API with Places Library -->
+<script
+  src={`https://maps.googleapis.com/maps/api/js?key=${import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initPlacesAutocomplete`}
+  async
+  defer></script>
 
 <style>
   /* Additional styles for better form layout */
