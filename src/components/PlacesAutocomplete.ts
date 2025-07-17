@@ -1,12 +1,15 @@
 import type { PlaceData, GooglePlace } from "../types/places";
 
 export class PlacesAutocomplete {
-  private autocomplete: google.maps.places.Autocomplete;
+  private autocomplete!: google.maps.places.Autocomplete;
   private inputElement: HTMLInputElement;
+  private debounceTimer: NodeJS.Timeout | null = null;
+  private isLoading: boolean = false;
 
   constructor(inputElement: HTMLInputElement) {
     this.inputElement = inputElement;
     this.initializeAutocomplete(inputElement);
+    this.addLoadingStates();
   }
 
   private initializeAutocomplete(input: HTMLInputElement): void {
@@ -134,5 +137,63 @@ export class PlacesAutocomplete {
     const place = this.autocomplete.getPlace();
     if (!place.place_id) return null;
     return this.extractPlaceData(place as GooglePlace);
+  }
+
+  private addLoadingStates(): void {
+    // Add loading indicator support
+    this.inputElement.addEventListener("input", () => {
+      this.setLoadingState(true);
+
+      // Clear existing timer
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer);
+      }
+
+      // Set debounce timer
+      this.debounceTimer = setTimeout(() => {
+        this.setLoadingState(false);
+      }, 500);
+    });
+  }
+
+  private setLoadingState(loading: boolean): void {
+    this.isLoading = loading;
+    const container = this.inputElement.parentElement;
+
+    if (loading) {
+      this.inputElement.classList.add("places-loading");
+      if (container) {
+        container.setAttribute("data-loading", "true");
+      }
+    } else {
+      this.inputElement.classList.remove("places-loading");
+      if (container) {
+        container.removeAttribute("data-loading");
+      }
+    }
+  }
+
+  private handleError(error: string): void {
+    console.error("Places API Error:", error);
+
+    // Show user-friendly error message
+    const container = this.inputElement.parentElement;
+    if (container) {
+      const existingError = container.querySelector(".places-error");
+      if (existingError) {
+        existingError.remove();
+      }
+
+      const errorElement = document.createElement("div");
+      errorElement.className = "places-error";
+      errorElement.textContent =
+        "Unable to search businesses. Please try again.";
+      container.appendChild(errorElement);
+
+      // Remove error message after 5 seconds
+      setTimeout(() => {
+        errorElement.remove();
+      }, 5000);
+    }
   }
 }
