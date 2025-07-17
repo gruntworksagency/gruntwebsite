@@ -1,9 +1,12 @@
 ---
+import ClearButton from "./ui/buttons/ClearButton.astro";
+
 export interface Props {
   inputId?: string;
   placeholder?: string;
   required?: boolean;
   onPlaceSelected?: string;
+  onClear?: string;
   class?: string;
 }
 
@@ -12,19 +15,27 @@ const {
   placeholder = "Search for your business...",
   required = false,
   onPlaceSelected = "handlePlaceSelection",
+  onClear = "clearBusinessFields",
   class: className = "",
 } = Astro.props;
 ---
 
 <div class="places-autocomplete-container">
-  <input
-    type="text"
-    id={inputId}
-    placeholder={placeholder}
-    required={required}
-    class={`places-autocomplete-input ${className}`}
-    autocomplete="off"
-  />
+  <div class="input-wrapper">
+    <input
+      type="text"
+      id={inputId}
+      placeholder={placeholder}
+      required={required}
+      class={`places-autocomplete-input ${className}`}
+      autocomplete="off"
+    />
+    <ClearButton
+      inputId={inputId}
+      onClear={onClear}
+      class="absolute top-1/2 right-3 -translate-y-1/2 transform"
+    />
+  </div>
   <div id={`${inputId}-results`} class="places-results"></div>
 </div>
 
@@ -34,9 +45,15 @@ const {
     width: 100%;
   }
 
+  .input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
   .places-autocomplete-input {
     width: 100%;
     padding: 0.75rem;
+    padding-right: 40px; /* Make room for clear button */
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
     font-size: 1rem;

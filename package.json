@@ -46,6 +46,7 @@
   "devDependencies": {
     "@better-auth/cli": "^1.2.12",
     "@tailwindcss/forms": "^0.5.10",
+    "@types/google.maps": "^3.58.1",
     "@types/nodemailer": "^6.4.17",
     "astro-vtbot": "^2.1.5",
     "husky": "^9.1.7",

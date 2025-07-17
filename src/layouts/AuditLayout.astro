@@ -1,0 +1,95 @@
+---
+import Meta from "@components/Meta.astro";
+import HeatLogo from "@components/HeatLogo.astro";
+import { SITE } from "@data/constants";
+import "@styles/global.css";
+import "@fontsource-variable/inter";
+
+const {
+  title = SITE.title,
+  meta,
+  structuredData,
+  lang = "en",
+  customDescription = null,
+  customOgTitle = null,
+} = Astro.props;
+
+interface Props {
+  title?: string;
+  meta?: string;
+  structuredData?: object;
+  lang?: string;
+  customDescription?: string | null;
+  customOgTitle?: string | null;
+}
+---
+
+<html lang={lang} class="scrollbar-hide lenis lenis-smooth scroll-pt-16">
+  <head>
+    <Meta
+      meta={meta}
+      structuredData={structuredData}
+      customDescription={customDescription}
+      customOgTitle={customOgTitle}
+    />
+    <title>{title}</title>
+    <script is:inline>
+      if (
+        localStorage.getItem("hs_theme") === "dark" ||
+        (!("hs_theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    </script>
+    <script>
+      import "@scripts/lenisSmoothScroll.js";
+    </script>
+  </head>
+  <body
+    class="flex min-h-screen flex-col bg-neutral-200 bg-neutral-800 selection:bg-yellow-400 selection:text-neutral-700"
+  >
+    <!-- Minimal Header with Logo Only -->
+    <header class="fixed inset-x-0 top-4 z-50 flex w-full justify-center">
+      <div
+        class="audit-header rounded-[36px] border border-yellow-100/40 bg-yellow-50/60 px-6 py-3 backdrop-blur-md"
+      >
+        <a
+          class="flex-none rounded-lg text-xl font-bold ring-zinc-500 outline-hidden focus-visible:ring-3"
+          href="/"
+          aria-label="Return to homepage"
+        >
+          <HeatLogo />
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <script>
+      import "preline/preline.js";
+    </script>
+
+    <style>
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* AuditLayout header styling */
+      .audit-header {
+        backdrop-filter: blur(12px);
+        background: rgba(254, 243, 199, 0.6);
+        border: 1px solid rgba(254, 240, 138, 0.4);
+      }
+    </style>
+  </body>
+</html>
+

@@ -1,539 +1,738 @@
-RIPER·Ω₃ Active [Session: Audit-PlacesIntegration]
+RIPER·Ω₃ Active [Session: Audit-Form-Enhancements]
 
 ────────────────────────────────────────
 **COMPREHENSIVE TECHNICAL PLAN**  
-Google Places API Integration for Audit Form
+Audit Form UI/UX Enhancements & Validation
 ────────────────────────────────────────
 
 ## A. GOALS
 
-1. **Primary Objective**: Integrate Google Places API autocomplete into the existing audit form (`/audit`) to allow users to search for and select their business listing
-2. **Data Capture**: Automatically populate form fields with business information (name, address, phone, website, Google Business Profile URL, place_id)
-3. **Security**: Implement proper API key restrictions and security measures for client-side usage
-4. **User Experience**: Provide seamless, real-time business search with minimal friction
-5. **Future-Proofing**: Create reusable components that can be used in other parts of the application
+1. **Enhanced User Experience**: Add clear functionality to Google Places autocomplete input with visual "X" button
+2. **Form State Management**: Automatically clear business information fields when Places autocomplete is cleared
+3. **Visual Consistency**: Replace basic submit button with PrimaryCTA styling (orange theme, proper padding, icons)
+4. **Form Validation**: Prevent form submission unless a business is selected via Google Places
+5. **Minimal Header Design**: Create clean, logo-only header for audit page (no navigation clutter)
 
 ## B. ARCHITECTURE OVERVIEW
 
-**Pure Client-Side Approach** (Recommended based on research):
+**Component Enhancement Approach**:
 
-- Google Maps JavaScript API with Places Library loaded directly in the browser
-- Astro component with optional React island for enhanced interactivity
-- API key secured through HTTP referrer and API restrictions
-- Form enhancement that preserves existing functionality while adding autocomplete
+- Extend existing `PlacesAutocomplete` component with clear button functionality
+- Add state management for coordinated field clearing
+- Implement client-side form validation with visual feedback
+- Create new `AuditLayout` as alternative to `MainLayout`
+- Maintain existing Google Places API integration while adding UX improvements
 
-**Security Model**:
+**Validation Strategy**:
 
-- Existing `PUBLIC_GOOGLE_MAPS_API_KEY` configured with proper restrictions
-- Website restrictions locked to project domain
-- API restrictions limited to Places API and Maps JavaScript API
-- Usage monitoring and quotas configured
+- Client-side validation prevents submission when `place-id` is empty
+- Visual feedback shows validation state (disabled/enabled submit button)
+- Progressive enhancement ensures form still works without JavaScript
 
 ## C. FILES/COMPONENTS TO CREATE OR MODIFY
 
 ### New Files
 
-1. `src/components/PlacesAutocomplete.astro` - Main autocomplete component
-2. `src/components/PlacesAutocomplete.ts` - TypeScript logic for Places API interaction
-3. `src/types/places.ts` - TypeScript interfaces for Places API responses
-4. `docs/places-api-setup.md` - Documentation for API key configuration
+1. `src/layouts/AuditLayout.astro` - Logo-only layout for audit page
+2. `src/components/ui/buttons/ClearButton.astro` - Reusable clear button component
 
 ### Modified Files
 
-1. `src/pages/audit.astro` - Integration of Places autocomplete into existing form
-2. `astro.config.mjs` - Add Places API to any CSP configurations if needed
-3. `.env.example` - Document any additional environment variables
+1. `src/components/PlacesAutocomplete.astro` - Add clear button integration
+2. `src/components/PlacesAutocomplete.ts` - Add clear functionality and field management
+3. `src/pages/audit.astro` - Switch to AuditLayout, update submit button, add validation
+4. `src/types/places.ts` - Add clear callback type definition
 
-### Optional Enhancements
+### Styling Updates
 
-1. `src/components/PlacesAutocompleteReact.tsx` - React island version for enhanced UX
-2. `src/styles/places-autocomplete.css` - Custom styling for autocomplete dropdown
+1. Enhanced PlacesAutocomplete CSS for clear button positioning
+2. Form validation styles for submit button states
+3. AuditLayout minimal header styling
 
 ## D. DETAILED IMPLEMENTATION PLAN
 
-### D-1: API Key Security Configuration
-
-**Immediate Actions**:
-
-```bash
-# Access Google Cloud Console → APIs & Services → Credentials
-# Edit existing PUBLIC_GOOGLE_MAPS_API_KEY:
-# 1. Application Restrictions: HTTP referrers
-#    - Add: https://yourdomain.com/*
-#    - Add: https://*.yourdomain.com/*
-# 2. API Restrictions: Restrict key
-#    - Enable: Places API (New)
-#    - Enable: Maps JavaScript API
-#    - Enable: Geocoding API (if needed)
-# 3. Set quota limits (e.g., 1000 requests/day initially)
-```
-
-### D-2: Core Places Autocomplete Component
+### D-1: Clear Button Component
 
 **Component Structure**:
 
-```typescript
-// src/components/PlacesAutocomplete.astro
+```astro
 ---
+export interface Props {
+  inputId: string;
+  onClear?: string; // JavaScript callback function name
+  class?: string;
+}
+
+const { inputId, onClear = "clearField", class: className = "" } = Astro.props;
+---
+
+<!-- src/components/ui/buttons/ClearButton.astro -->
+<button
+  type="button"
+  id={`${inputId}-clear`}
+  class={`clear-input-btn ${className}`}
+  onclick={`${onClear}('${inputId}')`}
+  aria-label="Clear field"
+  style="display: none;"
+>
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
+```
+
+### D-2: Enhanced PlacesAutocomplete Component
+
+**Updated Structure**:
+
+```astro
+---
+import ClearButton from "../ui/buttons/ClearButton.astro";
+
 export interface Props {
   inputId?: string;
   placeholder?: string;
   required?: boolean;
-  onPlaceSelected?: string; // JavaScript callback function name
+  onPlaceSelected?: string;
+  onClear?: string;
+  class?: string;
 }
 
 const {
   inputId = "business-search",
   placeholder = "Search for your business...",
   required = false,
-  onPlaceSelected = "handlePlaceSelection"
+  onPlaceSelected = "handlePlaceSelection",
+  onClear = "clearBusinessFields",
+  class: className = "",
 } = Astro.props;
 ---
 
+<!-- src/components/PlacesAutocomplete.astro -->
 <div class="places-autocomplete-container">
-  <input
-    type="text"
-    id={inputId}
-    placeholder={placeholder}
-    required={required}
-    class="places-autocomplete-input"
-  />
+  <div class="input-wrapper">
+    <input
+      type="text"
+      id={inputId}
+      placeholder={placeholder}
+      required={required}
+      class={`places-autocomplete-input ${className}`}
+      autocomplete="off"
+    />
+    <ClearButton
+      inputId={inputId}
+      onClear={onClear}
+      class="absolute top-1/2 right-3 -translate-y-1/2 transform"
+    />
+  </div>
   <div id={`${inputId}-results`} class="places-results"></div>
 </div>
-
-<script>
-  // Places API integration logic
-</script>
 ```
 
-### D-3: Places API Integration Logic
+### D-3: Enhanced PlacesAutocomplete TypeScript Logic
 
-**Core Functionality** (`src/components/PlacesAutocomplete.ts`):
+**Extended Functionality** (`src/components/PlacesAutocomplete.ts`):
 
 ```typescript
-interface PlaceData {
-  placeId: string;
-  name: string;
-  formattedAddress: string;
-  phoneNumber?: string;
-  website?: string;
-  businessStatus: string;
-  types: string[];
-  geometry: {
-    location: { lat: number; lng: number };
-  };
-}
-
-class PlacesAutocomplete {
-  private autocomplete: google.maps.places.Autocomplete;
-  private map: google.maps.Map;
+export class PlacesAutocomplete {
+  private autocomplete!: google.maps.places.Autocomplete;
+  private inputElement: HTMLInputElement;
+  private clearButton: HTMLButtonElement | null;
+  private debounceTimer: NodeJS.Timeout | null = null;
+  private isLoading: boolean = false;
 
   constructor(inputElement: HTMLInputElement) {
+    this.inputElement = inputElement;
+    this.clearButton = document.getElementById(
+      `${inputElement.id}-clear`,
+    ) as HTMLButtonElement;
     this.initializeAutocomplete(inputElement);
+    this.addLoadingStates();
+    this.setupClearFunctionality();
   }
 
-  private initializeAutocomplete(input: HTMLInputElement) {
-    // Configure autocomplete for business establishments
-    this.autocomplete = new google.maps.places.Autocomplete(input, {
-      types: ["establishment"],
-      fields: [
-        "place_id",
-        "name",
-        "formatted_address",
-        "formatted_phone_number",
-        "website",
-        "business_status",
-        "types",
-        "geometry",
-      ],
+  private setupClearFunctionality(): void {
+    // Show/hide clear button based on input content
+    this.inputElement.addEventListener("input", () => {
+      this.toggleClearButton();
     });
 
-    // Handle place selection
-    this.autocomplete.addListener("place_changed", () => {
-      this.handlePlaceSelection();
-    });
-  }
-
-  private handlePlaceSelection() {
-    const place = this.autocomplete.getPlace();
-    if (!place.place_id) return;
-
-    const placeData: PlaceData = this.extractPlaceData(place);
-    this.populateForm(placeData);
-  }
-
-  private populateForm(data: PlaceData) {
-    // Auto-populate form fields
-    // Generate Google Business Profile URL
-    const businessProfileUrl = `https://www.google.com/maps/place/?q=place_id:${data.placeId}`;
-  }
-}
-```
-
-### D-4: Audit Form Integration
-
-**Enhanced Form Structure**:
-
-```astro
-<!-- src/pages/audit.astro -->
-<form method="POST">
-  <div class="grid gap-4">
-    <!-- NEW: Business Search -->
-    <div class="business-search-section">
-      <label for="business-search">Search for your business</label>
-      <PlacesAutocomplete
-        inputId="business-search"
-        placeholder="Start typing your business name..."
-        onPlaceSelected="populateBusinessFields"
-      />
-      <p class="help-text">
-        Select your business from Google to auto-fill details
-      </p>
-    </div>
-
-    <!-- ENHANCED: Existing fields with auto-population -->
-    <input
-      type="text"
-      id="business-name"
-      name="business-name"
-      placeholder="Business Name"
-      value={session?.user?.name?.split(" ")[0] || ""}
-      required
-    />
-
-    <input
-      type="text"
-      id="business-address"
-      name="business-address"
-      placeholder="Business Address"
-      required
-    />
-
-    <input
-      type="tel"
-      id="business-phone"
-      name="business-phone"
-      placeholder="Phone Number"
-    />
-
-    <input
-      type="url"
-      id="business-website"
-      name="business-website"
-      placeholder="Website URL"
-    />
-
-    <!-- NEW: Hidden fields for additional data -->
-    <input type="hidden" id="place-id" name="place-id" />
-    <input type="hidden" id="google-business-url" name="google-business-url" />
-    <input type="hidden" id="business-types" name="business-types" />
-
-    <!-- Existing personal fields -->
-    <input
-      type="text"
-      placeholder="First Name"
-      value={session?.user?.name?.split(" ")[0] || ""}
-      required
-    />
-    <input
-      type="text"
-      placeholder="Last Name"
-      value={session?.user?.name?.split(" ")[1] || ""}
-      required
-    />
-    <input
-      type="email"
-      placeholder="Email"
-      value={session?.user?.email || ""}
-      required
-    />
-    <input type="tel" placeholder="Personal Phone" />
-    <textarea placeholder="Message" required></textarea>
-  </div>
-
-  <button type="submit" class="mt-4 rounded bg-blue-600 px-4 py-2 text-white">
-    Submit Audit Request
-  </button>
-</form>
-```
-
-### D-5: API Loading and Initialization
-
-**Script Integration**:
-
-```html
-<!-- Load Google Maps API with Places Library -->
-<script
-  src={`https://maps.googleapis.com/maps/api/js?key=${import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initPlacesAutocomplete`}
-  async
-  defer>
-</script>
-
-<script>
-  function initPlacesAutocomplete() {
-    const searchInput = document.getElementById('business-search');
-    if (searchInput) {
-      new PlacesAutocomplete(searchInput);
+    // Handle clear button click
+    if (this.clearButton) {
+      this.clearButton.addEventListener("click", () => {
+        this.clearField();
+      });
     }
   }
 
-  function populateBusinessFields(placeData) {
-    // Populate form fields with selected place data
-    document.getElementById('business-name').value = placeData.name || '';
-    document.getElementById('business-address').value = placeData.formattedAddress || '';
-    document.getElementById('business-phone').value = placeData.phoneNumber || '';
-    document.getElementById('business-website').value = placeData.website || '';
-    document.getElementById('place-id').value = placeData.placeId || '';
-    document.getElementById('google-business-url').value =
-      `https://www.google.com/maps/place/?q=place_id:${placeData.placeId}`;
-    document.getElementById('business-types').value = placeData.types.join(',');
+  private toggleClearButton(): void {
+    if (this.clearButton) {
+      if (this.inputElement.value.trim() !== "") {
+        this.clearButton.style.display = "block";
+      } else {
+        this.clearButton.style.display = "none";
+      }
+    }
   }
-</script>
+
+  public clearField(): void {
+    // Clear the input
+    this.inputElement.value = "";
+
+    // Hide clear button
+    if (this.clearButton) {
+      this.clearButton.style.display = "none";
+    }
+
+    // Clear business fields
+    this.clearBusinessFields();
+
+    // Clear Google Places selection
+    if (this.autocomplete) {
+      this.autocomplete.set("place", null);
+    }
+
+    // Update form validation state
+    this.updateFormValidation();
+
+    // Focus back to input
+    this.inputElement.focus();
+  }
+
+  private clearBusinessFields(): void {
+    const fieldIds = [
+      "business-name",
+      "business-address",
+      "business-phone",
+      "business-website",
+      "place-id",
+      "google-business-url",
+      "business-types",
+    ];
+
+    fieldIds.forEach((fieldId) => {
+      const field = document.getElementById(fieldId) as HTMLInputElement;
+      if (field) {
+        field.value = "";
+        field.classList.remove("field-populated");
+      }
+    });
+
+    // Call global clear callback if available
+    if (window.clearBusinessFields) {
+      window.clearBusinessFields();
+    }
+  }
+
+  private updateFormValidation(): void {
+    const submitButton = document.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+    const placeIdField = document.getElementById(
+      "place-id",
+    ) as HTMLInputElement;
+
+    if (submitButton && placeIdField) {
+      const hasValidPlace = placeIdField.value.trim() !== "";
+      submitButton.disabled = !hasValidPlace;
+
+      if (hasValidPlace) {
+        submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+        submitButton.classList.add("cursor-pointer");
+      } else {
+        submitButton.classList.add("opacity-50", "cursor-not-allowed");
+        submitButton.classList.remove("cursor-pointer");
+      }
+    }
+  }
+
+  private handlePlaceSelection(): void {
+    const place = this.autocomplete.getPlace();
+    if (!place.place_id) {
+      console.warn("No place selected or place_id missing");
+      this.updateFormValidation();
+      return;
+    }
+
+    const placeData: PlaceData = this.extractPlaceData(place as GooglePlace);
+    this.populateForm(placeData);
+
+    // Show clear button after selection
+    this.toggleClearButton();
+
+    // Update validation state
+    this.updateFormValidation();
+
+    // Call global callback if available
+    if (window.populateBusinessFields) {
+      window.populateBusinessFields(placeData);
+    }
+  }
+}
 ```
 
-### D-6: TypeScript Type Definitions
+### D-4: AuditLayout Component
 
-**Places API Types** (`src/types/places.ts`):
+**Minimal Layout Structure**:
+
+```astro
+---
+import Meta from "@components/Meta.astro";
+import HeatLogo from "@components/HeatLogo.astro";
+import { SITE } from "@data/constants";
+import "@styles/global.css";
+import "@fontsource-variable/inter";
+
+const {
+  title = SITE.title,
+  meta,
+  structuredData,
+  lang = "en",
+  customDescription = null,
+  customOgTitle = null,
+} = Astro.props;
+
+interface Props {
+  title?: string;
+  meta?: string;
+  structuredData?: object;
+  lang?: string;
+  customDescription?: string | null;
+  customOgTitle?: string | null;
+}
+---
+
+<!-- src/layouts/AuditLayout.astro -->
+<html lang={lang} class="scrollbar-hide lenis lenis-smooth scroll-pt-16">
+  <head>
+    <Meta
+      meta={meta}
+      structuredData={structuredData}
+      customDescription={customDescription}
+      customOgTitle={customOgTitle}
+    />
+    <title>{title}</title>
+    <script is:inline>
+      if (
+        localStorage.getItem("hs_theme") === "dark" ||
+        (!("hs_theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    </script>
+    <script>
+      import "@scripts/lenisSmoothScroll.js";
+    </script>
+  </head>
+  <body
+    class="flex min-h-screen flex-col bg-neutral-200 bg-neutral-800 selection:bg-yellow-400 selection:text-neutral-700"
+  >
+    <!-- Minimal Header with Logo Only -->
+    <header class="fixed inset-x-0 top-4 z-50 flex w-full justify-center">
+      <div
+        class="rounded-[36px] border border-yellow-100/40 bg-yellow-50/60 px-6 py-3 backdrop-blur-md"
+      >
+        <a
+          class="flex-none rounded-lg text-xl font-bold ring-zinc-500 outline-hidden focus-visible:ring-3"
+          href="/"
+          aria-label="Return to homepage"
+        >
+          <HeatLogo />
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <script>
+      import "preline/preline.js";
+    </script>
+
+    <style>
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </body>
+</html>
+```
+
+### D-5: Enhanced Audit Form
+
+**Updated Form Structure**:
+
+```astro
+---
+import AuditLayout from "@/layouts/AuditLayout.astro";
+import PlacesAutocomplete from "../components/PlacesAutocomplete.astro";
+import PrimaryCTA from "../components/ui/buttons/PrimaryCTA.astro";
+import { auth } from "../lib/auth";
+
+export const prerender = false;
+
+const session = await auth.api.getSession({
+  headers: Astro.request.headers,
+});
+
+const pageTitle: string = "Audit Contact Request";
+const metaDescription: string = "Submit your information for an audit request.";
+---
+
+<!-- src/pages/audit.astro -->
+<AuditLayout title={pageTitle} customDescription={metaDescription}>
+  <section class="mx-auto bg-neutral-200 px-4 pt-[150px] pb-10">
+    <div class="mx-auto max-w-2xl">
+      <!-- Existing content structure... -->
+
+      <form method="POST" id="audit-form">
+        <div class="grid gap-6">
+          <!-- Business Search Section -->
+          <div class="business-search-section">
+            <label
+              for="business-search"
+              class="mb-2 block text-sm font-medium text-neutral-700"
+            >
+              Search for your business
+            </label>
+            <PlacesAutocomplete
+              inputId="business-search"
+              placeholder="Start typing your business name..."
+              onPlaceSelected="populateBusinessFields"
+              onClear="clearBusinessFields"
+            />
+            <p class="mt-1 text-xs text-neutral-500">
+              Select your business from Google to auto-fill details below
+            </p>
+          </div>
+
+          <!-- Existing form fields... -->
+        </div>
+
+        <!-- Enhanced Submit Button -->
+        <div class="mt-6 flex justify-center">
+          <button
+            type="submit"
+            id="submit-btn"
+            class="group inline-flex cursor-not-allowed items-center justify-center gap-x-2 rounded-[7px] border border-transparent bg-orange-400 px-6 py-4 text-sm font-bold text-neutral-50 opacity-50 ring-zinc-500 outline-hidden transition duration-300 hover:bg-orange-500 focus:outline-hidden focus-visible:ring-3 active:bg-orange-500 disabled:pointer-events-none disabled:opacity-50"
+            disabled
+          >
+            <svg
+              class="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            Submit Request
+            <svg
+              class="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</AuditLayout>
+```
+
+### D-6: Enhanced Type Definitions
+
+**Extended Types** (`src/types/places.ts`):
 
 ```typescript
-export interface GooglePlace {
-  place_id: string;
-  name: string;
-  formatted_address: string;
-  formatted_phone_number?: string;
-  website?: string;
-  business_status: "OPERATIONAL" | "CLOSED_TEMPORARILY" | "CLOSED_PERMANENTLY";
-  types: string[];
-  geometry: {
-    location: google.maps.LatLng;
-  };
+// Add to existing types
+declare global {
+  interface Window {
+    initPlacesAutocomplete: () => void;
+    populateBusinessFields: (placeData: PlaceData) => void;
+    clearBusinessFields: () => void;
+  }
 }
 
-export interface BusinessFormData {
-  businessName: string;
-  businessAddress: string;
-  businessPhone?: string;
-  businessWebsite?: string;
-  placeId: string;
-  googleBusinessUrl: string;
-  businessTypes: string[];
-  firstName: string;
-  lastName: string;
-  email: string;
-  personalPhone?: string;
-  message: string;
+export interface PlacesAutocompleteCallbacks {
+  onPlaceSelected?: (placeData: PlaceData) => void;
+  onClear?: () => void;
+  onValidationChange?: (isValid: boolean) => void;
 }
 ```
 
-### D-7: Styling and UX Enhancements
+### D-7: Form Validation and State Management
 
-**CSS Enhancements**:
+**Client-Side Validation Logic**:
+
+```javascript
+// Enhanced validation in audit.astro script section
+window.clearBusinessFields = function () {
+  // Clear all business information fields
+  const fieldIds = [
+    "business-name",
+    "business-address",
+    "business-phone",
+    "business-website",
+    "place-id",
+    "google-business-url",
+    "business-types",
+  ];
+
+  fieldIds.forEach((fieldId) => {
+    const field = document.getElementById(fieldId);
+    if (field) {
+      field.value = "";
+      field.style.borderColor = "";
+      field.style.backgroundColor = "";
+    }
+  });
+
+  // Update submit button state
+  updateSubmitButtonState();
+};
+
+function updateSubmitButtonState() {
+  const submitButton = document.getElementById("submit-btn");
+  const placeIdField = document.getElementById("place-id");
+
+  if (submitButton && placeIdField) {
+    const hasValidPlace = placeIdField.value.trim() !== "";
+    submitButton.disabled = !hasValidPlace;
+
+    if (hasValidPlace) {
+      submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+      submitButton.classList.add("cursor-pointer");
+    } else {
+      submitButton.classList.add("opacity-50", "cursor-not-allowed");
+      submitButton.classList.remove("cursor-pointer");
+    }
+  }
+}
+
+// Enhanced populateBusinessFields to update validation
+window.populateBusinessFields = function (placeData) {
+  // Existing population logic...
+
+  // Update submit button state after population
+  updateSubmitButtonState();
+};
+
+// Form submission validation
+document.getElementById("audit-form")?.addEventListener("submit", function (e) {
+  const placeIdField = document.getElementById("place-id");
+  if (!placeIdField || !placeIdField.value.trim()) {
+    e.preventDefault();
+    alert(
+      "Please select your business from the Google search suggestions before submitting.",
+    );
+    return false;
+  }
+});
+```
+
+### D-8: Enhanced Styling
+
+**Additional CSS Enhancements**:
 
 ```css
-/* src/styles/places-autocomplete.css */
-.places-autocomplete-container {
+/* src/components/PlacesAutocomplete.astro - Enhanced styles */
+.input-wrapper {
   position: relative;
   width: 100%;
 }
 
-.places-autocomplete-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-}
-
-.places-autocomplete-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Google's autocomplete dropdown styling */
-.pac-container {
-  border-radius: 0.375rem;
-  border: 1px solid #d1d5db;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  font-family: inherit;
-}
-
-.pac-item {
-  padding: 0.75rem;
-  border-bottom: 1px solid #f3f4f6;
+.clear-input-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6b7280;
   cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
-.pac-item:hover {
-  background-color: #f9fafb;
+.clear-input-btn:hover {
+  color: #374151;
+  background-color: #f3f4f6;
 }
 
-.pac-item-selected {
-  background-color: #eff6ff;
+.clear-input-btn:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #3b82f6;
+  ring-offset: 1px;
+}
+
+.places-autocomplete-input {
+  padding-right: 40px; /* Make room for clear button */
+}
+
+/* Submit button validation states */
+.submit-btn-valid {
+  @apply cursor-pointer bg-orange-400 opacity-100 hover:bg-orange-500;
+}
+
+.submit-btn-invalid {
+  @apply cursor-not-allowed bg-gray-400 opacity-50;
+}
+
+/* AuditLayout header styling */
+.audit-header {
+  backdrop-filter: blur(12px);
+  background: rgba(254, 243, 199, 0.6);
+  border: 1px solid rgba(254, 240, 138, 0.4);
 }
 ```
 
-## E. SECURITY AND MONITORING SETUP
+## E. TESTING AND VALIDATION
 
-### E-1: Google Cloud Console Configuration
+### E-1: Functionality Testing
 
-1. **API Key Restrictions**:
-   - Application restrictions: HTTP referrers (your domain)
-   - API restrictions: Places API (New), Maps JavaScript API
-   - Quotas: Set reasonable daily limits
+1. **Clear Button Behavior**:
+   - Button appears when input has content
+   - Button disappears when input is empty
+   - Clicking clear button empties input and business fields
+   - Clear button has proper accessibility attributes
 
-2. **Monitoring Setup**:
-   - Enable billing alerts
-   - Set up quota alerts
-   - Monitor API usage in Cloud Console
+2. **Form Validation**:
+   - Submit button disabled when no business selected
+   - Submit button enabled after business selection
+   - Form prevents submission without valid place_id
+   - Visual feedback shows validation state
 
-### E-2: Usage Optimization
+3. **Layout Testing**:
+   - AuditLayout shows only logo in header
+   - Logo links back to homepage
+   - Responsive behavior on mobile devices
 
-1. **Autocomplete Configuration**:
-   - Limit to establishment types only
-   - Request only necessary place fields
-   - Implement debouncing for API calls
+### E-2: UX Testing
 
-2. **Caching Strategy**:
-   - Store recent searches in sessionStorage
-   - Cache place details for session duration
+1. **User Flow**:
+   - Clear and intuitive clear functionality
+   - Smooth transitions between states
+   - Consistent visual feedback
+   - Accessible keyboard navigation
 
-## F. TESTING AND VALIDATION
+## F. ACTION PLAN CHECKLIST
 
-### F-1: Functionality Testing
+### Phase 1: Core Component Development
 
-1. **Autocomplete Behavior**:
-   - Search suggestions appear correctly
-   - Place selection populates all fields
-   - Form submission includes all business data
+- [ ] 1. Create `src/components/ui/buttons/ClearButton.astro` with SVG X icon
+- [ ] 2. Update `src/components/PlacesAutocomplete.astro` to include ClearButton
+- [ ] 3. Enhance `src/components/PlacesAutocomplete.ts` with clear functionality
+- [ ] 4. Add clear button positioning and styling CSS
+- [ ] 5. Test clear button appears/disappears correctly
 
-2. **Error Handling**:
-   - API key restrictions work correctly
-   - Graceful fallback when Places API unavailable
-   - Form still functional if JavaScript disabled
+### Phase 2: Layout Creation
 
-### F-2: Security Testing
+- [ ] 6. Create `src/layouts/AuditLayout.astro` with minimal header
+- [ ] 7. Import and position HeatLogo component
+- [ ] 8. Style header container with backdrop blur and borders
+- [ ] 9. Test logo links back to homepage correctly
+- [ ] 10. Verify responsive behavior on mobile
 
-1. **API Key Protection**:
-   - Verify referrer restrictions block unauthorized domains
-   - Test quota limits trigger correctly
-   - Monitor for unusual usage patterns
+### Phase 3: Form Enhancement
 
-## G. DEPLOYMENT CHECKLIST
+- [ ] 11. Update `src/pages/audit.astro` to use AuditLayout
+- [ ] 12. Replace submit button with PrimaryCTA styling
+- [ ] 13. Add form validation JavaScript
+- [ ] 14. Implement `clearBusinessFields()` global function
+- [ ] 15. Test form validation prevents submission without business
 
-### G-1: Pre-Deployment
+### Phase 4: Field Clearing Logic
 
-- [ ] Configure API key restrictions in Google Cloud Console
-- [ ] Set up billing alerts and quotas
-- [ ] Test autocomplete functionality thoroughly
-- [ ] Verify form submission includes all business data
-- [ ] Test on various devices and browsers
+- [ ] 16. Implement business field clearing when autocomplete cleared
+- [ ] 17. Add visual feedback for field clearing
+- [ ] 18. Test clear button clears all related fields
+- [ ] 19. Verify form state updates after clearing
+- [ ] 20. Test keyboard accessibility for clear functionality
 
-### G-2: Post-Deployment
+### Phase 5: Submit Button Styling
 
-- [ ] Monitor API usage for first 24-48 hours
-- [ ] Verify no unauthorized usage detected
-- [ ] Test user experience with real business searches
-- [ ] Document any issues for iteration
+- [ ] 21. Apply PrimaryCTA orange color scheme to submit button
+- [ ] 22. Add zap and arrow icons to submit button
+- [ ] 23. Implement disabled/enabled state styling
+- [ ] 24. Add proper focus and hover states
+- [ ] 25. Test button accessibility and keyboard navigation
 
-## H. FUTURE ENHANCEMENTS
+### Phase 6: Integration Testing
 
-1. **Advanced Features**:
-   - Multiple location support for multi-location businesses
-   - Business verification status display
-   - Integration with Google My Business API for claimed business data
-   - Photo integration from Google Places
-   - Reviews and ratings display
+- [ ] 26. Test complete user flow from search to submit
+- [ ] 27. Verify all clearing functionality works together
+- [ ] 28. Test form submission with and without business selection
+- [ ] 29. Verify visual consistency across all components
+- [ ] 30. Test responsive behavior on various screen sizes
 
-2. **Performance Optimizations**:
-   - Implement request debouncing
-   - Add loading states and skeletons
-   - Progressive enhancement for non-JS users
+### Phase 7: Type Safety and Documentation
 
-3. **Analytics Integration**:
-   - Track autocomplete usage patterns
-   - Monitor form completion rates
-   - A/B test different UX approaches
-
-## I. ACTION PLAN CHECKLIST
-
-### Phase 1: API Security Setup
-
-- [ ] 1. Access Google Cloud Console → APIs & Services → Credentials
-- [ ] 2. Edit existing `PUBLIC_GOOGLE_MAPS_API_KEY`
-- [ ] 3. Add HTTP referrer restrictions for your domain
-- [ ] 4. Restrict API access to Places API (New) and Maps JavaScript API only
-- [ ] 5. Set initial quota limits (1000 requests/day)
-- [ ] 6. Enable billing alerts at $10, $25, $50 thresholds
-- [ ] 7. Test API key restrictions work correctly
-
-### Phase 2: Core Component Development
-
-- [ ] 8. Create `src/types/places.ts` with TypeScript interfaces
-- [ ] 9. Create `src/components/PlacesAutocomplete.ts` with core logic
-- [ ] 10. Create `src/components/PlacesAutocomplete.astro` component
-- [ ] 11. Add CSS styling for autocomplete dropdown
-- [ ] 12. Test component in isolation with sample data
-
-### Phase 3: Form Integration
-
-- [ ] 13. Modify `src/pages/audit.astro` to include Places autocomplete
-- [ ] 14. Add new form fields for business data (hidden and visible)
-- [ ] 15. Implement form field auto-population logic
-- [ ] 16. Add Google Maps API script loading with proper callback
-- [ ] 17. Test complete form flow with place selection
-
-### Phase 4: Enhancement and Polish
-
-- [ ] 18. Add loading states and error handling
-- [ ] 19. Implement input debouncing for performance
-- [ ] 20. Add help text and user guidance
-- [ ] 21. Style autocomplete to match existing form design
-- [ ] 22. Test accessibility and keyboard navigation
-
-### Phase 5: Testing and Validation
-
-- [ ] 23. Test autocomplete with various business types
-- [ ] 24. Verify all form fields populate correctly
-- [ ] 25. Test form submission includes all business data
-- [ ] 26. Validate API key restrictions prevent unauthorized access
-- [ ] 27. Test graceful degradation when JavaScript disabled
-- [ ] 28. Cross-browser and mobile device testing
-
-### Phase 6: Documentation and Deployment
-
-- [ ] 29. Create `docs/places-api-setup.md` documentation
-- [ ] 30. Update `.env.example` with any new variables
-- [ ] 31. Test deployment in staging environment
-- [ ] 32. Monitor initial API usage patterns
-- [ ] 33. Document any issues for future iterations
-
-### Phase 7: Post-Launch Monitoring
-
-- [ ] 34. Monitor Google Cloud Console for usage patterns
-- [ ] 35. Check for any unauthorized API access attempts
-- [ ] 36. Gather user feedback on autocomplete experience
-- [ ] 37. Analyze form completion rates before/after integration
-- [ ] 38. Plan any necessary adjustments or optimizations
+- [ ] 31. Update `src/types/places.ts` with new callback types
+- [ ] 32. Add TypeScript interfaces for new component props
+- [ ] 33. Test all TypeScript compilation passes
+- [ ] 34. Verify no console errors or warnings
+- [ ] 35. Document new component usage patterns
 
 <!-- README_SNIPPET_START
-### New Feature – Business Search with Google Places
+### Enhanced Audit Form Experience
 
-The audit form now includes intelligent business search powered by Google Places API. Users can simply start typing their business name to see autocomplete suggestions, automatically populating business details including name, address, phone, website, and Google Business Profile link. This streamlines the audit request process and ensures accurate business information capture.
+The audit request form now features a streamlined, professional interface with intelligent business search capabilities and improved user experience:
 
-**Key Benefits:**
-- **Faster Form Completion**: Auto-fill business details with a single selection
-- **Accurate Data**: Verified business information from Google's comprehensive database
-- **Better User Experience**: Real-time search suggestions with familiar Google-style interface
-- **Complete Business Profiles**: Automatic capture of Google Business Profile URLs and place IDs
+**Key Enhancements:**
+- **Smart Clear Functionality**: One-click clear button (X) appears in the business search field when populated, instantly clearing both the search and all related business information
+- **Form Validation**: Submit button remains disabled until a business is properly selected from Google Places suggestions, ensuring accurate data capture
+- **Premium Button Styling**: Professional orange CTA button with icons matches the site's premium design language
+- **Minimal Header Design**: Clean, logo-only header removes distractions and focuses attention on the form completion process
 
-Perfect for businesses seeking professional SEO audits with verified location data.
+**User Benefits:**
+- **Faster Corrections**: Quickly start over with business search without manually clearing multiple fields
+- **Error Prevention**: Cannot accidentally submit incomplete business information
+- **Professional Appearance**: Consistent styling throughout the form experience
+- **Focused Experience**: Distraction-free header keeps users focused on completing their audit request
+
+Perfect for businesses seeking a polished, error-free audit request process with verified Google business data.
 README_SNIPPET_END -->
 
 ────────────────────────────────────────
 
 **PLAN COMPLETE**
 
-This comprehensive plan provides a complete roadmap for integrating Google Places API into your audit form using a secure, pure client-side approach. The implementation prioritizes security through proper API key restrictions while delivering an excellent user experience with auto-populated business information.
+This comprehensive plan delivers all requested enhancements to the audit form:
 
-The plan includes all necessary components, security configurations, testing procedures, and a detailed 10-day implementation timeline. The final integration will allow users to search for their business and automatically populate form fields with verified Google data, significantly improving the audit request process.
+1. **Clear Button**: Integrated "X" button in Google Places input with coordinated field clearing
+2. **Business Field Clearing**: Automatic clearing of all business information when autocomplete is reset
+3. **PrimaryCTA Styling**: Professional orange submit button with icons and proper states
+4. **Form Validation**: Client-side validation preventing submission without valid business selection
+5. **Minimal Header**: Clean AuditLayout with logo-only header design
+
+The implementation maintains existing Google Places functionality while adding significant UX improvements through coordinated state management, visual feedback, and professional styling. All components work together seamlessly to create a polished, error-free audit request experience.

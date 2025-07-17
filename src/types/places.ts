@@ -39,10 +39,17 @@ export interface BusinessFormData {
   message: string;
 }
 
+export interface PlacesAutocompleteCallbacks {
+  onPlaceSelected?: (placeData: PlaceData) => void;
+  onClear?: () => void;
+  onValidationChange?: (isValid: boolean) => void;
+}
+
 // Global type augmentation for Google Maps
 declare global {
   interface Window {
     initPlacesAutocomplete: () => void;
     populateBusinessFields: (placeData: PlaceData) => void;
+    clearBusinessFields: () => void;
   }
 }
