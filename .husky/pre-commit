@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-bunx lint-staged 
+# Run lint-staged for code quality
+bunx lint-staged
+
+# Verify GitHub CLI authentication for RIPER workflows
+scripts/riper-gh.sh test 

@@ -1,194 +1,90 @@
-Ran tool
-Read file: src/lib/email.ts
+RIPER·Ω₃ Active [Session: Email-Service-Blueprint]
 
-RIPER·Ω₃ Active [Session: Audit-Form-Submissions]
+────────────────────────────────────────
+TECHNICAL PLAN — STORIES #1 & #2
+────────────────────────────────────────
+Scope: Deliver the foundation required for the Resend integration by (1) installing all runtime + dev dependencies and (2) publishing a canonical `.env.example` file so every contributor knows which keys are mandatory.
 
-────────────────────────────────────────────────────────
-COMPREHENSIVE TECHNICAL BLUEPRINT – “Audit Form Submissions”
-Approach Selected: Minimal Prisma Model Extension (Approach 1)
-────────────────────────────────────────────────────────
+A. CONTEXT  
+• Package manager: **Bun** (`bun install/add`).  
+• Email utility stub (`src/lib/email.ts`) already imports `resend`; build currently succeeds because the package is listed in `package.json` (confirmed).  
+• `nodemailer` & `@types/nodemailer` appear in `package.json`; we must verify they are on the correct version and locked in `bun.lock` after install.  
+• `.env` is in `.gitignore`; there is currently **no** `.env.example` committed.
 
-0. Purpose & Outcome
-   • Persist every audit-form submission in PostgreSQL, strictly linked to the signed-in user.  
-   • Capture all business & personal fields already collected in the UI plus status, reviewStatus, notes, createdAt, updatedAt.  
-   • Trigger an admin email + optional outbound webhook immediately after successful persistence.  
-   • Maintain simple synchronous request flow (no background queue) suited for low daily volume.
+B. STORY #1 — Install / Verify Dependencies
 
-1. Data-Model Design (Prisma)
-   Model name: `auditSubmission`  
-   Key points  
-   • Primary key: `id` (ULID/UUID String).  
-   • Foreign key: `userId → user.id` (`onDelete: Cascade`).  
-   • Timestamps: `createdAt`, `updatedAt`.  
-   • Business fields: `businessName`, `businessAddress`, `businessPhone`, `businessWebsite`, `placeId`, `googleBusinessUrl`, `businessTypes`.  
-   • Personal fields: `firstName`, `lastName`, `email`, `personalPhone`, `message`.  
-   • Workflow metadata: `status` (string, default "new"), `reviewStatus` (string, default "pending"), `notes` (String?)
+1. Create feature branch `feat/email-deps`.
+2. Commands to execute:
+   ```bash
+   # runtime SDK
+   bun add resend
+   # dev-only (type stubs already in project but ensure latest)
+   bun add -D nodemailer @types/nodemailer
+   ```
+3. Audit versions:
+   • `resend` ≥ 4.6.0 (latest stable).  
+   • `nodemailer` ≥ 7.x (matches @types).
+4. Commit: `chore: install Resend SDK and align email deps`
+5. Push branch; open PR with CI passing (even though workflows don’t exist yet, keep naming consistent).
+6. SUCCESS CRITERIA  
+   • `package.json` dependencies list exact versions.  
+   • `bun.lock` updated.  
+   • `src/lib/email.ts` compiles with no missing module errors.
 
-Example Prisma snippet (illustrative):
+C. STORY #2 — Create `.env.example`
 
-```prisma
-model auditSubmission {
-  id                String   @id @default(uuid())
-  userId            String
-  businessName      String
-  businessAddress   String
-  businessPhone     String?
-  businessWebsite   String?
-  placeId           String   @unique
-  googleBusinessUrl String?
-  businessTypes     String?
+1. File path: project root `.env.example`.
+2. Required keys (uppercase = secret, prefixed with comment):
 
-  firstName      String
-  lastName       String
-  email          String
-  personalPhone  String?
-  message        String
+   ```
+   # Resend
+   RESEND_API_KEY="re_live_XXXXXXXXXXXXXXXXXXXXXXXX"
+   RESEND_FROM_EMAIL="no-reply@gruntworksagency.com"
 
-  status        String   @default("new")
-  reviewStatus  String   @default("pending")
-  notes         String?
+   # Domain used for SPF/DKIM/DMARC records
+   MAIL_DOMAIN="gruntworksagency.com"
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+   # --- existing project variables (copied for completeness) ---
+   DATABASE_URL="postgres://user:pass@localhost:5432/db"
+   BETTER_AUTH_SECRET="changeme"
+   BETTER_AUTH_URL="http://localhost:4321"
+   # …
+   ```
 
-  // Relations
-  user          user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+3. Add inline comments:
+   • Explain that `RESEND_API_KEY` must correspond to a verified domain in Resend dashboard.  
+   • Note that `RESEND_FROM_EMAIL` must match `MAIL_DOMAIN` and be verified.
+4. Update README or `docs/email.md` with a one-liner pointer:  
+   “Copy `.env.example` → `.env` and fill in the blanks before running the app.”
+5. Commit: `docs: add .env.example with Resend keys`
 
-  @@index([userId])
-}
-```
+D. RISKS & MITIGATIONS  
+• Duplicate nodemailer versions — run `bun audit` to surface mismatches.  
+• Forgetting to commit `.env.example` — add a pre-commit lint rule (future story).
 
-2. Migration & Client Generation
-   • Run `npx prisma migrate dev --name add-audit-submission` to create SQL migration (later executed in CI/prod).  
-   • `prisma generate` will auto-run with the migrate command, producing updated Prisma Client.
+E. DELIVERABLES  
+• Updated `package.json` + `bun.lock`.  
+• `.env.example` in repo.  
+• PRs merged to `main`.
 
-3. Server-Side API Endpoint
-   Location: `src/pages/api/audit-submission.ts` (Astro API route)
-
-Responsibilities  
-a. Guard – allow only POST; ensure valid session (`auth.api.getSession`).  
-b. Extract formData fields from `request.formData()`.  
-c. Instantiate Prisma client (imported from `@/lib/prisma` or `@prisma/client`).  
-d. `prisma.auditSubmission.create({ data: { …fields, userId: session.user.id } })`  
-e. Trigger notifications:  
- • Email → use existing `sendEmail()` util to `process.env.ADMIN_EMAIL`.  
- • Webhook → if `process.env.AUDIT_WEBHOOK_URL` exists, `fetch` POST JSON payload.  
-f. Respond with 302 redirect back to `/audit?success=1` or JSON success.
-
-Example skeleton:
-
-```ts
-// src/pages/api/audit-submission.ts (pseudo)
-import type { APIRoute } from "astro";
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { sendEmail } from "@/lib/email";
-
-export const post: APIRoute = async ({ request, redirect }) => {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) return new Response("Unauthorized", { status: 401 });
-
-  const data = Object.fromEntries(await request.formData());
-  const submission = await prisma.auditSubmission.create({
-    data: { ...data, userId: session.user.id },
-  });
-
-  // Email
-  await sendEmail({
-    to: process.env.ADMIN_EMAIL!,
-    subject: "New Audit Submission Received",
-    html: `<pre>${JSON.stringify(submission, null, 2)}</pre>`,
-  });
-
-  // Webhook
-  if (process.env.AUDIT_WEBHOOK_URL) {
-    await fetch(process.env.AUDIT_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(submission),
-    }).catch(console.error);
-  }
-
-  return redirect("/audit?success=1");
-};
-```
-
-4. Front-End Adjustments (`src/pages/audit.astro`)
-   • Add `action="/api/audit-submission"` to `<form>` tag.  
-   • On successful redirect with `success=1`, display confirmation banner.  
-   Example snippet:
-
-```astro
----
-// ... existing code ...
-const url = new URL(Astro.request.url);
-const isSuccess = url.searchParams.get("success") === "1";
----
-
-{
-  isSuccess && (
-    <div class="mb-6 rounded-lg bg-green-100 p-4 text-green-800">
-      ✅ Thanks! Your audit request has been received.
-    </div>
-  )
-}
-<form method="POST" action="/api/audit-submission" id="audit-form">
-  // ... existing code ...
-</form>
-```
-
-5. Utility Layer
-   • `src/lib/prisma.ts` – if not present, create singleton Prisma client to avoid hot-reload connection limits.  
-   Example:
-
-```ts
-import { PrismaClient } from "@prisma/client";
-export const prisma = globalThis.prisma || new PrismaClient();
-if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
-```
-
-6. Environment Variables
-   Add to `.env.example` / docs:
-
-```
-DATABASE_URL=postgres://...
-ADMIN_EMAIL=admin@example.com
-AUDIT_WEBHOOK_URL=https://hooks.zapier.com/...
-```
-
-7. Testing & Validation
-   • Local dev: run `npm run dev`, submit form, verify DB row via `psql` or Prisma Studio (`npx prisma studio`).  
-   • Unit-test the API route using a mocked `auth` session and in-memory Prisma (or test DB).  
-   • Confirm email previews logged in dev (Ethereal) and webhook receives payload.
-
-8. Security & Compliance
-   • Server-side validation (e.g., sanitize strings, length limits).  
-   • Rate-limit endpoint (reuse Better Auth’s built-in middleware or implement simple rate-limit code).  
-   • Ensure `placeId` is unique to avoid duplicates unless intended (unique constraint above).  
-   • GDPR: include data-retention policy and ability to delete (future story).
-
-9. Future Extensions (for reference, not implemented here)
-   • Convert `status` & `reviewStatus` to true enums.  
-   • Add soft-delete (`deletedAt`).  
-   • Move notifications to queue (e.g., worker) if volume grows.
-
-────────────────────────────────────────────────────────
+────────────────────────────────────────
 ACTION PLAN CHECKLIST
+────────────────────────────────────────
 
-1. Update Prisma schema: add `auditSubmission` model (see §1).
-2. Run migration & generate client (`npx prisma migrate dev --name add-audit-submission`).
-3. Create `src/lib/prisma.ts` singleton if absent.
-4. Implement `src/pages/api/audit-submission.ts` (server logic, email, webhook).
-5. Inject environment variables (`ADMIN_EMAIL`, `AUDIT_WEBHOOK_URL`) & document in `.env.example`.
-6. Modify `<form>` in `src/pages/audit.astro`: add `action="/api/audit-submission"` and success banner logic.
-7. Test end-to-end locally: submit form, verify DB row, email preview, webhook call.
-8. Commit changes on feature branch; open PR with migration SQL reviewed.
-9. Deploy to staging, run `prisma migrate deploy`; smoke-test production webhook/email flow.
-10. Mark story complete, notify stakeholders.
+1. [Create feature branch `feat/email-deps`]
+2. [Run `bun add resend`]
+3. [Run `bun add -D nodemailer @types/nodemailer`]
+4. [Commit “chore: install Resend SDK and align email deps”]
+5. [Create `.env.example` with RESEND_API_KEY, RESEND_FROM_EMAIL, MAIL_DOMAIN (+ existing vars)]
+6. [Update docs to reference `.env.example`]
+7. [Commit “docs: add .env.example with Resend keys”]
+8. [Open PR(s) and merge after review]
+
+Plan complete. Switch to Execute Agent when ready to implement.
 
 <!-- README_SNIPPET_START
-### Feature – Audit Form Submissions
-Each audit request is now securely stored in the database and linked to the user who submitted it. Admins receive instant email notifications and can pipe submissions to any system via a configurable webhook URL.
+### GitHub Automation – RIPER Helper Script v2
+A hardened Bash helper that streamlines feature-branch creation, PR creation, and automated merges.
+Now includes pre-flight authentication checks, debug mode, and user-friendly error messages.
+Developers can run `scripts/riper-gh.sh branch-and-pr "<slug>"` to open a ready-to-review PR in seconds.
 README_SNIPPET_END -->
-
-────────────────────────────────────────────────────────
