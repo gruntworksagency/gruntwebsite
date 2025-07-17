@@ -1,738 +1,194 @@
-RIPER·Ω₃ Active [Session: Audit-Form-Enhancements]
+Ran tool
+Read file: src/lib/email.ts
 
-────────────────────────────────────────
-**COMPREHENSIVE TECHNICAL PLAN**  
-Audit Form UI/UX Enhancements & Validation
-────────────────────────────────────────
+RIPER·Ω₃ Active [Session: Audit-Form-Submissions]
 
-## A. GOALS
+────────────────────────────────────────────────────────
+COMPREHENSIVE TECHNICAL BLUEPRINT – “Audit Form Submissions”
+Approach Selected: Minimal Prisma Model Extension (Approach 1)
+────────────────────────────────────────────────────────
 
-1. **Enhanced User Experience**: Add clear functionality to Google Places autocomplete input with visual "X" button
-2. **Form State Management**: Automatically clear business information fields when Places autocomplete is cleared
-3. **Visual Consistency**: Replace basic submit button with PrimaryCTA styling (orange theme, proper padding, icons)
-4. **Form Validation**: Prevent form submission unless a business is selected via Google Places
-5. **Minimal Header Design**: Create clean, logo-only header for audit page (no navigation clutter)
+0. Purpose & Outcome
+   • Persist every audit-form submission in PostgreSQL, strictly linked to the signed-in user.  
+   • Capture all business & personal fields already collected in the UI plus status, reviewStatus, notes, createdAt, updatedAt.  
+   • Trigger an admin email + optional outbound webhook immediately after successful persistence.  
+   • Maintain simple synchronous request flow (no background queue) suited for low daily volume.
 
-## B. ARCHITECTURE OVERVIEW
+1. Data-Model Design (Prisma)
+   Model name: `auditSubmission`  
+   Key points  
+   • Primary key: `id` (ULID/UUID String).  
+   • Foreign key: `userId → user.id` (`onDelete: Cascade`).  
+   • Timestamps: `createdAt`, `updatedAt`.  
+   • Business fields: `businessName`, `businessAddress`, `businessPhone`, `businessWebsite`, `placeId`, `googleBusinessUrl`, `businessTypes`.  
+   • Personal fields: `firstName`, `lastName`, `email`, `personalPhone`, `message`.  
+   • Workflow metadata: `status` (string, default "new"), `reviewStatus` (string, default "pending"), `notes` (String?)
 
-**Component Enhancement Approach**:
+Example Prisma snippet (illustrative):
 
-- Extend existing `PlacesAutocomplete` component with clear button functionality
-- Add state management for coordinated field clearing
-- Implement client-side form validation with visual feedback
-- Create new `AuditLayout` as alternative to `MainLayout`
-- Maintain existing Google Places API integration while adding UX improvements
+```prisma
+model auditSubmission {
+  id                String   @id @default(uuid())
+  userId            String
+  businessName      String
+  businessAddress   String
+  businessPhone     String?
+  businessWebsite   String?
+  placeId           String   @unique
+  googleBusinessUrl String?
+  businessTypes     String?
 
-**Validation Strategy**:
+  firstName      String
+  lastName       String
+  email          String
+  personalPhone  String?
+  message        String
 
-- Client-side validation prevents submission when `place-id` is empty
-- Visual feedback shows validation state (disabled/enabled submit button)
-- Progressive enhancement ensures form still works without JavaScript
+  status        String   @default("new")
+  reviewStatus  String   @default("pending")
+  notes         String?
 
-## C. FILES/COMPONENTS TO CREATE OR MODIFY
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-### New Files
+  // Relations
+  user          user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-1. `src/layouts/AuditLayout.astro` - Logo-only layout for audit page
-2. `src/components/ui/buttons/ClearButton.astro` - Reusable clear button component
-
-### Modified Files
-
-1. `src/components/PlacesAutocomplete.astro` - Add clear button integration
-2. `src/components/PlacesAutocomplete.ts` - Add clear functionality and field management
-3. `src/pages/audit.astro` - Switch to AuditLayout, update submit button, add validation
-4. `src/types/places.ts` - Add clear callback type definition
-
-### Styling Updates
-
-1. Enhanced PlacesAutocomplete CSS for clear button positioning
-2. Form validation styles for submit button states
-3. AuditLayout minimal header styling
-
-## D. DETAILED IMPLEMENTATION PLAN
-
-### D-1: Clear Button Component
-
-**Component Structure**:
-
-```astro
----
-export interface Props {
-  inputId: string;
-  onClear?: string; // JavaScript callback function name
-  class?: string;
-}
-
-const { inputId, onClear = "clearField", class: className = "" } = Astro.props;
----
-
-<!-- src/components/ui/buttons/ClearButton.astro -->
-<button
-  type="button"
-  id={`${inputId}-clear`}
-  class={`clear-input-btn ${className}`}
-  onclick={`${onClear}('${inputId}')`}
-  aria-label="Clear field"
-  style="display: none;"
->
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-  >
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-</button>
-```
-
-### D-2: Enhanced PlacesAutocomplete Component
-
-**Updated Structure**:
-
-```astro
----
-import ClearButton from "../ui/buttons/ClearButton.astro";
-
-export interface Props {
-  inputId?: string;
-  placeholder?: string;
-  required?: boolean;
-  onPlaceSelected?: string;
-  onClear?: string;
-  class?: string;
-}
-
-const {
-  inputId = "business-search",
-  placeholder = "Search for your business...",
-  required = false,
-  onPlaceSelected = "handlePlaceSelection",
-  onClear = "clearBusinessFields",
-  class: className = "",
-} = Astro.props;
----
-
-<!-- src/components/PlacesAutocomplete.astro -->
-<div class="places-autocomplete-container">
-  <div class="input-wrapper">
-    <input
-      type="text"
-      id={inputId}
-      placeholder={placeholder}
-      required={required}
-      class={`places-autocomplete-input ${className}`}
-      autocomplete="off"
-    />
-    <ClearButton
-      inputId={inputId}
-      onClear={onClear}
-      class="absolute top-1/2 right-3 -translate-y-1/2 transform"
-    />
-  </div>
-  <div id={`${inputId}-results`} class="places-results"></div>
-</div>
-```
-
-### D-3: Enhanced PlacesAutocomplete TypeScript Logic
-
-**Extended Functionality** (`src/components/PlacesAutocomplete.ts`):
-
-```typescript
-export class PlacesAutocomplete {
-  private autocomplete!: google.maps.places.Autocomplete;
-  private inputElement: HTMLInputElement;
-  private clearButton: HTMLButtonElement | null;
-  private debounceTimer: NodeJS.Timeout | null = null;
-  private isLoading: boolean = false;
-
-  constructor(inputElement: HTMLInputElement) {
-    this.inputElement = inputElement;
-    this.clearButton = document.getElementById(
-      `${inputElement.id}-clear`,
-    ) as HTMLButtonElement;
-    this.initializeAutocomplete(inputElement);
-    this.addLoadingStates();
-    this.setupClearFunctionality();
-  }
-
-  private setupClearFunctionality(): void {
-    // Show/hide clear button based on input content
-    this.inputElement.addEventListener("input", () => {
-      this.toggleClearButton();
-    });
-
-    // Handle clear button click
-    if (this.clearButton) {
-      this.clearButton.addEventListener("click", () => {
-        this.clearField();
-      });
-    }
-  }
-
-  private toggleClearButton(): void {
-    if (this.clearButton) {
-      if (this.inputElement.value.trim() !== "") {
-        this.clearButton.style.display = "block";
-      } else {
-        this.clearButton.style.display = "none";
-      }
-    }
-  }
-
-  public clearField(): void {
-    // Clear the input
-    this.inputElement.value = "";
-
-    // Hide clear button
-    if (this.clearButton) {
-      this.clearButton.style.display = "none";
-    }
-
-    // Clear business fields
-    this.clearBusinessFields();
-
-    // Clear Google Places selection
-    if (this.autocomplete) {
-      this.autocomplete.set("place", null);
-    }
-
-    // Update form validation state
-    this.updateFormValidation();
-
-    // Focus back to input
-    this.inputElement.focus();
-  }
-
-  private clearBusinessFields(): void {
-    const fieldIds = [
-      "business-name",
-      "business-address",
-      "business-phone",
-      "business-website",
-      "place-id",
-      "google-business-url",
-      "business-types",
-    ];
-
-    fieldIds.forEach((fieldId) => {
-      const field = document.getElementById(fieldId) as HTMLInputElement;
-      if (field) {
-        field.value = "";
-        field.classList.remove("field-populated");
-      }
-    });
-
-    // Call global clear callback if available
-    if (window.clearBusinessFields) {
-      window.clearBusinessFields();
-    }
-  }
-
-  private updateFormValidation(): void {
-    const submitButton = document.querySelector(
-      'button[type="submit"]',
-    ) as HTMLButtonElement;
-    const placeIdField = document.getElementById(
-      "place-id",
-    ) as HTMLInputElement;
-
-    if (submitButton && placeIdField) {
-      const hasValidPlace = placeIdField.value.trim() !== "";
-      submitButton.disabled = !hasValidPlace;
-
-      if (hasValidPlace) {
-        submitButton.classList.remove("opacity-50", "cursor-not-allowed");
-        submitButton.classList.add("cursor-pointer");
-      } else {
-        submitButton.classList.add("opacity-50", "cursor-not-allowed");
-        submitButton.classList.remove("cursor-pointer");
-      }
-    }
-  }
-
-  private handlePlaceSelection(): void {
-    const place = this.autocomplete.getPlace();
-    if (!place.place_id) {
-      console.warn("No place selected or place_id missing");
-      this.updateFormValidation();
-      return;
-    }
-
-    const placeData: PlaceData = this.extractPlaceData(place as GooglePlace);
-    this.populateForm(placeData);
-
-    // Show clear button after selection
-    this.toggleClearButton();
-
-    // Update validation state
-    this.updateFormValidation();
-
-    // Call global callback if available
-    if (window.populateBusinessFields) {
-      window.populateBusinessFields(placeData);
-    }
-  }
+  @@index([userId])
 }
 ```
 
-### D-4: AuditLayout Component
+2. Migration & Client Generation
+   • Run `npx prisma migrate dev --name add-audit-submission` to create SQL migration (later executed in CI/prod).  
+   • `prisma generate` will auto-run with the migrate command, producing updated Prisma Client.
 
-**Minimal Layout Structure**:
+3. Server-Side API Endpoint
+   Location: `src/pages/api/audit-submission.ts` (Astro API route)
 
-```astro
----
-import Meta from "@components/Meta.astro";
-import HeatLogo from "@components/HeatLogo.astro";
-import { SITE } from "@data/constants";
-import "@styles/global.css";
-import "@fontsource-variable/inter";
+Responsibilities  
+a. Guard – allow only POST; ensure valid session (`auth.api.getSession`).  
+b. Extract formData fields from `request.formData()`.  
+c. Instantiate Prisma client (imported from `@/lib/prisma` or `@prisma/client`).  
+d. `prisma.auditSubmission.create({ data: { …fields, userId: session.user.id } })`  
+e. Trigger notifications:  
+ • Email → use existing `sendEmail()` util to `process.env.ADMIN_EMAIL`.  
+ • Webhook → if `process.env.AUDIT_WEBHOOK_URL` exists, `fetch` POST JSON payload.  
+f. Respond with 302 redirect back to `/audit?success=1` or JSON success.
 
-const {
-  title = SITE.title,
-  meta,
-  structuredData,
-  lang = "en",
-  customDescription = null,
-  customOgTitle = null,
-} = Astro.props;
+Example skeleton:
 
-interface Props {
-  title?: string;
-  meta?: string;
-  structuredData?: object;
-  lang?: string;
-  customDescription?: string | null;
-  customOgTitle?: string | null;
-}
----
+```ts
+// src/pages/api/audit-submission.ts (pseudo)
+import type { APIRoute } from "astro";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/email";
 
-<!-- src/layouts/AuditLayout.astro -->
-<html lang={lang} class="scrollbar-hide lenis lenis-smooth scroll-pt-16">
-  <head>
-    <Meta
-      meta={meta}
-      structuredData={structuredData}
-      customDescription={customDescription}
-      customOgTitle={customOgTitle}
-    />
-    <title>{title}</title>
-    <script is:inline>
-      if (
-        localStorage.getItem("hs_theme") === "dark" ||
-        (!("hs_theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      ) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    </script>
-    <script>
-      import "@scripts/lenisSmoothScroll.js";
-    </script>
-  </head>
-  <body
-    class="flex min-h-screen flex-col bg-neutral-200 bg-neutral-800 selection:bg-yellow-400 selection:text-neutral-700"
-  >
-    <!-- Minimal Header with Logo Only -->
-    <header class="fixed inset-x-0 top-4 z-50 flex w-full justify-center">
-      <div
-        class="rounded-[36px] border border-yellow-100/40 bg-yellow-50/60 px-6 py-3 backdrop-blur-md"
-      >
-        <a
-          class="flex-none rounded-lg text-xl font-bold ring-zinc-500 outline-hidden focus-visible:ring-3"
-          href="/"
-          aria-label="Return to homepage"
-        >
-          <HeatLogo />
-        </a>
-      </div>
-    </header>
+export const post: APIRoute = async ({ request, redirect }) => {
+  const session = await auth.api.getSession({ headers: request.headers });
+  if (!session?.user) return new Response("Unauthorized", { status: 401 });
 
-    <main class="flex-grow">
-      <slot />
-    </main>
-
-    <script>
-      import "preline/preline.js";
-    </script>
-
-    <style>
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
-      }
-      .scrollbar-hide {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-    </style>
-  </body>
-</html>
-```
-
-### D-5: Enhanced Audit Form
-
-**Updated Form Structure**:
-
-```astro
----
-import AuditLayout from "@/layouts/AuditLayout.astro";
-import PlacesAutocomplete from "../components/PlacesAutocomplete.astro";
-import PrimaryCTA from "../components/ui/buttons/PrimaryCTA.astro";
-import { auth } from "../lib/auth";
-
-export const prerender = false;
-
-const session = await auth.api.getSession({
-  headers: Astro.request.headers,
-});
-
-const pageTitle: string = "Audit Contact Request";
-const metaDescription: string = "Submit your information for an audit request.";
----
-
-<!-- src/pages/audit.astro -->
-<AuditLayout title={pageTitle} customDescription={metaDescription}>
-  <section class="mx-auto bg-neutral-200 px-4 pt-[150px] pb-10">
-    <div class="mx-auto max-w-2xl">
-      <!-- Existing content structure... -->
-
-      <form method="POST" id="audit-form">
-        <div class="grid gap-6">
-          <!-- Business Search Section -->
-          <div class="business-search-section">
-            <label
-              for="business-search"
-              class="mb-2 block text-sm font-medium text-neutral-700"
-            >
-              Search for your business
-            </label>
-            <PlacesAutocomplete
-              inputId="business-search"
-              placeholder="Start typing your business name..."
-              onPlaceSelected="populateBusinessFields"
-              onClear="clearBusinessFields"
-            />
-            <p class="mt-1 text-xs text-neutral-500">
-              Select your business from Google to auto-fill details below
-            </p>
-          </div>
-
-          <!-- Existing form fields... -->
-        </div>
-
-        <!-- Enhanced Submit Button -->
-        <div class="mt-6 flex justify-center">
-          <button
-            type="submit"
-            id="submit-btn"
-            class="group inline-flex cursor-not-allowed items-center justify-center gap-x-2 rounded-[7px] border border-transparent bg-orange-400 px-6 py-4 text-sm font-bold text-neutral-50 opacity-50 ring-zinc-500 outline-hidden transition duration-300 hover:bg-orange-500 focus:outline-hidden focus-visible:ring-3 active:bg-orange-500 disabled:pointer-events-none disabled:opacity-50"
-            disabled
-          >
-            <svg
-              class="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-            </svg>
-            Submit Request
-            <svg
-              class="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"></path>
-            </svg>
-          </button>
-        </div>
-      </form>
-    </div>
-  </section>
-</AuditLayout>
-```
-
-### D-6: Enhanced Type Definitions
-
-**Extended Types** (`src/types/places.ts`):
-
-```typescript
-// Add to existing types
-declare global {
-  interface Window {
-    initPlacesAutocomplete: () => void;
-    populateBusinessFields: (placeData: PlaceData) => void;
-    clearBusinessFields: () => void;
-  }
-}
-
-export interface PlacesAutocompleteCallbacks {
-  onPlaceSelected?: (placeData: PlaceData) => void;
-  onClear?: () => void;
-  onValidationChange?: (isValid: boolean) => void;
-}
-```
-
-### D-7: Form Validation and State Management
-
-**Client-Side Validation Logic**:
-
-```javascript
-// Enhanced validation in audit.astro script section
-window.clearBusinessFields = function () {
-  // Clear all business information fields
-  const fieldIds = [
-    "business-name",
-    "business-address",
-    "business-phone",
-    "business-website",
-    "place-id",
-    "google-business-url",
-    "business-types",
-  ];
-
-  fieldIds.forEach((fieldId) => {
-    const field = document.getElementById(fieldId);
-    if (field) {
-      field.value = "";
-      field.style.borderColor = "";
-      field.style.backgroundColor = "";
-    }
+  const data = Object.fromEntries(await request.formData());
+  const submission = await prisma.auditSubmission.create({
+    data: { ...data, userId: session.user.id },
   });
 
-  // Update submit button state
-  updateSubmitButtonState();
-};
+  // Email
+  await sendEmail({
+    to: process.env.ADMIN_EMAIL!,
+    subject: "New Audit Submission Received",
+    html: `<pre>${JSON.stringify(submission, null, 2)}</pre>`,
+  });
 
-function updateSubmitButtonState() {
-  const submitButton = document.getElementById("submit-btn");
-  const placeIdField = document.getElementById("place-id");
-
-  if (submitButton && placeIdField) {
-    const hasValidPlace = placeIdField.value.trim() !== "";
-    submitButton.disabled = !hasValidPlace;
-
-    if (hasValidPlace) {
-      submitButton.classList.remove("opacity-50", "cursor-not-allowed");
-      submitButton.classList.add("cursor-pointer");
-    } else {
-      submitButton.classList.add("opacity-50", "cursor-not-allowed");
-      submitButton.classList.remove("cursor-pointer");
-    }
+  // Webhook
+  if (process.env.AUDIT_WEBHOOK_URL) {
+    await fetch(process.env.AUDIT_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(submission),
+    }).catch(console.error);
   }
-}
 
-// Enhanced populateBusinessFields to update validation
-window.populateBusinessFields = function (placeData) {
-  // Existing population logic...
-
-  // Update submit button state after population
-  updateSubmitButtonState();
+  return redirect("/audit?success=1");
 };
-
-// Form submission validation
-document.getElementById("audit-form")?.addEventListener("submit", function (e) {
-  const placeIdField = document.getElementById("place-id");
-  if (!placeIdField || !placeIdField.value.trim()) {
-    e.preventDefault();
-    alert(
-      "Please select your business from the Google search suggestions before submitting.",
-    );
-    return false;
-  }
-});
 ```
 
-### D-8: Enhanced Styling
+4. Front-End Adjustments (`src/pages/audit.astro`)
+   • Add `action="/api/audit-submission"` to `<form>` tag.  
+   • On successful redirect with `success=1`, display confirmation banner.  
+   Example snippet:
 
-**Additional CSS Enhancements**:
+```astro
+---
+// ... existing code ...
+const url = new URL(Astro.request.url);
+const isSuccess = url.searchParams.get("success") === "1";
+---
 
-```css
-/* src/components/PlacesAutocomplete.astro - Enhanced styles */
-.input-wrapper {
-  position: relative;
-  width: 100%;
+{
+  isSuccess && (
+    <div class="mb-6 rounded-lg bg-green-100 p-4 text-green-800">
+      ✅ Thanks! Your audit request has been received.
+    </div>
+  )
 }
-
-.clear-input-btn {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #6b7280;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  z-index: 10;
-}
-
-.clear-input-btn:hover {
-  color: #374151;
-  background-color: #f3f4f6;
-}
-
-.clear-input-btn:focus {
-  outline: none;
-  ring: 2px;
-  ring-color: #3b82f6;
-  ring-offset: 1px;
-}
-
-.places-autocomplete-input {
-  padding-right: 40px; /* Make room for clear button */
-}
-
-/* Submit button validation states */
-.submit-btn-valid {
-  @apply cursor-pointer bg-orange-400 opacity-100 hover:bg-orange-500;
-}
-
-.submit-btn-invalid {
-  @apply cursor-not-allowed bg-gray-400 opacity-50;
-}
-
-/* AuditLayout header styling */
-.audit-header {
-  backdrop-filter: blur(12px);
-  background: rgba(254, 243, 199, 0.6);
-  border: 1px solid rgba(254, 240, 138, 0.4);
-}
+<form method="POST" action="/api/audit-submission" id="audit-form">
+  // ... existing code ...
+</form>
 ```
 
-## E. TESTING AND VALIDATION
+5. Utility Layer
+   • `src/lib/prisma.ts` – if not present, create singleton Prisma client to avoid hot-reload connection limits.  
+   Example:
 
-### E-1: Functionality Testing
+```ts
+import { PrismaClient } from "@prisma/client";
+export const prisma = globalThis.prisma || new PrismaClient();
+if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
+```
 
-1. **Clear Button Behavior**:
-   - Button appears when input has content
-   - Button disappears when input is empty
-   - Clicking clear button empties input and business fields
-   - Clear button has proper accessibility attributes
+6. Environment Variables
+   Add to `.env.example` / docs:
 
-2. **Form Validation**:
-   - Submit button disabled when no business selected
-   - Submit button enabled after business selection
-   - Form prevents submission without valid place_id
-   - Visual feedback shows validation state
+```
+DATABASE_URL=postgres://...
+ADMIN_EMAIL=admin@example.com
+AUDIT_WEBHOOK_URL=https://hooks.zapier.com/...
+```
 
-3. **Layout Testing**:
-   - AuditLayout shows only logo in header
-   - Logo links back to homepage
-   - Responsive behavior on mobile devices
+7. Testing & Validation
+   • Local dev: run `npm run dev`, submit form, verify DB row via `psql` or Prisma Studio (`npx prisma studio`).  
+   • Unit-test the API route using a mocked `auth` session and in-memory Prisma (or test DB).  
+   • Confirm email previews logged in dev (Ethereal) and webhook receives payload.
 
-### E-2: UX Testing
+8. Security & Compliance
+   • Server-side validation (e.g., sanitize strings, length limits).  
+   • Rate-limit endpoint (reuse Better Auth’s built-in middleware or implement simple rate-limit code).  
+   • Ensure `placeId` is unique to avoid duplicates unless intended (unique constraint above).  
+   • GDPR: include data-retention policy and ability to delete (future story).
 
-1. **User Flow**:
-   - Clear and intuitive clear functionality
-   - Smooth transitions between states
-   - Consistent visual feedback
-   - Accessible keyboard navigation
+9. Future Extensions (for reference, not implemented here)
+   • Convert `status` & `reviewStatus` to true enums.  
+   • Add soft-delete (`deletedAt`).  
+   • Move notifications to queue (e.g., worker) if volume grows.
 
-## F. ACTION PLAN CHECKLIST
+────────────────────────────────────────────────────────
+ACTION PLAN CHECKLIST
 
-### Phase 1: Core Component Development
-
-- [ ] 1. Create `src/components/ui/buttons/ClearButton.astro` with SVG X icon
-- [ ] 2. Update `src/components/PlacesAutocomplete.astro` to include ClearButton
-- [ ] 3. Enhance `src/components/PlacesAutocomplete.ts` with clear functionality
-- [ ] 4. Add clear button positioning and styling CSS
-- [ ] 5. Test clear button appears/disappears correctly
-
-### Phase 2: Layout Creation
-
-- [ ] 6. Create `src/layouts/AuditLayout.astro` with minimal header
-- [ ] 7. Import and position HeatLogo component
-- [ ] 8. Style header container with backdrop blur and borders
-- [ ] 9. Test logo links back to homepage correctly
-- [ ] 10. Verify responsive behavior on mobile
-
-### Phase 3: Form Enhancement
-
-- [ ] 11. Update `src/pages/audit.astro` to use AuditLayout
-- [ ] 12. Replace submit button with PrimaryCTA styling
-- [ ] 13. Add form validation JavaScript
-- [ ] 14. Implement `clearBusinessFields()` global function
-- [ ] 15. Test form validation prevents submission without business
-
-### Phase 4: Field Clearing Logic
-
-- [ ] 16. Implement business field clearing when autocomplete cleared
-- [ ] 17. Add visual feedback for field clearing
-- [ ] 18. Test clear button clears all related fields
-- [ ] 19. Verify form state updates after clearing
-- [ ] 20. Test keyboard accessibility for clear functionality
-
-### Phase 5: Submit Button Styling
-
-- [ ] 21. Apply PrimaryCTA orange color scheme to submit button
-- [ ] 22. Add zap and arrow icons to submit button
-- [ ] 23. Implement disabled/enabled state styling
-- [ ] 24. Add proper focus and hover states
-- [ ] 25. Test button accessibility and keyboard navigation
-
-### Phase 6: Integration Testing
-
-- [ ] 26. Test complete user flow from search to submit
-- [ ] 27. Verify all clearing functionality works together
-- [ ] 28. Test form submission with and without business selection
-- [ ] 29. Verify visual consistency across all components
-- [ ] 30. Test responsive behavior on various screen sizes
-
-### Phase 7: Type Safety and Documentation
-
-- [ ] 31. Update `src/types/places.ts` with new callback types
-- [ ] 32. Add TypeScript interfaces for new component props
-- [ ] 33. Test all TypeScript compilation passes
-- [ ] 34. Verify no console errors or warnings
-- [ ] 35. Document new component usage patterns
+1. Update Prisma schema: add `auditSubmission` model (see §1).
+2. Run migration & generate client (`npx prisma migrate dev --name add-audit-submission`).
+3. Create `src/lib/prisma.ts` singleton if absent.
+4. Implement `src/pages/api/audit-submission.ts` (server logic, email, webhook).
+5. Inject environment variables (`ADMIN_EMAIL`, `AUDIT_WEBHOOK_URL`) & document in `.env.example`.
+6. Modify `<form>` in `src/pages/audit.astro`: add `action="/api/audit-submission"` and success banner logic.
+7. Test end-to-end locally: submit form, verify DB row, email preview, webhook call.
+8. Commit changes on feature branch; open PR with migration SQL reviewed.
+9. Deploy to staging, run `prisma migrate deploy`; smoke-test production webhook/email flow.
+10. Mark story complete, notify stakeholders.
 
 <!-- README_SNIPPET_START
-### Enhanced Audit Form Experience
-
-The audit request form now features a streamlined, professional interface with intelligent business search capabilities and improved user experience:
-
-**Key Enhancements:**
-- **Smart Clear Functionality**: One-click clear button (X) appears in the business search field when populated, instantly clearing both the search and all related business information
-- **Form Validation**: Submit button remains disabled until a business is properly selected from Google Places suggestions, ensuring accurate data capture
-- **Premium Button Styling**: Professional orange CTA button with icons matches the site's premium design language
-- **Minimal Header Design**: Clean, logo-only header removes distractions and focuses attention on the form completion process
-
-**User Benefits:**
-- **Faster Corrections**: Quickly start over with business search without manually clearing multiple fields
-- **Error Prevention**: Cannot accidentally submit incomplete business information
-- **Professional Appearance**: Consistent styling throughout the form experience
-- **Focused Experience**: Distraction-free header keeps users focused on completing their audit request
-
-Perfect for businesses seeking a polished, error-free audit request process with verified Google business data.
+### Feature – Audit Form Submissions
+Each audit request is now securely stored in the database and linked to the user who submitted it. Admins receive instant email notifications and can pipe submissions to any system via a configurable webhook URL.
 README_SNIPPET_END -->
 
-────────────────────────────────────────
-
-**PLAN COMPLETE**
-
-This comprehensive plan delivers all requested enhancements to the audit form:
-
-1. **Clear Button**: Integrated "X" button in Google Places input with coordinated field clearing
-2. **Business Field Clearing**: Automatic clearing of all business information when autocomplete is reset
-3. **PrimaryCTA Styling**: Professional orange submit button with icons and proper states
-4. **Form Validation**: Client-side validation preventing submission without valid business selection
-5. **Minimal Header**: Clean AuditLayout with logo-only header design
-
-The implementation maintains existing Google Places functionality while adding significant UX improvements through coordinated state management, visual feedback, and professional styling. All components work together seamlessly to create a polished, error-free audit request experience.
+────────────────────────────────────────────────────────
