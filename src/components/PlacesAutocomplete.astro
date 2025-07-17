@@ -1,0 +1,115 @@
+---
+export interface Props {
+  inputId?: string;
+  placeholder?: string;
+  required?: boolean;
+  onPlaceSelected?: string;
+  class?: string;
+}
+
+const {
+  inputId = "business-search",
+  placeholder = "Search for your business...",
+  required = false,
+  onPlaceSelected = "handlePlaceSelection",
+  class: className = "",
+} = Astro.props;
+---
+
+<div class="places-autocomplete-container">
+  <input
+    type="text"
+    id={inputId}
+    placeholder={placeholder}
+    required={required}
+    class={`places-autocomplete-input ${className}`}
+    autocomplete="off"
+  />
+  <div id={`${inputId}-results`} class="places-results"></div>
+</div>
+
+<style>
+  .places-autocomplete-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .places-autocomplete-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .places-autocomplete-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .places-autocomplete-input.field-populated {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+    transition: all 0.3s ease;
+  }
+
+  /* Google's autocomplete dropdown styling overrides */
+  :global(.pac-container) {
+    border-radius: 0.375rem !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    font-family: inherit !important;
+    margin-top: 2px !important;
+  }
+
+  :global(.pac-item) {
+    padding: 0.75rem !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+    cursor: pointer !important;
+    font-size: 0.875rem !important;
+  }
+
+  :global(.pac-item:hover) {
+    background-color: #f9fafb !important;
+  }
+
+  :global(.pac-item-selected) {
+    background-color: #eff6ff !important;
+  }
+
+  :global(.pac-item-query) {
+    font-weight: 600 !important;
+    color: #1f2937 !important;
+  }
+
+  :global(.pac-matched) {
+    font-weight: 700 !important;
+    color: #3b82f6 !important;
+  }
+
+  :global(.pac-icon) {
+    margin-right: 0.5rem !important;
+  }
+
+  .places-results {
+    /* Placeholder for any custom results styling */
+  }
+</style>
+
+<script>
+  import { PlacesAutocomplete } from "./PlacesAutocomplete.ts";
+
+  // Initialize when DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    // This will be called by the global initPlacesAutocomplete function
+    // when Google Maps API is loaded
+  });
+
+  // Make PlacesAutocomplete available globally for the callback
+  window.PlacesAutocomplete = PlacesAutocomplete;
+</script>
+
