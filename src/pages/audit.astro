@@ -1,5 +1,5 @@
 ---
-import MainLayout from "@/layouts/MainLayout.astro";
+import AuditLayout from "@/layouts/AuditLayout.astro";
 import PlacesAutocomplete from "../components/PlacesAutocomplete.astro";
 import { auth } from "../lib/auth";
 
@@ -13,7 +13,7 @@ const pageTitle: string = "Audit Contact Request";
 const metaDescription: string = "Submit your information for an audit request.";
 ---
 
-<MainLayout title={pageTitle} customDescription={metaDescription}>
+<AuditLayout title={pageTitle} customDescription={metaDescription}>
   <section class="mx-auto bg-neutral-200 px-4 pt-[150px] pb-10">
     <div class="mx-auto max-w-2xl">
       <div class="text-center">
@@ -49,7 +49,7 @@ const metaDescription: string = "Submit your information for an audit request.";
         <h2 class="mb-8 text-xl font-bold text-neutral-700">
           Your Information
         </h2>
-        <form method="POST">
+        <form method="POST" id="audit-form">
           <div class="grid gap-6">
             <!-- Business Search Section -->
             <div class="business-search-section">
@@ -63,6 +63,7 @@ const metaDescription: string = "Submit your information for an audit request.";
                 inputId="business-search"
                 placeholder="Start typing your business name..."
                 onPlaceSelected="populateBusinessFields"
+                onClear="clearBusinessFields"
               />
               <p class="mt-1 text-xs text-neutral-500">
                 Select your business from Google to auto-fill details below
@@ -156,24 +157,53 @@ const metaDescription: string = "Submit your information for an audit request.";
               </div>
             </div>
           </div>
-          <button
-            type="submit"
-            class="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
-          >
-            Submit Request
-          </button>
+
+          <!-- Enhanced Submit Button -->
+          <div class="mt-6 flex justify-center">
+            <button
+              type="submit"
+              id="submit-btn"
+              class="group inline-flex cursor-not-allowed items-center justify-center gap-x-2 rounded-[7px] border border-transparent bg-orange-400 px-6 py-4 text-sm font-bold text-neutral-50 opacity-50 ring-zinc-500 outline-hidden transition duration-300 hover:bg-orange-500 focus:outline-hidden focus-visible:ring-3 active:bg-orange-500 disabled:pointer-events-none disabled:opacity-50"
+              disabled
+            >
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              Submit Request
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
         </form>
       </div>
     </div>
   </section>
-</MainLayout>
+</AuditLayout>
 
 <!-- Load Google Maps API with Places Library -->
 <script
   src={`https://maps.googleapis.com/maps/api/js?key=${import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initPlacesAutocomplete`}
   async
-  defer
-></script>
+  defer></script>
 
 <script>
   import { authClient } from "../lib/auth-client";
@@ -190,7 +220,55 @@ const metaDescription: string = "Submit your information for an audit request.";
     }
   };
 
-  // Global function to populate business fields
+  // Enhanced clearBusinessFields function
+  window.clearBusinessFields = function () {
+    // Clear all business information fields
+    const fieldIds = [
+      "business-name",
+      "business-address",
+      "business-phone",
+      "business-website",
+      "place-id",
+      "google-business-url",
+      "business-types",
+    ];
+
+    fieldIds.forEach((fieldId) => {
+      const field = document.getElementById(fieldId) as HTMLInputElement;
+      if (field) {
+        field.value = "";
+        field.style.borderColor = "";
+        field.style.backgroundColor = "";
+      }
+    });
+
+    // Update submit button state
+    updateSubmitButtonState();
+  };
+
+  function updateSubmitButtonState() {
+    const submitButton = document.getElementById(
+      "submit-btn",
+    ) as HTMLButtonElement;
+    const placeIdField = document.getElementById(
+      "place-id",
+    ) as HTMLInputElement;
+
+    if (submitButton && placeIdField) {
+      const hasValidPlace = placeIdField.value.trim() !== "";
+      submitButton.disabled = !hasValidPlace;
+
+      if (hasValidPlace) {
+        submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+        submitButton.classList.add("cursor-pointer");
+      } else {
+        submitButton.classList.add("opacity-50", "cursor-not-allowed");
+        submitButton.classList.remove("cursor-pointer");
+      }
+    }
+  }
+
+  // Enhanced populateBusinessFields to update validation
   window.populateBusinessFields = function (placeData: PlaceData) {
     // Auto-populate form fields with selected place data
     const businessNameField = document.getElementById(
@@ -245,7 +323,26 @@ const metaDescription: string = "Submit your information for an audit request.";
         }, 3000);
       }
     });
+
+    // Update submit button state after population
+    updateSubmitButtonState();
   };
+
+  // Form submission validation
+  document
+    .getElementById("audit-form")
+    ?.addEventListener("submit", function (e) {
+      const placeIdField = document.getElementById(
+        "place-id",
+      ) as HTMLInputElement;
+      if (!placeIdField || !placeIdField.value.trim()) {
+        e.preventDefault();
+        alert(
+          "Please select your business from the Google search suggestions before submitting.",
+        );
+        return false;
+      }
+    });
 
   const signoutButton = document.getElementById("signout-btn");
   if (signoutButton) {
