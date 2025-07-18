@@ -6,6 +6,12 @@ const navBarLinks = [
   { name: "Blog", url: "/blog" },
   { name: "Contact", url: "/contact" },
 ];
+// An array of links for the landing page navigation.
+const landingPageLinks = [
+  { name: "Features", url: "#features" },
+  { name: "FAQs", url: "#faqs" },
+  { name: "Pricing", url: "#pricing" },
+];
 // An array of links for footer
 const footerLinks = [
   {
@@ -33,10 +39,12 @@ const socialLinks = {
   github: "https://github.com/mearashadowfax/Gruntworks",
   google: "https://www.google.com/",
   slack: "https://slack.com/",
+  linkedin: "https://www.linkedin.com/",
 };
 
 export default {
   navBarLinks,
+  landingPageLinks,
   footerLinks,
   socialLinks,
 };

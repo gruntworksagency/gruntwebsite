@@ -3,6 +3,10 @@ import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@prisma/client";
 import ws from "ws";
 
+declare global {
+  var prisma: PrismaClient | undefined;
+}
+
 neonConfig.webSocketConstructor = ws as any;
 const connectionString = process.env.DATABASE_URL!;
 const adapter = new PrismaNeon({ connectionString });

@@ -4,14 +4,9 @@ import NavLink from "@components/ui/links/NavLink.astro";
 // import Authentication from "../misc/Authentication.astro";
 import Container from "@components/ui/Container.astro";
 import HeaderCTA from "@components/ui/buttons/HeaderCTA.astro";
+import navigation from "@utils/navigation";
 
 const homeUrl = "/";
-
-const navBarLinks = [
-  { name: "Features", url: "#features" },
-  { name: "FAQs", url: "#faqs" },
-  { name: "Pricing", url: "#pricing" },
-];
 ---
 
 <header
@@ -87,11 +82,10 @@ const navBarLinks = [
           class="mt-5 flex flex-col gap-x-0 gap-y-4 md:mt-0 md:flex-row md:items-center md:justify-end md:gap-x-4 md:gap-y-0 md:ps-7 lg:gap-x-7"
         >
           {
-            navBarLinks.map((link) => (
+            navigation.landingPageLinks.map((link) => (
               <NavLink url={link.url} name={link.name} />
             ))
           }
-          <!-- <Authentication /> -->
 
           {
             /* UPDATED: The URL will now point to the login page, passing the
