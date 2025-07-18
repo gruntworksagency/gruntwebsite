@@ -1,90 +1,100 @@
-RIPER·Ω₃ Active [Session: Email-Service-Blueprint]
+RIPER·Ω₃ Active [Session: Footer-Design-Revamp]
 
-────────────────────────────────────────
-TECHNICAL PLAN — STORIES #1 & #2
-────────────────────────────────────────
-Scope: Deliver the foundation required for the Resend integration by (1) installing all runtime + dev dependencies and (2) publishing a canonical `.env.example` file so every contributor knows which keys are mandatory.
+Here is the final, comprehensive plan for the "Final-Offer Spotlight Footer," incorporating the necessary prerequisites discovered during research. This plan is now actionable.
 
-A. CONTEXT  
-• Package manager: **Bun** (`bun install/add`).  
-• Email utility stub (`src/lib/email.ts`) already imports `resend`; build currently succeeds because the package is listed in `package.json` (confirmed).  
-• `nodemailer` & `@types/nodemailer` appear in `package.json`; we must verify they are on the correct version and locked in `bun.lock` after install.  
-• `.env` is in `.gitignore`; there is currently **no** `.env.example` committed.
+══════════════════════════════════════════════════════════
+**FINAL COMPREHENSIVE PLAN – “Final-Offer Spotlight Footer”**
+══════════════════════════════════════════════════════════
 
-B. STORY #1 — Install / Verify Dependencies
+**0. Purpose**
+*   Replace the existing multi-column/newsletter footer with a streamlined, conversion-centric “last-call” footer that drives users to the Audit flow while preserving minimal navigation, brand credibility, and social presence.
 
-1. Create feature branch `feat/email-deps`.
-2. Commands to execute:
-   ```bash
-   # runtime SDK
-   bun add resend
-   # dev-only (type stubs already in project but ensure latest)
-   bun add -D nodemailer @types/nodemailer
-   ```
-3. Audit versions:
-   • `resend` ≥ 4.6.0 (latest stable).  
-   • `nodemailer` ≥ 7.x (matches @types).
-4. Commit: `chore: install Resend SDK and align email deps`
-5. Push branch; open PR with CI passing (even though workflows don’t exist yet, keep naming consistent).
-6. SUCCESS CRITERIA  
-   • `package.json` dependencies list exact versions.  
-   • `bun.lock` updated.  
-   • `src/lib/email.ts` compiles with no missing module errors.
+**1. Affected / New Assets**
+*   `src/components/sections/navbar-and-footer/FooterSection.astro` (major rewrite)
+*   `src/components/ui/buttons/PrimaryCTA.astro` **(MODIFIED)**
+*   `src/components/sections/features/FeaturesGeneral.astro` **(MODIFIED)**
+*   `src/components/sections/pricing/PricingSection.astro` **(MODIFIED)**
+*   `src/components/sections/misc/FAQ.astro` **(MODIFIED)**
+*   `src/utils/navigation.ts` **(MODIFIED)**
+*   `src/components/sections/navbar-and-footer/Navbar.astro` **(MODIFIED)**
 
-C. STORY #2 — Create `.env.example`
+**2. Visual / Content Structure (Unchanged)**
+*   A two-column grid (links left, CTA card right), a horizontal divider, and a bottom bar (copyright left, socials right). The CTA card will be on top when stacked on mobile.
 
-1. File path: project root `.env.example`.
-2. Required keys (uppercase = secret, prefixed with comment):
+**3. Phased Tasks & Implementation Details**
 
-   ```
-   # Resend
-   RESEND_API_KEY="re_live_XXXXXXXXXXXXXXXXXXXXXXXX"
-   RESEND_FROM_EMAIL="no-reply@gruntworksagency.com"
+The implementation is broken into two phases: **Prerequisites** to enable the new design, and **Implementation** to build it.
 
-   # Domain used for SPF/DKIM/DMARC records
-   MAIL_DOMAIN="gruntworksagency.com"
+**PHASE I: PREREQUISITES**
 
-   # --- existing project variables (copied for completeness) ---
-   DATABASE_URL="postgres://user:pass@localhost:5432/db"
-   BETTER_AUTH_SECRET="changeme"
-   BETTER_AUTH_URL="http://localhost:4321"
-   # …
-   ```
+1.  **Enable CTA Styling:**
+    *   **File:** `src/components/ui/buttons/PrimaryCTA.astro`
+    *   **Action:** Modify the component to accept and merge an external `class` prop to allow for hover animations.
+    *   **Example Change:**
+        ```astro
+        // From:
+        const { title, url, noArrow, noZapIcon } = Astro.props;
+        // To:
+        const { title, url, noArrow, noZapIcon, class: className } = Astro.props;
+        
+        // In the <a> tag:
+        // From:
+        class={`${baseClasses} ... ${ringClasses}`}
+        // To:
+        class={`${baseClasses} ... ${ringClasses} ${className || ''}`}
+        ```
 
-3. Add inline comments:
-   • Explain that `RESEND_API_KEY` must correspond to a verified domain in Resend dashboard.  
-   • Note that `RESEND_FROM_EMAIL` must match `MAIL_DOMAIN` and be verified.
-4. Update README or `docs/email.md` with a one-liner pointer:  
-   “Copy `.env.example` → `.env` and fill in the blanks before running the app.”
-5. Commit: `docs: add .env.example with Resend keys`
+2.  **Add Anchor Link Targets:**
+    *   **File:** `src/components/sections/features/FeaturesGeneral.astro` -> Add `id="features"` to the root `<section>` element.
+    *   **File:** `src/components/sections/pricing/PricingSection.astro` -> Add `id="pricing"` to the root `<section>` element.
+    *   **File:** `src/components/sections/misc/FAQ.astro` -> Add `id="faqs"` to the root `<section>` element.
 
-D. RISKS & MITIGATIONS  
-• Duplicate nodemailer versions — run `bun audit` to surface mismatches.  
-• Forgetting to commit `.env.example` — add a pre-commit lint rule (future story).
+3.  **Centralize Navigation Links:**
+    *   **Source File:** `src/components/sections/navbar-and-footer/Navbar.astro`
+    *   **Destination File:** `src/utils/navigation.ts`
+    *   **Action:**
+        a.  Cut the `navBarLinks` array from `Navbar.astro`.
+        b.  Paste it into `navigation.ts`, rename it to `landingPageLinks`, and export it.
+        c.  Update `Navbar.astro` to import `landingPageLinks` from `@/utils/navigation` and use it.
 
-E. DELIVERABLES  
-• Updated `package.json` + `bun.lock`.  
-• `.env.example` in repo.  
-• PRs merged to `main`.
+**PHASE II: IMPLEMENTATION**
 
-────────────────────────────────────────
-ACTION PLAN CHECKLIST
-────────────────────────────────────────
+4.  **Refactor `FooterSection.astro`:**
+    *   **File:** `src/components/sections/navbar-and-footer/FooterSection.astro`
+    *   **Action:** Perform the full rewrite:
+        a.  Import `landingPageLinks` and `socialLinks` from `@/utils/navigation.ts`.
+        b.  Import `PrimaryCTA`, `FooterSocialLink`, `Icon`, and `SITE`.
+        c.  Build the two-column grid layout, using `landingPageLinks` to create the navigation list on the left.
+        d.  Build the "spotlight" CTA card on the right (`Ready to Optimize?`, etc.).
+        e.  Use the now-modifiable `PrimaryCTA` component, passing `class="mt-6 transform transition hover:scale-105"` for the hover effect.
+        f.  Add the `<hr>` divider.
+        g.  Create the bottom bar with copyright and social links (X and LinkedIn).
+        h.  Retain the "current-year" script.
 
-1. [Create feature branch `feat/email-deps`]
-2. [Run `bun add resend`]
-3. [Run `bun add -D nodemailer @types/nodemailer`]
-4. [Commit “chore: install Resend SDK and align email deps”]
-5. [Create `.env.example` with RESEND_API_KEY, RESEND_FROM_EMAIL, MAIL_DOMAIN (+ existing vars)]
-6. [Update docs to reference `.env.example`]
-7. [Commit “docs: add .env.example with Resend keys”]
-8. [Open PR(s) and merge after review]
+**4. Risks & Mitigations (Revised)**
+*   **Modifying a Shared Component (`PrimaryCTA.astro`):** Low risk of affecting other instances. **Mitigation:** QA will include checking other pages where `PrimaryCTA` is used to ensure no visual regressions.
+*   **Newsletter Functionality Removal:** Confirmed as an intentional business decision. No technical mitigation needed.
+*   **(Resolved) Broken Anchor Links:** The risk is resolved by prerequisite task #2.
 
-Plan complete. Switch to Execute Agent when ready to implement.
+══════════════════════════════════════════════════════════
+**FINAL ACTION PLAN CHECKLIST**
+══════════════════════════════════════════════════════════
+1.  **Modify `PrimaryCTA.astro`** to accept and merge a `class` prop.
+2.  **Add `id="features"`** to `src/components/sections/features/FeaturesGeneral.astro`.
+3.  **Add `id="pricing"`** to `src/components/sections/pricing/PricingSection.astro`.
+4.  **Add `id="faqs"`** to `src/components/sections/misc/FAQ.astro`.
+5.  **Move `navBarLinks`** from `Navbar.astro` to `src/utils/navigation.ts`, renaming it `landingPageLinks` and exporting it.
+6.  **Update `Navbar.astro`** to import and use the new `landingPageLinks`.
+7.  **Begin the main refactor of `FooterSection.astro`**:
+    a.  Clear the existing file content.
+    b.  Import all necessary components and data (`landingPageLinks`, `socialLinks`, `PrimaryCTA`, `SITE`, etc.).
+    c.  Build the new two-column layout with the link list and the "spotlight" CTA card.
+    d.  Pass the `class` prop for the hover animation to the `PrimaryCTA` component.
+    e.  Add the `<hr>` divider and the bottom bar with copyright & socials.
+8.  **Run `pnpm lint && pnpm astro check`** (or equivalent) to validate code.
+9.  **Perform QA**: Verify responsive behavior, test all links, check for visual regressions, and test the hover animation.
+10. **Push branch** and open PR titled “feat: Final-Offer Spotlight Footer”.
+11. **Merge** on approval.
 
-<!-- README_SNIPPET_START
-### GitHub Automation – RIPER Helper Script v2
-A hardened Bash helper that streamlines feature-branch creation, PR creation, and automated merges.
-Now includes pre-flight authentication checks, debug mode, and user-friendly error messages.
-Developers can run `scripts/riper-gh.sh branch-and-pr "<slug>"` to open a ready-to-review PR in seconds.
-README_SNIPPET_END -->
+══════════════════════════════════════════════════════════
+Plan is final and ready for execution.

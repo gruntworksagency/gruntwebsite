@@ -37,3 +37,8 @@ Auto-generated log of RIPER workflow actions.
 **Title:** fix: ensure initPlacesAutocomplete defined before Maps API executes
 **Details:** Updated README with feature description
 **Branch/URL:** https://github.com/gruntworksagency/gruntwebsite/pull/9
+## 2025-07-18 00:42:48 - MERGE
+**Title:** feat: Final-Offer Spotlight Footer
+**Details:** Successfully merged and deleted branch
+**Branch/URL:** https://github.com/gruntworksagency/gruntwebsite/pull/11
+

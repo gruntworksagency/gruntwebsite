@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import OptimisedPicture from "@/components/ui/images/OptimisedPicture.astro";
 import product5 from "@images/features-image.avif";
 
 // Define props from Astro
@@ -19,7 +19,11 @@ interface Props {
   <!-- Grid -->
   <div class="lg:grid lg:grid-cols-12 lg:items-center lg:gap-16">
     <div class="lg:col-span-7">
-      <Image class="rounded-xl" src={product5} alt="Mockup of floating boxes" />
+      <OptimisedPicture
+        class="rounded-xl"
+        src={product5}
+        alt="Mockup of floating boxes"
+      />
     </div>
     <div class="mt-5 sm:mt-10 lg:col-span-5 lg:mt-0">
       <div class="space-y-6 sm:space-y-8">

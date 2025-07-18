@@ -1,6 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import Icon from "../../ui/icons/Icon.astro";
+import OptimisedPicture from "@/components/ui/images/OptimisedPicture.astro";
 
 const { content, author, role, avatarSrc } = Astro.props;
 
@@ -24,7 +24,7 @@ interface Props {
   <div class="mt-6">
     <div class="flex items-center">
       <div class="shrink-0">
-        <Image
+        <OptimisedPicture
           class="h-8 w-8 rounded-full"
           src={avatarSrc}
           alt="Avatar Description"
