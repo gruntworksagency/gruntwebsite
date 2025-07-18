@@ -2,13 +2,14 @@
 import Icon from "@components/ui/icons/Icon.astro";
 // General-purpose Primary CTA button for use everywhere except the navbar.
 // Destructure the properties from Astro.props
-const { title, url, noArrow, noZapIcon } = Astro.props;
+const { title, url, noArrow, noZapIcon, class: className } = Astro.props;
 // Define TypeScript interface for the properties
 interface Props {
   title?: string;
   url?: string;
   noArrow?: boolean;
   noZapIcon?: boolean;
+  class?: string;
 }
 // Define CSS classes for styling the button
 const baseClasses =
@@ -25,7 +26,7 @@ const shapeClasses = "rounded-[7px]";
 
 <!-- General-purpose Primary CTA button (rectangle, slightly rounded corners) -->
 <a
-  class={`${baseClasses} ${shapeClasses} ${borderClasses} ${bgColorClasses} ${disableClasses} ${fontSizeClasses} ${ringClasses}`}
+  class={`${baseClasses} ${shapeClasses} ${borderClasses} ${bgColorClasses} ${disableClasses} ${fontSizeClasses} ${ringClasses} ${className || ""}`}
   href={url}
 >
   {noZapIcon ? null : <Icon name="zap" />}
