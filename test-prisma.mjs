@@ -1,1 +1,0 @@
-import { prisma } from "./src/lib/prisma.js"; console.log("Testing Prisma connection..."); prisma.$connect().then(() => console.log("✅ Connected successfully")).catch(err => console.error("❌ Connection failed:", err)).finally(() => process.exit());

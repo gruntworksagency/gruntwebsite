@@ -6,6 +6,9 @@ dist/
 
 # dependencies
 node_modules/
+.vscode/
+.husky/
+
 
 # logs
 npm-debug.log*
