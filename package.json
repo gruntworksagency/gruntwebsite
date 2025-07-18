@@ -64,7 +64,7 @@
       "bunx prettier --write"
     ],
     "*.{astro,mdx}": [
-      "bun run scripts/check-img.mjs"
+      "bun scripts/check-img.mjs"
     ]
   }
 }

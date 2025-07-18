@@ -1,5 +1,5 @@
 ---
-import heatworksIcon from "@assets/images/heatworks/heatworks-icon.svg";
+import HeatworksIcon from "../icons/HeatworksIcon.astro";
 import heatworksPattern2Tile from "@assets/images/heatworks/heatworks-pattern-2-tile.webp";
 const { title, btnId, btnTitle, url } = Astro.props;
 
@@ -25,7 +25,7 @@ interface Props {
       }}
     >
       <div class="absolute top-1/2 left-[-150px] z-2 -translate-y-1/2">
-        <img src={heatworksIcon.src} alt="Heatworks Icon" class="w-[400px]" />
+        <HeatworksIcon class="w-[400px]" aria-label="Heatworks Icon" />
       </div>
       <div
         class="pointer-events-none absolute inset-0 z-1 h-full w-full"
