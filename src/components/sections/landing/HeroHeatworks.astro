@@ -1,7 +1,7 @@
 ---
 import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
 import Container from "@components/ui/Container.astro";
-import { Image } from "astro:assets";
+import OptimisedPicture from "@/components/ui/images/OptimisedPicture.astro";
 import ReviewComponent from "@components/ui/blocks/ReviewComponent.astro";
 // Removed all direct image/video imports
 
@@ -50,21 +50,21 @@ interface Props {
   <div
     class="clouds-layer pointer-events-none absolute top-0 left-0 z-10 h-[180px] w-full md:h-[220px] lg:h-[260px]"
   >
-    <Image
+    <OptimisedPicture
       src={cloud3MinSrc}
       alt=""
       width={490}
       height={316}
       class="cloud-left absolute top-0 left-[-150px] h-[200px] w-auto lg:h-[300px]"
     />
-    <Image
+    <OptimisedPicture
       src={cloud2MinSrc}
       alt=""
       width={998}
       height={239}
       class="cloud-center absolute top-[-20px] left-1/2 h-[200px] w-auto -translate-x-1/2 lg:h-[300px]"
     />
-    <Image
+    <OptimisedPicture
       src={cloud1MinSrc}
       alt=""
       width={598}
@@ -100,7 +100,7 @@ interface Props {
 
         <!-- HEATWORKS Logo -->
         <div class="my-4">
-          <Image
+          <OptimisedPicture
             src={heatworksLogoSrc}
             alt="HEATWORKS Logo"
             width={300}
@@ -165,7 +165,7 @@ interface Props {
         class="relative z-20 mx-auto mt-0 hidden w-full max-w-[1280px] px-4 md:block"
       >
         <div class="relative mx-auto aspect-[16/9] w-full">
-          <Image
+          <OptimisedPicture
             src={ipadSrc}
             alt="iPad mockup displaying Heatworks audit"
             width={1280}
@@ -198,7 +198,7 @@ interface Props {
   <div
     class="absolute bottom-[-7rem] left-0 z-[15] mb-0 w-full transform overflow-hidden sm:bottom-[-10rem] md:bottom-[-12rem] lg:bottom-[-16rem] xl:bottom-[-24rem]"
   >
-    <Image
+    <OptimisedPicture
       src={grassTransitionSrc}
       alt="Grass transition effect"
       width={1440}

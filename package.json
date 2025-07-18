@@ -38,7 +38,7 @@
     "preline": "^3.1.0",
     "resend": "^4.6.0",
     "rimraf": "^6.0.1",
-    "sharp": "^0.34.2",
+    "sharp": "^0.34.3",
     "sharp-ico": "^0.1.5",
     "tailwindcss": "^4.1.11",
     "ws": "^8.18.3"
@@ -58,10 +58,13 @@
   },
   "lint-staged": {
     "*.{js,ts,astro}": [
-      "prettier --write"
+      "bunx prettier --write"
     ],
     "*.{css,scss}": [
-      "prettier --write"
+      "bunx prettier --write"
+    ],
+    "*.{astro,mdx}": [
+      "bun run scripts/check-img.mjs"
     ]
   }
 }
